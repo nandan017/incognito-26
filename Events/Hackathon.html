@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOSSIER — INCOGNITO 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=VT323&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+        --red: #ff0000;
+        --blood-dark: #660000;
+        --gold: #bfa100;
+        --bg: #050000;
+        --caution-yellow: #f1c40f;
+    }
+
+   body, html {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: white;
+    font-family: 'Courier Prime', monospace;
+    /* CHANGE: height: 100vh; TO min-height: 100vh; */
+    min-height: 100vh; 
+    width: 100vw;
+    /* CHANGE: align-items: center; TO align-items: flex-start; */
+    display: flex; 
+    align-items: flex-start; 
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+    /* --- BACKGROUND GRID --- */
+    .overlay-grid {
+        position: fixed; inset: 0;
+        background-image: 
+            linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none; z-index: 5;
+    }
+
+    /* --- LAYERED CRIME SCENE TAPES WITH BLOOD STAINS --- */
+    .bg-tape {
+        position: fixed;
+        background-color: var(--caution-yellow);
+        background-image: 
+            radial-gradient(circle at 22% 39%, var(--blood-dark) 0%, transparent 95px),
+            radial-gradient(circle at 75% 60%, var(--blood-dark) 0%, transparent 75px),
+            radial-gradient(circle at 45% 30%, var(--blood-dark) 0%, transparent 95px);
+        color: black;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-weight: 900;
+        z-index: 2;
+        box-shadow: 0 0 30px rgba(0,0,0,0.6);
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    .tape-thick { width: 160vw; height: 80px; font-size: 2.5rem; letter-spacing: 5px; }
+    .tape-thin { width: 160vw; height: 35px; font-size: 1.2rem; letter-spacing: 2px; opacity: 0.85; z-index: 1.5; }
+
+    .pos-1 { top: 10%; left: -30vw; transform: rotate(-15deg); }
+    .pos-2 { bottom: 12%; left: -30vw; transform: rotate(10deg); }
+    .pos-3 { top: 30%; left: -30vw; transform: rotate(-5deg); }
+    .pos-4 { bottom: 35%; left: -30vw; transform: rotate(15deg); }
+    .pos-5 { top: 50%; left: -30vw; transform: rotate(-25deg); }
+
+    /* --- DOSSIER CARD --- */
+   .dossier-card {
+    width: 85%; max-width: 900px;
+    z-index: 8;
+    background: rgba(8, 5, 5, 0.90); 
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    padding: 50px; 
+    position: relative;
+    box-sizing: border-box; 
+    /* ADD THIS LINE: */
+    margin: 90px auto; 
+    margin-top: 90px;
+}
+    
+
+
+
+    .sticker {
+        position: absolute; background: #f1c40f; color: black;
+        padding: 4px 15px; font-weight: 900; font-size: 0.6rem;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5); z-index: 20;
+        clip-path: polygon(10% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 50%);
+    }
+    .s-1 { top: 30px; left: -20px; transform: rotate(-12deg); }
+    .s-2 { bottom: 30px; right: -20px; transform: rotate(-10deg) scaleX(-1); }
+
+    /* FIX: Changed grid to flex-wrap to automatically stack only when the screen gets too small */
+    .dossier-grid { 
+    display: grid; 
+    /* This allows the columns to shrink down to 180px before stacking */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 30px; 
+    margin-top: 40px; 
+}
+    .dossier-grid > div { flex: 1 1 200px; }
+
+  .intel-label { display: block; font-family: 'VT323'; color: var(--gold); font-size: 0.8rem; margin-bottom: 12px; border-bottom: 1px solid rgba(191,161,0,0.3); }
+
+    .polaroid { background: #eee; padding: 8px 8px 25px; transform: rotate(-2deg); width: fit-content; box-shadow: 5px 5px 15px rgba(0,0,0,0.4); cursor: pointer; transition: 0.3s; }
+    .polaroid:hover { transform: rotate(0deg) scale(1.05); }
+    .glitch-img { width: 170px; height: 120px; background: #111; display: flex; align-items: center; justify-content: center; }
+
+
+
+
+    .redacted { background: #1a1a1a; color: #1a1a1a; padding: 0 4px; cursor: help; transition: 0.3s; }
+    .redacted:hover { background: transparent; color: var(--gold); }
+
+    .stamp-btn { 
+        margin-top: 40px; width: 100%; background: #550000; color: #fff; border: none;
+        padding: 15px; font-family: 'Bebas Neue'; font-size: 1.6rem; letter-spacing: 4px;
+        cursor: pointer; box-shadow: 0 0 20px rgba(85,0,0,0.5); transition: 0.3s;
+    }
+    .stamp-btn:hover { background: #880000; transform: translateY(-2px); }
+
+    /* --- MODAL SECTION --- */
+    .modal-overlay { 
+        display: none; position: fixed; inset: 0; 
+        background: rgba(0, 0, 0, 0.96); z-index: 1000; 
+        align-items: center; justify-content: center; 
+    }
+
+    .modal-content { 
+        position: relative; 
+        border: 2px solid var(--red); 
+        box-shadow: 0 0 50px rgba(255, 0, 0, 0.3); 
+        background: black;
+    }
+
+    .brochure-img { width: 100%; height: auto; display: block; }
+
+        .close-btn {
+            position: absolute; top: -50px; right: 0;
+            color: var(--red); font-size: 3rem;
+            cursor: pointer; font-family: 'Bebas Neue';
+        }
+
+     @keyframes posterPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+</style>
+</head>
+<body>
+
+    <div class="overlay-grid"></div>
+
+    <div class="bg-tape tape-thick pos-1">CRIME SCENE // DO NOT CROSS // CRIME SCENE</div>
+    <div class="bg-tape tape-thick pos-2">DO NOT CROSS // CRIME SCENE // DO NOT CROSS</div>
+    <div class="bg-tape tape-thin pos-3">POLICE LINE - EVIDENCE RECOVERY - DO NOT CROSS</div>
+    <div class="bg-tape tape-thin pos-4">FORENSIC UNIT // RESTRICTED ACCESS // NO ENTRY</div>
+    <div class="bg-tape tape-thin pos-5">CAUTION - ACTIVE INVESTIGATION - CAUTION</div>
+
+    <div class="dossier-card">
+        <div class="sticker s-1">EVIDENCE SEALED</div>
+        <div class="sticker s-2">EVIDENCE SEALED</div>
+
+        <header>
+            <h2 style="font-family:'Bebas Neue'; font-size:3.5rem; margin:0; letter-spacing: 2px;">OPERATION: Hackathon-x</h2>
+            <p style="font-family:'VT323'; color:var(--red); font-size:1rem;">FILE_STATUS: UNLOCKED</p>
+        </header>
+
+        <div class="dossier-grid">
+           <div>
+                <span class="intel-label">VISUAL_INTEL</span>
+                <div class="polaroid" id="intelTrigger">
+                    <div class="glitch-img"><span style="color:#555; font-size:0.6rem;">SURVEILLANCE_01</span></div>
+                   <p style="font-family: 'Special Elite', 'Courier Prime', monospace; color: #000; font-size: 1.2rem; margin: 20px 0 0; margin-left: 28px; font-weight: 0; letter-spacing: 3.9px; text-transform: uppercase;">
+  BROCHURE
+</p>
+                </div>
+            </div>
+
+            <div>
+                <span class="intel-label">OBJECTIVES_&_RULES</span>
+                <ul style="font-size:0.85rem; padding-left:15px; line-height:2.2;">
+                    <li>Bypass <span class="redacted">ENCRYPTED FIREWALLS</span>.</li>
+                    <li>External storage is <span class="redacted">STRICTLY PROHIBITED</span>.</li>
+                    <li>Bounty Awarded: <span style="color:var(--gold); font-weight:bold;">₹5,000</span>.</li>
+                </ul>
+            </div>
+
+            <div>
+                <span class="intel-label">COMMAND_COORDINATORS</span>
+                <div style="font-size: 0.8rem; line-height: 1.8;">
+                    AGENT_HARESH<br>
+                    <span style="color:var(--red);">+91 8147033685</span>
+                </div>
+            </div>
+        </div>
+
+        <a href="../Reg.html" style="text-decoration: none;">
+    <button id="regTrigger" class="stamp-btn">AUTHORIZE PARTICIPATION</button>
+</a>
+    </div>
+
+    <div id="brochureModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <img src="YOUR_BROCHURE_IMAGE.jpg" alt="Brochure Poster" class="brochure-img">
+        </div>
+    </div>
+    <script>
+    document.getElementById('regTrigger').onclick = function() {
+    window.location.href = '../Reg.html';
+};
+</script>
+
+    <script>
+        const modal = document.getElementById('brochureModal');
+        const intelBtn = document.getElementById('intelTrigger');
+        const closeBtn = document.querySelector('.close-btn');
+
+        intelBtn.onclick = () => { modal.style.display = 'flex'; }
+        closeBtn.onclick = () => { modal.style.display = 'none'; }
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; }
+    </script>
+</body>
+</html>

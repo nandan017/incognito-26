@@ -6,13 +6,14 @@
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 1000;
+  z-index: 10;
   transition: background 0.3s, border-bottom 0.3s;
-  border-bottom: 1px solid transparent;
+  background-color: black ;
+
 }
 
 .navbar.scrolled {
-  background: rgba(10, 10, 8, 0.95);
+  background: rgba(10, 10, 8, 1);
   border-bottom-color: rgba(192, 57, 43, 0.3);
   backdrop-filter: blur(10px);
 }
@@ -50,7 +51,7 @@
   letter-spacing: 0.08em;
   color: var(--typewriter);
   line-height: 1;
-  animation: flicker 8s infinite;
+  
 }
 
 .nav-logo__year {
