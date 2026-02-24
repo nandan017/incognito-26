@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INITIALIZE DOSSIER — INCOGNITO 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=VT323&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="css/theme.css"/>
+  <link rel="stylesheet" href="css/hero.css"/>
+
+  <style>
+    :root {
+      --glass-bg: rgba(10, 10, 8, 0.9);
+      --red: #ff0000;
+      --gold: #bfa100;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0a0a08;
+      overflow: hidden; 
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* Background Setup */
+    .hero {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    /* --- THE GLOWING INTERACTIVE RED TEXT --- */
+    .hero__glitch-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15vw; 
+      
+      /* --- THE RAZOR OUTLINE FIX --- */
+      color: transparent;                      /* Removes the solid "fucking" text fill */
+      -webkit-text-stroke: 0.5px rgba(141, 71, 71, 0.3); /* The thin red wireframe line */
+      letter-spacing: 2.5vw;                   /* Matches the wide spacing on the right */
+      
+      z-index: 2;
+      pointer-events: none;
+      white-space: nowrap;
+      text-transform: uppercase;
+      text-shadow: none;                       /* Removes the blocky glow */
+      user-select: none;
+    }
+
+    /* --- TAPE POSITIONING --- */
+    .hero__tape { 
+      position: absolute;
+      width: 140%;
+      left: -20%;
+      z-index: 10; 
+    }
+
+    .hero__tape--top {
+      top: 15%;
+      transform: rotate(-5deg);
+    }
+
+    .hero__tape--bottom {
+      bottom: 15%; 
+      transform: rotate(4deg); 
+    }
+
+    /* Auth Overlay */
+    .auth-overlay {
+      position: relative;
+      z-index: 100;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.5) 100%);
+    }
+
+    /* Glass Auth Card */
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 2.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 4px solid var(--red);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      font-family: 'VT323', monospace;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.8rem;
+      color: white;
+      font-family: 'Courier Prime', monospace;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: var(--red);
+      background: rgba(255, 0, 0, 0.05);
+    }
+
+    .auth-footer a {
+      color: var(--red);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero" id="hero">
+    <div class="hero__bg">
+      <div class="hero__bg-layer hero__bg-layer--1"></div>
+      <div class="hero__bg-layer hero__bg-layer--2"></div>
+      <div class="hero__bg-layer hero__bg-layer--3"></div>
+      
+      <div class="hero__glitch-overlay">INCOGNITO</div>
+      
+      <div class="hero__tape hero__tape--top">
+        <span class="evidence-tape">CLASSIFIED ACCESS &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp;</span>
+      </div>
+      
+      <div class="hero__tape hero__tape--bottom">
+        <span class="evidence-tape">CLASSIFIED ACCESS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED ACCESS</span>
+      </div>
+
+      <div class="hero__spotlight"></div>
+    </div>
+  </section>
+
+  <div class="auth-overlay">
+    <main class="auth-card">
+      <div class="hero__tagline-wrap" style="margin-bottom: 1.5rem; min-height: 1.2rem;">
+        <span class="text-gold font-mono">» </span>
+        <span class="hero__tagline font-mono" id="register-tagline"></span>
+        <span class="hero__cursor font-mono text-red">█</span>
+      </div>
+
+      <div class="auth-header" style="text-align:center; margin-bottom: 2rem;">
+        <h1 class="font-display" style="font-size: 3rem; margin:0; color:white;">REGISTER</h1>
+        <p class="font-mono text-red" style="font-size: 0.6rem; letter-spacing: 2px;">AGENT ENROLLMENT TERMINAL</p>
+      </div>
+
+      <form id="registerForm">
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">FULL_NAME</label>
+          <input type="text" placeholder="John Doe" required autocomplete="off">
+        </div>
+
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">AGENT_EMAIL</label>
+          <input type="email" placeholder="agent@incognito.edu" required autocomplete="off">
+        </div>
+
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">CREATE_ACCESS_CODE</label>
+          <input type="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="hero__btn-primary" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
+          <span>INITIALIZE DOSSIER</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="auth-footer font-mono" style="margin-top: 2rem; text-align: center; font-size: 0.7rem; opacity: 0.6;">
+        ALREADY REGISTERED? <a href="/login">SECURE LOGIN</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // 1. Mouse-Based Parallax
+    const layers = [
+      { el: document.querySelector('.hero__bg-layer--1'), speed: 0.05 },
+      { el: document.querySelector('.hero__bg-layer--2'), speed: 0.1 },
+      { el: document.querySelector('.hero__bg-layer--3'), speed: 0.15 },
+      { el: document.querySelector('.hero__glitch-overlay'), speed: 0.04 },
+      { el: document.querySelector('.hero__tape--top'), speed: 0.08 },
+      { el: document.querySelector('.hero__tape--bottom'), speed: 0.08 }
+    ];
+
+    document.addEventListener('mousemove', (e) => {
+      const x = (window.innerWidth / 2 - e.pageX) / 30;
+      const y = (window.innerHeight / 2 - e.pageY) / 30;
+
+      layers.forEach(layer => {
+        if (!layer.el) return;
+        const moveX = x * layer.speed * 10;
+        const moveY = y * layer.speed * 10;
+
+        if (layer.el.classList.contains('hero__glitch-overlay')) {
+          layer.el.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+        } else {
+          layer.el.style.setProperty('--moveX', `${moveX}px`);
+          layer.el.style.setProperty('--moveY', `${moveY}px`);
+        }
+      });
+    });
+
+    // 2. Typewriter Logic
+    const messages = [
+      "Accessing enrollment gateway...",
+      "Requesting Agent Dossier...",
+      "Please enter your credentials."
+    ];
+
+    let msgIdx = 0; let charIdx = 0; let isDeleting = false;
+    const taglineEl = document.getElementById('register-tagline');
+
+    function type() {
+      const current = messages[msgIdx];
+      taglineEl.textContent = isDeleting ? current.slice(0, charIdx--) : current.slice(0, charIdx++);
+      
+      if (!isDeleting && charIdx > current.length) { 
+        isDeleting = true; 
+        setTimeout(type, 2000); 
+      } else if (isDeleting && charIdx === 0) { 
+        isDeleting = false; 
+        msgIdx = (msgIdx + 1) % messages.length; 
+        setTimeout(type, 500); 
+      } else { 
+        setTimeout(type, isDeleting ? 40 : 80); 
+      }
+    }
+    window.onload = () => setTimeout(type, 500);
+  </script>
+</body>
+</html>
