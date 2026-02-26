@@ -85,7 +85,7 @@ updateCountdown();
 const taglines = [
   'An intercollegiate fest with a crime-scene twist.',
   'Decode. Build. Compete. Dominate.',
-  'March 24, 2026 — Seshadripuram College, Bengaluru.',
+  'March 25, 2026 — Seshadripuram College, Bengaluru.',
   'Where every event is a crime scene waiting to be solved.',
   'Technical. Cultural. Legendary.',
 ];
@@ -184,7 +184,7 @@ const chatSend     = document.getElementById('chat-send');
 const quickies     = document.getElementById('chat-quickies');
 
 const FAQ_DATA = {
-  when: 'The fest takes place on <strong>March 24, 2026</strong>. Mark your calendar, agent.',
+  when: 'The fest takes place on <strong>March 25, 2026</strong>. Mark your calendar, agent.',
   where: 'Venue: <strong>Seshadripuram College, Bengaluru</strong>. Check the map section for directions.',
   events: 'We have 20+ events across Technical, Cultural, Gaming, and Management categories. Each event is a separate mission file.',
   register: 'Click the <strong>REGISTER NOW</strong> button above. You\'ll need a college email to create an account, then pick your events and pay online.',
