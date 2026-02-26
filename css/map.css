@@ -1,0 +1,103 @@
+/* ===============================
+   DARK GEOSPATIAL INTEL THEME (BLACK OPS)
+================================= */
+
+.footer-intel-column {
+    width: 100%;
+    max-width: 350px;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+}
+
+.footer__col-title {
+    color: #ff0000;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 0px #4a0000;
+}
+
+/* Container */
+.footer-map-container {
+    position: relative;
+    width: 100%;
+    background: #000; /* Pure black base */
+    border-radius: 4px;
+    overflow: hidden;
+    border: 0.5px solid #8b0000;
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+}
+
+/* Google Map Dark Effect - The "Inversion" Hack */
+.footer-map-container iframe {
+    width: 100%;
+    height: 250px;
+    border: 0;
+    display: block;
+    /* Step 1: Invert colors (White becomes Black)
+       Step 2: Hue-rotate 180deg to fix the colors back to a red/dark spectrum
+       Step 3: High Contrast & Low Brightness 
+    */
+    filter: invert(100%) hue-rotate(180deg) brightness(0.7) contrast(1.5) grayscale(0.2);
+    transition: filter 0.5s ease;
+}
+
+.footer-map-container:hover iframe {
+    filter: invert(100%) hue-rotate(180deg) brightness(0.9) contrast(1.2);
+}
+
+/* Red Scan Animation - Sharper & Faster */
+.footer-map-scan {
+    position: absolute;
+    top: -40%;
+    left: 0;
+    width: 100%;
+    height: 15%; /* Thinner, sharper beam */
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255, 0, 0, 0.8),
+        transparent
+    );
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+    animation: scanMove 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Vignette Overlay (Dark edges for that 'Scope' look) */
+.footer-map-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9) 100%);
+    pointer-events: none;
+}
+
+/* Overlay Text (Intel Data) */
+.footer-map-overlay {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    color: #ff3c3c;
+    font-size: 9px;
+    font-family: 'Courier New', monospace;
+    text-align: right;
+    line-height: 1.2;
+    z-index: 10;
+    text-shadow: 0 0 5px #000;
+}
+
+/* Animation */
+@keyframes scanMove {
+    0% { top: -20%; }
+    100% { top: 120%; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-map-container iframe {
+        height: 200px;
+    }
+}
