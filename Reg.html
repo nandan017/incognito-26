@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INITIALIZE DOSSIER — INCOGNITO 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=VT323&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="css/theme.css"/>
+  <link rel="stylesheet" href="css/hero.css"/>
+
+  <style>
+    :root {
+      --glass-bg: rgba(10, 10, 8, 0.9);
+      --red: #ff0000;
+      --gold: #bfa100;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0a0a08;
+      overflow: hidden; 
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* Background Setup */
+    .hero {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    /* --- THE GLOWING INTERACTIVE RED TEXT --- */
+    .hero__glitch-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15vw; 
+      
+      /* --- THE RAZOR OUTLINE FIX --- */
+      color: transparent;                      /* Removes the solid "fucking" text fill */
+      -webkit-text-stroke: 0.5px rgba(141, 71, 71, 0.3); /* The thin red wireframe line */
+      letter-spacing: 2.5vw;                   /* Matches the wide spacing on the right */
+      
+      z-index: 2;
+      pointer-events: none;
+      white-space: nowrap;
+      text-transform: uppercase;
+      text-shadow: none;                       /* Removes the blocky glow */
+      user-select: none;
+    }
+
+    /* --- TAPE POSITIONING --- */
+    .hero__tape { 
+      position: absolute;
+      width: 140%;
+      left: -20%;
+      z-index: 10; 
+    }
+
+    .hero__tape--top {
+      top: 15%;
+      transform: rotate(-5deg);
+    }
+
+    .hero__tape--bottom {
+      bottom: 15%; 
+      transform: rotate(4deg); 
+    }
+
+    /* Auth Overlay */
+    .auth-overlay {
+      position: relative;
+      z-index: 100;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.5) 100%);
+    }
+
+    /* Glass Auth Card */
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 1.8rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 4px solid var(--red);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      font-family: 'VT323', monospace;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.8rem;
+      color: white;
+      font-family: 'Courier Prime', monospace;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: var(--red);
+      background: rgba(255, 0, 0, 0.05);
+    }
+
+    .auth-footer a {
+      color: var(--red);
+      text-decoration: underline;
+    }
+
+    /* Success Modal Styles */
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Aligns to top */
+  padding-top: 5vh; /* Distance from top */
+}
+
+.success-card {
+  width: 90%;
+  max-width: 450px;
+  background: var(--glass-bg);
+  border: 1px solid var(--red);
+  border-top: 6px solid var(--red);
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(255, 0, 0, 0.2);
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1.5rem;
+  border: 2px solid var(--red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.status-text { color: var(--red); font-size: 0.8rem; letter-spacing: 3px; font-weight: bold; margin-bottom: 1rem; }
+.divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 1.5rem 0; }
+.details-text { font-size: 0.9rem; color: white; margin-bottom: 0.5rem; }
+.thanks-text { font-size: 0.8rem; color: var(--gold); opacity: 0.8; }
+
+.close-btn {
+  margin-top: 2rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 0.8rem 1.5rem;
+  font-family: 'Courier Prime', monospace;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.close-btn:hover { background: var(--gold); color: black; }
+  </style>
+</head>
+<body>
+
+  <section class="hero" id="hero">
+    <div class="hero__bg">
+      <div class="hero__bg-layer hero__bg-layer--1"></div>
+      <div class="hero__bg-layer hero__bg-layer--2"></div>
+      <div class="hero__bg-layer hero__bg-layer--3"></div>
+      
+      <div class="hero__glitch-overlay">INCOGNITO</div>
+      
+      <div class="hero__tape hero__tape--top">
+        <span class="evidence-tape">CLASSIFIED ACCESS &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp;</span>
+      </div>
+      
+      <div class="hero__tape hero__tape--bottom">
+        <span class="evidence-tape">CLASSIFIED ACCESS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED ACCESS</span>
+      </div>
+
+      <div class="hero__spotlight"></div>
+    </div>
+  </section>
+
+  <div class="auth-overlay">
+    <main class="auth-card">
+      <div class="hero__tagline-wrap" style="margin-bottom: 1.5rem; min-height: 1.2rem;">
+        <span class="text-gold font-mono">» </span>
+        <span class="hero__tagline font-mono" id="register-tagline"></span>
+        <span class="hero__cursor font-mono text-red">█</span>
+      </div>
+
+      <div class="auth-header" style="text-align:center; margin-bottom: 2rem;">
+        <h1 class="font-display" style="font-size: 3rem; margin:0; color:white;">REGISTER</h1>
+        <p class="font-mono text-red" style="font-size: 0.6rem; letter-spacing: 2px;">AGENT ENROLLMENT TERMINAL</p>
+      </div>
+
+<form id="registerForm">
+  <div class="input-group" style="margin-bottom: 1.5rem;">
+    <label class="font-mono">AGENT_NAME</label>      
+    <input type="text" id="agent_name" placeholder="John Doe" required autocomplete="off">
+  </div>
+
+  <div class="input-group" style="margin-bottom: 1.5rem;">
+    <label class="font-mono">COLLEGE_NAME</label>
+    <input type="text" id="college_name" placeholder="College Name" required autocomplete="off">
+  </div>
+
+  <div class="input-group" style="margin-bottom: 1.5rem;">
+    <label class="font-mono">AGENT_EMAIL</label>
+    <input type="email" id="agent_email" placeholder="agent007@gmail.com" required autocomplete="off">
+  </div>
+
+  <div class="input-group" style="margin-bottom: 1.5rem;">
+    <label class="font-mono">AGENT_NUMBER</label>
+    <input 
+      type="tel" 
+      id="agent_phone" 
+      placeholder="**********" 
+      required 
+      pattern="[0-9]{10}" 
+      maxlength="10" 
+      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+      title="Agent Number must be exactly 10 digits."
+    >
+  </div>
+
+  <div class="input-group" style="margin-bottom: 1.5rem;">
+    <label class="font-mono">EVENTS</label>
+    <select id="agent_event" required onchange="this.style.color='white'" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); color: #757575; border: 1px solid rgba(255, 255, 255, 0.1); font-family: 'Courier Prime', monospace; outline: none; cursor: pointer;">
+      <option value="" disabled selected style="color: #757575; background: #111;">Select an event...</option>
+      <option value="Videography/Photography" style="background: #111; color: #757575;">Videography/Photography</option>
+      <option value="Data Treasure Hunt" style="background: #111; color: #757575;">Data Treasure Hunt</option>
+      <option value="Coding & Debugging" style="background: #111; color: #757575;">Coding & Debugging</option>
+      <option value="IT Dumb Charades" style="background: #111; color: #757575;">IT Dumb Charades</option>
+      <option value="Logo Design" style="background: #111; color: #757575;">Logo Design</option>
+      <option value="Talent Show" style="background: #111; color: #757575;">Talent Show</option>
+      <option value="BGMI" style="background: #111; color: #757575;">BGMI</option>
+      <option value="Freefire" style="background: #111; color: #757575;">Freefire</option>
+      <option value="Crime Scene Set Up" style="background: #111; color: #757575;">Crime Scene Set Up</option>
+    </select>
+  </div>
+
+
+
+<div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; text-align: center;margin-left: 5%;">
+  <input type="checkbox" id="terms" required style="cursor: pointer; width: 15px; height: 15px; accent-color: #b32626; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+  
+  <label for="terms" style="color: #757575; font-family: 'Courier Prime', monospace; font-size: 0.85rem; cursor: pointer; margin: 0; display: inline;">
+    I agree to the <a href="#" style="color: rgb(224, 29, 29); text-decoration: underline; text-underline-offset: 3px;">Terms and Conditions</a>
+  </label>
+</div>
+        <button type="submit" class="hero__btn-primary" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
+          <span>INITIALIZE </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="auth-footer font-mono" style="margin-top: 2rem; text-align: center; font-size: 0.7rem; opacity: 0.6;">
+        ALREADY REGISTERED?
+      </div>
+    </main>
+  </div>
+
+ <script>
+    // 1. Mouse-Based Parallax
+    const layers = [
+      { el: document.querySelector('.hero__bg-layer--1'), speed: 0.05 },
+      { el: document.querySelector('.hero__bg-layer--2'), speed: 0.1 },
+      { el: document.querySelector('.hero__bg-layer--3'), speed: 0.15 },
+      { el: document.querySelector('.hero__glitch-overlay'), speed: 0.04 },
+      { el: document.querySelector('.hero__tape--top'), speed: 0.08 },
+      { el: document.querySelector('.hero__tape--bottom'), speed: 0.08 }
+    ];
+
+    document.addEventListener('mousemove', (e) => {
+      const x = (window.innerWidth / 2 - e.pageX) / 30;
+      const y = (window.innerHeight / 2 - e.pageY) / 30;
+      layers.forEach(layer => {
+        if (!layer.el) return;
+        const moveX = x * layer.speed * 10;
+        const moveY = y * layer.speed * 10;
+        if (layer.el.classList.contains('hero__glitch-overlay')) {
+          layer.el.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+        } else {
+          layer.el.style.setProperty('--moveX', `${moveX}px`);
+          layer.el.style.setProperty('--moveY', `${moveY}px`);
+        }
+      });
+    });
+
+    // 2. Typewriter Logic
+    const messages = [
+      "Accessing enrollment gateway...",
+      "Requesting Agent Dossier...",
+      "Please enter your credentials."
+    ];
+    let msgIdx = 0; let charIdx = 0; let isDeleting = false;
+    const taglineEl = document.getElementById('register-tagline');
+
+    function type() {
+      const current = messages[msgIdx];
+      taglineEl.textContent = isDeleting ? current.slice(0, charIdx--) : current.slice(0, charIdx++);
+      if (!isDeleting && charIdx > current.length) { 
+        isDeleting = true; setTimeout(type, 2000); 
+      } else if (isDeleting && charIdx === 0) { 
+        isDeleting = false; msgIdx = (msgIdx + 1) % messages.length; setTimeout(type, 500); 
+      } else { 
+        setTimeout(type, isDeleting ? 40 : 80); 
+      }
+    }
+    window.onload = () => setTimeout(type, 500);
+
+    // 3. BREVO API DISPATCH
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const btn = this.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "<span>DISPATCHING...</span>";
+      btn.disabled = true;
+
+      // Capture Form Data
+      const data = {
+        name: document.getElementById('agent_name').value,
+        email: document.getElementById('agent_email').value,
+        phone: document.getElementById('agent_phone').value,
+        college: document.getElementById('college_name').value,
+        event: document.getElementById('agent_event').value
+      };
+
+      try {
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'api-key': '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', // Updated to API v3 Key
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            sender: { name: "INCOGNITO HQ", email: 'hareshhare685@gmail.com' }, // Verified Sender
+            to: [{ email: data.email, name: data.name }],
+            subject: `------------`,
+            htmlContent: `
+              <div style="background:#0a0a08; color:#ff0000; font-family:monospace; padding:30px; border:3px solid #ff0000;">
+                <h1 style="text-align:center;">Incognito-26</h1>
+                <p>AGENT: <strong>${data.name}</strong></p>
+                <div style="border:1px dashed #ff0000; padding:15px; margin:20px 0;">
+                  <p>ASSIGNED: ${data.event}</p>
+                  <p>COLLEGE: ${data.college}</p>
+                  <p>CONTACT: ${data.phone}</p>
+                </div>
+                <p style="color:#bfa100;">Identified Agent!</p>
+              </div>`
+          })
+        });
+
+        if (response.ok) {
+          document.getElementById('successModal').style.display = 'flex';
+          this.reset();
+        } else {
+          const errorData = await response.json();
+          alert("TERMINAL ERROR: " + errorData.message);
+        }
+      } catch (err) {
+        alert("CRITICAL ERROR: Connection to HQ lost.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    function closeModal() {
+      document.getElementById('successModal').style.display = 'none';
+    }
+</script>
+
+  <div id="successModal" class="success-overlay" style="display: none;">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <h1 class="font-display">INITIALIZED</h1>
+    <p class="status-text">REGISTRATION SUCCESSFUL</p>
+    <div class="divider"></div>
+    <p class="details-text">Agent details dispatched to their email.</p>
+    <p class="thanks-text">Thank you for enlisting.</p>
+    
+    <button onclick="window.location.href='index.html'" class="close-btn">
+    RETURN TO HOME
+</button>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOSSIER — INCOGNITO 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=VT323&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --red: #ff0000;
+            --blood-dark: #4a0000;
+            --gold: #bfa100;
+            --bg: #050000;
+        }
+
+   body, html {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: white;
+    font-family: 'Courier Prime', monospace;
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+    /* Removed fixed height and forced center to allow scrolling */
+}
+
+/* Centering for Desktop */
+@media (min-height: 800px) {
+    body { align-items: center; }
+}
+
+.dossier-card {
+    width: 85%;
+    max-width: 900px;
+    z-index: 8;
+    /* Use the darker, less transparent background from card 2 */
+    background: rgba(8, 5, 5, 0.94); 
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    padding: 50px; 
+    position: relative;
+    box-sizing: border-box; 
+    /* The 110px margin ensures it doesn't hide behind the yellow tapes */
+    margin: 110px 10px; 
+    animation: fileOpen 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    backdrop-filter: blur(25px);
+}
+/* On mobile, align to top so the header isn't hidden */
+@media (max-height: 800px) {
+    body { align-items: flex-start; }
+}
+
+
+
+        /* --- BIOLOGICAL BLOOD BACKGROUND --- */
+        #fluid-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            /* High contrast + blur makes the circles blend like liquid drops */
+            filter: blur(8px) contrast(200%); 
+            opacity: 0.55;
+            background: var(--bg);
+        }
+
+        .overlay-grid {
+            position: fixed; inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 0, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Organic Grain Texture Overlay */
+        .overlay-grid::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+            opacity: 0.12;
+            z-index: 3;
+        }
+
+        /* --- GLASSMORPHISM DOSSIER CARD --- */
+        .dossier-card {
+            width: 90%; 
+            max-width: 900px;
+            z-index: 10;
+            background: rgba(13, 10, 10, 0.25); 
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 50px;
+            position: relative;
+            backdrop-filter: blur(25px) saturate(140%);
+            -webkit-backdrop-filter: blur(25px) saturate(140%);
+            animation: fileOpen 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.6);
+            margin-top: 90px;
+        }
+
+        @keyframes fileOpen {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- PHYSICAL FOLDED TAPE --- */
+   .tape {
+    position: absolute; 
+    background: #f1c40f; 
+    /* Shadow gradient on the LEFT (the fold edge) */
+    background-image: 
+        linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 20%),
+        radial-gradient(circle at 15% 30%, #4a0000 3px, transparent 10px),
+        radial-gradient(circle at 65% 55%, rgba(42, 0, 0, 0.8) 5px, transparent 15px);
+    color: black;
+    padding: 5px 25px; 
+    font-weight: 900; 
+    font-size: 0.7rem;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5); 
+    z-index: 20;
+    /* This creates the 'taper' where it wraps around the corner */
+    clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 12% 100%, 0% 50%);
+}
+
+/* Positioned so the 0% point of the polygon hangs off the card */
+.t-1 { 
+    top: 30px; 
+    left: -28px; 
+    transform: rotate(-12deg); 
+}
+
+.t-2 { 
+    bottom: 30px; 
+    right: -28px; 
+    /* ScaleX(-1) ensures the fold always points toward the outside edge */
+    transform: rotate(-10deg) scaleX(-1); 
+}
+
+    .dossier-grid { 
+    display: grid; 
+    /* This forces the 3-column row on desktop */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 30px; 
+    margin-top: 40px; 
+}
+.dossier-grid > div { flex: 1 1 200px; }
+/* Ensure images inside the grid don't overflow */
+ .intel-label { display: block; font-family: 'VT323'; color: var(--gold); font-size: 0.8rem; margin-bottom: 12px; border-bottom: 1px solid rgba(191,161,0,0.3); }
+
+    .polaroid { background: #eee; padding: 8px 8px 25px; transform: rotate(-2deg); width: fit-content; box-shadow: 5px 5px 15px rgba(0,0,0,0.4); cursor: pointer; transition: 0.3s; }
+    .polaroid:hover { transform: rotate(0deg) scale(1.05); }
+    .glitch-img { width: 170px; height: 120px; background: #111; display: flex; align-items: center; justify-content: center; }
+
+
+        
+        .redacted { 
+            background: #1a1a1a; color: #1a1a1a; 
+            padding: 0 4px; transition: 0.3s; cursor: help; 
+        }
+        .redacted:hover { background: transparent; color: var(--gold); }
+
+.stamp-btn { 
+    margin-top: 40px; 
+    width: 100%; 
+    /* Deep Maroon Default */
+    background: #660000; 
+    color: #000; 
+    border: 2px solid #4a0000; 
+    padding: 15px; 
+    font-family: 'Bebas Neue'; 
+    font-size: 1.5rem; 
+    
+    letter-spacing: 3px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(102, 0, 0, 0.4);
+    
+    /* Smooth Transition */
+    transition: all 0.3s ease-in-out;
+}
+
+.stamp-btn:hover { 
+    /* Shifts to a slightly more "fresh blood" red on hover */
+    background: #990000; 
+    color: #000; 
+    /* Intensifies the glow */
+    box-shadow: 0 0 35px rgba(255, 0, 0, 0.5);
+    /* Slight lift to make it feel interactive */
+    transform: translateY(-2px);
+}
+
+.stamp-btn:active {
+    /* "Press" effect for feedback */
+    transform: translateY(1px);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}    .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000; align-items: center; justify-content: center;
+        }
+
+        .modal-content {
+            position: relative; width: 85%; max-width: 500px;
+            border: 2px solid var(--red);
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.4);
+            animation: posterPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .brochure-img { width: 100%; height: auto; display: block; }
+
+        .close-btn {
+            position: absolute; top: -50px; right: 0;
+            color: var(--red); font-size: 3rem;
+            cursor: pointer; font-family: 'Bebas Neue';
+        }
+
+        @keyframes posterPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fluid-bg"></canvas>
+    <div class="overlay-grid"></div>
+
+    <div class="dossier-card">
+        <div class="tape t-1">EVIDENCE SEALED</div>
+        <div class="tape t-2">EVIDENCE SEALED</div>
+
+        <header>
+            <h2 style="font-family:'Bebas Neue'; font-size:3.5rem; margin:0; letter-spacing: 2px;">OPERATION: CODE BREAKER</h2>
+            <p style="font-family:'VT323'; color:var(--red); font-size:1rem;">FILE_STATUS: UNLOCKED </p>
+        </header>
+
+        <div class="dossier-grid">
+            <div>
+                <span class="intel-label">VISUAL_INTEL</span>
+                <div class="polaroid" id="intelTrigger">
+                    <div class="glitch-img"><span style="color:#555; font-size:0.6rem;">SURVEILLANCE_01</span></div>
+                   <p style="font-family: 'Special Elite', 'Courier Prime', monospace; color: #000; font-size: 1.2rem; margin: 20px 0 0; margin-left: 28px; font-weight: 0; letter-spacing: 3.9px; text-transform: uppercase;">
+  BROCHURE
+</p>
+                </div>
+            </div>
+
+            
+
+            <div>
+                <span class="intel-label">OBJECTIVES_&_RULES</span>
+                <ul style="font-size:0.85rem; padding-left:15px; line-height:2.2;">
+                    <li>Bypass <span class="redacted">ENCRYPTED FIREWALLS</span>.</li>
+                    <li>External storage is <span class="redacted">STRICTLY PROHIBITED</span>.</li>
+                    <li>Bounty Awarded: <span style="color:var(--gold); font-weight:bold;">₹5,000</span>.</li>
+                </ul>
+            </div>
+
+            <div>
+                <span class="intel-label">COMMAND_COORDINATORS</span>
+                <div style="font-size: 0.8rem; line-height: 1.8;">
+                    AGENT_HARESH<br>
+                    <span style="color:var(--red);">+91 8147033685</span>
+                </div>
+            </div>
+        </div>
+
+   <a href="../Reg.html" style="text-decoration: none;">
+    <button id="regTrigger" class="stamp-btn">AUTHORIZE PARTICIPATION</button>
+</a>
+    </div>
+
+    <div id="brochureModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <img src="YOUR_BROCHURE_IMAGE.jpg" alt="Brochure Poster" class="brochure-img">
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('regTrigger').onclick = function() {
+    window.location.href = '../Reg.html';
+};
+</script>
+
+    <script>
+        const canvas = document.getElementById('fluid-bg');
+        const ctx = canvas.getContext('2d');
+        let blobs = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Blob {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 500 + 300;
+                // Slower, more viscous biological movement
+                this.vx = (Math.random() - 0.5) * 0.7;
+                this.vy = (Math.random() - 0.5) * 0.7;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < -200 || this.x > canvas.width + 200) this.vx *= -1;
+                if (this.y < -200 || this.y > canvas.height + 200) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                let grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+                /* Deep Maroon palette for realistic blood */
+                grad.addColorStop(0, 'rgba(120, 0, 0, 0.7)'); 
+                grad.addColorStop(0.5, 'rgba(60, 0, 0, 0.3)');
+                grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad;
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            resize();
+            for (let i = 0; i < 7; i++) blobs.push(new Blob());
+            animate();
+        }
+
+        function animate() {
+            /* Short trail effect helps the metaball stickiness */
+            ctx.fillStyle = 'rgba(5, 0, 0, 0.08)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            blobs.forEach(b => { b.update(); b.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        /* MODAL LOGIC TRIGGERED BY POLAROID */
+        const modal = document.getElementById('brochureModal');
+        const intelBtn = document.getElementById('intelTrigger');
+        const closeBtn = document.querySelector('.close-btn');
+
+        intelBtn.onclick = () => { modal.style.display = 'flex'; }
+        closeBtn.onclick = () => { modal.style.display = 'none'; }
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; }
+
+        window.addEventListener('resize', resize);
+        init();
+    </script>
+</body>
+</html>
