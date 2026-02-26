@@ -363,42 +363,36 @@
         event: document.getElementById('agent_event').value
       };
 
-      try {
-        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-          method: 'POST',
-          headers: {
-            'accept': 'application/json',
-            'api-key': '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', // Updated to API v3 Key
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            sender: { name: "INCOGNITO HQ", email: 'hareshhare685@gmail.com' }, // Verified Sender
-            to: [{ email: data.email, name: data.name }],
-            subject: `------------`,
-            htmlContent: `
-              <div style="background:#0a0a08; color:#ff0000; font-family:monospace; padding:30px; border:3px solid #ff0000;">
-                <h1 style="text-align:center;">Incognito-26</h1>
-                <p>AGENT: <strong>${data.name}</strong></p>
-                <div style="border:1px dashed #ff0000; padding:15px; margin:20px 0;">
-                  <p>ASSIGNED: ${data.event}</p>
-                  <p>COLLEGE: ${data.college}</p>
-                  <p>CONTACT: ${data.phone}</p>
-                </div>
-                <p style="color:#bfa100;">Identified Agent!</p>
-              </div>`
-          })
-        });
+ // Replace the entire try { ... } block in your Reg.html
+try {
+  const response = await fetch('/.netlify/functions/send-email', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: data.name,
+      email: data.email,
+      htmlContent: `
+        <div style="background:#0a0a08; color:#ff0000; font-family:monospace; padding:30px; border:3px solid #ff0000;">
+          <h1 style="text-align:center; letter-spacing:5px;">INCOGNITO-2026</h1>
+          <p>IDENTIFIED AGENT: <strong>${data.name}</strong></p>
+          <div style="border:1px dashed #ff0000; padding:15px; margin:20px 0;">
+            <p>OPERATIONAL SECTOR: ${data.event}</p>
+            <p>ORIGIN HUB: ${data.college}</p>
+            <p>SECURE COMMS: ${data.phone}</p>
+          </div>
+          <p style="color:#bfa100; font-size:10px;">Identified Agent!</p>
+        </div>`
+    })
+  });
 
-        if (response.ok) {
-          document.getElementById('successModal').style.display = 'flex';
-          this.reset();
-        } else {
-          const errorData = await response.json();
-          alert("TERMINAL ERROR: " + errorData.message);
-        }
-      } catch (err) {
-        alert("CRITICAL ERROR: Connection to HQ lost.");
-      } finally {
+  if (response.ok) {
+    document.getElementById('successModal').style.display = 'flex';
+    this.reset();
+  } else {
+    alert("TERMINAL ERROR: Dispatch rejected by HQ.");
+  }
+} catch (err) {
+  alert("CRITICAL ERROR: Connection to HQ lost.");
+} finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
       }
