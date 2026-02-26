@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>INCOGNITO 2026 — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --noir:#0a0a08; --deep:#0d0d0a; --smoke:#141210; --ash:#1e1c19;
+  --dim:#2e2c28; --dimmer:#3a3830; --aged:#7a7060; --paper:#c9b99a;
+  --cream:#f0e6cc; --red:#c0392b; --blood:#8b0000; --gold:#d4af37;
+  --gold-d:#8a6f1e; --green:#00ff41; --tape:#ffd700;
+  --font-d:'Bebas Neue',sans-serif; --font-r:'VT323',monospace;
+  --font-m:'Courier Prime',monospace; --font-t:'Special Elite',cursive;
+  --sw:252px; --hh:54px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--noir);color:var(--cream);font-family:var(--font-m);min-height:100vh;overflow-x:hidden;cursor:crosshair;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.04;pointer-events:none;z-index:9000;mix-blend-mode:overlay;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:8999;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:var(--noir);}
+::-webkit-scrollbar-thumb{background:var(--red);}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sw);background:var(--smoke);border-right:1px solid var(--ash);
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;
+  z-index:300;transition:transform .3s;overflow-y:auto;
+}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--ash);}
+.sb-logo{font-family:var(--font-d);font-size:1.6rem;letter-spacing:.06em;color:var(--cream);line-height:1;display:block;text-decoration:none;}
+.sb-logo em{color:var(--red);font-style:normal;}
+.sb-tagline{font-size:.5rem;letter-spacing:.18em;color:var(--aged);margin-top:3px;display:block;}
+.sb-badge{display:inline-flex;align-items:center;gap:5px;margin-top:9px;background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.28);padding:3px 9px;font-size:.5rem;letter-spacing:.15em;color:var(--red);}
+.sb-badge::before{content:'';width:5px;height:5px;background:var(--red);border-radius:50%;animation:blink 1.1s step-end infinite;}
+
+.sb-nav{flex:1;padding:14px 0;}
+.sb-section{margin-bottom:22px;}
+.sb-section-lbl{font-size:.48rem;letter-spacing:.25em;color:var(--dimmer);padding:0 16px 7px;display:block;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;font-size:.7rem;letter-spacing:.07em;color:var(--aged);text-decoration:none;cursor:crosshair;border-left:2px solid transparent;transition:all .15s;}
+.nav-item:hover{color:var(--cream);background:rgba(255,255,255,.025);}
+.nav-item.active{color:var(--cream);background:var(--ash);border-left-color:var(--red);}
+.nav-item .ni{font-family:var(--font-r);font-size:1rem;width:16px;flex-shrink:0;}
+.nav-item .nb{margin-left:auto;background:var(--red);color:var(--noir);font-size:.48rem;font-weight:700;padding:1px 5px;letter-spacing:.04em;}
+.nav-item .nb-gold{margin-left:auto;background:var(--gold);color:var(--noir);font-size:.48rem;font-weight:700;padding:1px 5px;letter-spacing:.04em;}
+
+.sb-footer{padding:12px 16px;border-top:1px solid var(--ash);}
+.sb-admin{display:flex;align-items:center;gap:9px;}
+.sb-avatar{width:28px;height:28px;background:var(--ash);border:1px solid var(--dimmer);display:flex;align-items:center;justify-content:center;font-family:var(--font-r);font-size:.9rem;color:var(--red);flex-shrink:0;}
+.sb-admin-name{font-size:.62rem;color:var(--cream);}
+.sb-admin-role{font-size:.48rem;letter-spacing:.12em;color:var(--red);}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{height:var(--hh);background:var(--smoke);border-bottom:1px solid var(--ash);display:flex;align-items:center;gap:12px;padding:0 22px;position:sticky;top:0;z-index:200;}
+.topbar-title{font-family:var(--font-d);font-size:1.15rem;letter-spacing:.1em;color:var(--cream);flex:1;}
+.topbar-title em{color:var(--red);font-style:normal;}
+.topbar-clock{font-family:var(--font-r);font-size:1.3rem;color:var(--gold);letter-spacing:.04em;}
+.topbar-date{font-size:.52rem;letter-spacing:.14em;color:var(--aged);}
+.t-btn{font-family:var(--font-m);font-size:.58rem;letter-spacing:.12em;color:var(--aged);background:none;border:1px solid var(--dimmer);padding:5px 12px;cursor:crosshair;transition:all .2s;}
+.t-btn:hover{border-color:var(--red);color:var(--cream);}
+.t-btn.red{border-color:var(--red);color:var(--red);}
+.t-btn.red:hover{background:var(--red);color:var(--noir);}
+.mob-toggle{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:crosshair;padding:4px;}
+.mob-toggle span{display:block;width:20px;height:2px;background:var(--cream);}
+
+/* tape divider */
+.tape-div{height:5px;background:repeating-linear-gradient(-45deg,var(--tape),var(--tape) 7px,var(--smoke) 7px,var(--smoke) 14px);}
+
+/* ── PAGE BODY ── */
+.pb{padding:20px;flex:1;display:flex;flex-direction:column;gap:20px;}
+
+/* ── SECTION LABEL ── */
+.slbl{display:flex;align-items:center;gap:10px;font-size:.52rem;letter-spacing:.2em;color:var(--aged);}
+.slbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--ash),transparent);}
+
+/* ── ALERT ── */
+.alert{background:repeating-linear-gradient(-45deg,rgba(192,57,43,.07),rgba(192,57,43,.07) 7px,transparent 7px,transparent 14px);border:1px solid rgba(192,57,43,.28);border-left:3px solid var(--red);padding:9px 14px;display:flex;align-items:center;gap:10px;animation:fadeUp .4s ease both;}
+.alert-icon{font-family:var(--font-r);font-size:1.1rem;color:var(--red);flex-shrink:0;}
+.alert-txt{font-size:.68rem;letter-spacing:.05em;color:var(--paper);}
+.alert-txt strong{color:var(--red);}
+.alert-x{margin-left:auto;background:none;border:none;color:var(--aged);cursor:crosshair;font-size:.8rem;padding:0 4px;}
+.alert-x:hover{color:var(--red);}
+
+/* ── STAT CARDS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.sc{background:var(--smoke);border:1px solid var(--ash);padding:18px;position:relative;overflow:hidden;animation:fadeUp .5s ease both;}
+.sc::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.sc.c-red::before{background:var(--red);}
+.sc.c-gold::before{background:var(--gold);}
+.sc.c-green::before{background:var(--green);}
+.sc.c-paper::before{background:var(--paper);}
+.sc-lbl{font-size:.52rem;letter-spacing:.18em;color:var(--aged);margin-bottom:7px;}
+.sc-val{font-family:var(--font-r);font-size:2.8rem;line-height:1;color:var(--cream);}
+.sc.c-gold .sc-val{color:var(--gold);}
+.sc.c-green .sc-val{color:var(--green);}
+.sc-delta{margin-top:6px;font-size:.55rem;letter-spacing:.08em;color:var(--aged);}
+.sc-delta.up{color:var(--green);}
+.sc-bg{position:absolute;bottom:-8px;right:6px;font-family:var(--font-r);font-size:5rem;color:rgba(255,255,255,.018);line-height:1;user-select:none;pointer-events:none;}
+
+/* ── CHARTS ROW ── */
+.charts-row{display:grid;grid-template-columns:1fr 360px;gap:14px;}
+.cc{background:var(--smoke);border:1px solid var(--ash);padding:18px;animation:fadeUp .5s ease .1s both;}
+.cc-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
+.cc-title{font-family:var(--font-d);font-size:1rem;letter-spacing:.08em;color:var(--cream);line-height:1;}
+.cc-sub{font-size:.52rem;letter-spacing:.1em;color:var(--aged);margin-top:3px;}
+.cc-tag{font-size:.48rem;letter-spacing:.15em;color:var(--red);border:1px solid rgba(192,57,43,.3);padding:2px 7px;align-self:flex-start;}
+.chart-wrap{position:relative;height:200px;}
+
+/* capacity bars */
+.cap-list{display:flex;flex-direction:column;gap:12px;}
+.cap-item{}
+.cap-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.cap-name{font-size:.62rem;letter-spacing:.05em;color:var(--paper);}
+.cap-cat{font-size:.48rem;letter-spacing:.1em;color:var(--aged);margin-left:6px;}
+.cap-nums{font-family:var(--font-r);font-size:.9rem;color:var(--aged);}
+.cap-track{height:3px;background:var(--ash);}
+.cap-fill{height:100%;transition:width 1.1s ease;}
+
+/* ── LOWER ROW ── */
+.lower{display:grid;grid-template-columns:1fr 1fr 288px;gap:14px;}
+
+/* ── REGISTRATIONS TABLE ── */
+.tcard{background:var(--smoke);border:1px solid var(--ash);animation:fadeUp .5s ease .15s both;}
+.tcard-hdr{padding:14px 18px;border-bottom:1px solid var(--ash);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.tcard-title{font-family:var(--font-d);font-size:.95rem;letter-spacing:.08em;color:var(--cream);flex:1;}
+.search-inp{background:var(--ash);border:1px solid var(--dimmer);color:var(--cream);font-family:var(--font-m);font-size:.62rem;letter-spacing:.04em;padding:5px 10px;outline:none;width:150px;transition:border-color .2s;}
+.search-inp:focus{border-color:var(--red);}
+.search-inp::placeholder{color:var(--dimmer);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:.48rem;letter-spacing:.18em;color:var(--aged);text-align:left;padding:9px 18px;border-bottom:1px solid var(--ash);background:var(--deep);font-weight:400;}
+td{padding:9px 18px;font-size:.62rem;letter-spacing:.04em;color:var(--paper);border-bottom:1px solid rgba(255,255,255,.025);}
+tr:hover td{background:rgba(255,255,255,.018);}
+.pill{display:inline-block;font-size:.48rem;letter-spacing:.1em;padding:2px 7px;font-weight:700;}
+.pill-paid{background:rgba(0,255,65,.1);color:var(--green);border:1px solid rgba(0,255,65,.3);}
+.pill-pend{background:rgba(212,175,55,.1);color:var(--gold);border:1px solid rgba(212,175,55,.3);}
+.pill-cash{background:rgba(192,57,43,.12);color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.pay-btn{background:none;border:1px solid var(--dimmer);color:var(--aged);font-family:var(--font-m);font-size:.52rem;letter-spacing:.08em;padding:2px 8px;cursor:crosshair;transition:all .18s;}
+.pay-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* ── LEDGER ── */
+.ledger{background:var(--smoke);border:1px solid var(--ash);animation:fadeUp .5s ease .15s both;}
+.ledger-hdr{padding:14px 18px;border-bottom:1px solid var(--ash);display:flex;align-items:center;justify-content:space-between;}
+.ledger-title{font-family:var(--font-d);font-size:.95rem;letter-spacing:.08em;color:var(--cream);}
+.ledger-cnt{font-family:var(--font-r);font-size:1rem;color:var(--gold);}
+.ledger-list{max-height:260px;overflow-y:auto;}
+.le{display:flex;gap:10px;align-items:flex-start;padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.025);transition:background .15s;}
+.le:hover{background:rgba(255,255,255,.02);}
+.le-dot{width:7px;height:7px;flex-shrink:0;margin-top:4px;}
+.le-dot.d-pay{background:var(--green);}
+.le-dot.d-reg{background:var(--gold);}
+.le-dot.d-ev{background:var(--paper);}
+.le-dot.d-att{background:var(--red);}
+.le-body{flex:1;min-width:0;}
+.le-act{font-size:.62rem;letter-spacing:.04em;color:var(--cream);line-height:1.4;}
+.le-act strong{color:var(--gold);}
+.le-meta{font-size:.52rem;letter-spacing:.07em;color:var(--aged);margin-top:2px;}
+.le-time{font-family:var(--font-r);font-size:.8rem;color:var(--dimmer);flex-shrink:0;}
+
+/* ── QUICK ACTIONS ── */
+.qac{background:var(--smoke);border:1px solid var(--ash);animation:fadeUp .5s ease .2s both;}
+.qac-hdr{padding:14px 18px;border-bottom:1px solid var(--ash);}
+.qac-title{font-family:var(--font-d);font-size:.95rem;letter-spacing:.08em;color:var(--cream);}
+.qac-body{padding:10px;}
+.qa{display:flex;align-items:center;gap:9px;padding:9px 10px;background:var(--ash);border:1px solid var(--dimmer);color:var(--paper);font-family:var(--font-m);font-size:.62rem;letter-spacing:.09em;cursor:crosshair;text-align:left;transition:all .18s;width:100%;margin-bottom:7px;}
+.qa:hover{border-color:var(--red);color:var(--cream);background:var(--dimmer);}
+.qa.primary{background:var(--red);border-color:var(--red);color:var(--noir);}
+.qa.primary:hover{background:var(--blood);}
+.qa-icon{font-family:var(--font-r);font-size:1.1rem;flex-shrink:0;}
+.qa-txt{flex:1;}
+.qa-arr{color:var(--dimmer);font-size:.65rem;}
+.qa:hover .qa-arr{color:var(--red);}
+.qa-div{height:1px;background:var(--ash);margin:6px 0;}
+
+/* system status */
+.sys{padding:10px;border-top:1px solid var(--ash);}
+.sys-lbl{font-size:.48rem;letter-spacing:.2em;color:var(--aged);margin-bottom:9px;}
+.sys-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.sys-name{font-size:.56rem;letter-spacing:.06em;color:var(--aged);display:flex;align-items:center;gap:6px;}
+.sdot{width:5px;height:5px;border-radius:50%;}
+.sdot-ok{background:var(--green);box-shadow:0 0 5px var(--green);animation:pg 2s infinite;}
+.sdot-warn{background:var(--gold);}
+.sys-val{font-family:var(--font-r);font-size:.85rem;}
+.sys-val.ok{color:var(--green);}
+.sys-val.warn{color:var(--gold);}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal{background:var(--smoke);border:1px solid var(--ash);border-top:3px solid var(--red);width:100%;max-width:480px;margin:14px;transform:scale(.95) translateY(8px);transition:transform .22s;}
+.modal-ov.open .modal{transform:scale(1) translateY(0);}
+.mhdr{padding:14px 18px;border-bottom:1px solid var(--ash);display:flex;align-items:center;justify-content:space-between;}
+.mtitle{font-family:var(--font-d);font-size:1.1rem;letter-spacing:.08em;color:var(--cream);}
+.mclose{background:none;border:none;color:var(--aged);cursor:crosshair;font-size:1rem;padding:3px 7px;}
+.mclose:hover{color:var(--red);}
+.mbody{padding:18px;display:flex;flex-direction:column;gap:13px;}
+.mwarn{font-size:.6rem;letter-spacing:.1em;color:var(--red);padding:7px 10px;background:rgba(192,57,43,.09);border-left:2px solid var(--red);}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fl{font-size:.52rem;letter-spacing:.18em;color:var(--red);}
+.fi{width:100%;background:var(--ash);border:1px solid var(--dimmer);color:var(--cream);font-family:var(--font-m);font-size:.75rem;padding:8px 11px;outline:none;transition:border-color .2s;}
+.fi:focus{border-color:var(--red);}
+.fi::placeholder{color:var(--dimmer);}
+select.fi{cursor:crosshair;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;}
+.mfoot{padding:13px 18px;border-top:1px solid var(--ash);display:flex;gap:9px;justify-content:flex-end;}
+.btn-cancel{font-family:var(--font-m);font-size:.62rem;letter-spacing:.1em;color:var(--aged);background:none;border:1px solid var(--dimmer);padding:7px 16px;cursor:crosshair;transition:all .2s;}
+.btn-cancel:hover{border-color:var(--red);color:var(--cream);}
+.btn-ok{font-family:var(--font-m);font-size:.62rem;letter-spacing:.1em;color:var(--noir);background:var(--red);border:1px solid var(--red);padding:7px 16px;cursor:crosshair;transition:background .2s;}
+.btn-ok:hover{background:var(--blood);}
+.btn-ok.green{background:var(--green);border-color:var(--green);}
+.btn-ok.green:hover{background:#00c832;}
+
+/* ── PAYMENT MODAL ── */
+.pay-confirm-box{background:var(--ash);border:1px solid var(--dimmer);padding:14px;display:flex;flex-direction:column;gap:8px;}
+.pay-row{display:flex;justify-content:space-between;align-items:baseline;}
+.pay-key{font-size:.6rem;letter-spacing:.1em;color:var(--aged);}
+.pay-val{font-size:.72rem;letter-spacing:.05em;color:var(--cream);}
+.pay-amount{font-family:var(--font-r);font-size:1.8rem;color:var(--green);}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:600;display:flex;flex-direction:column;gap:7px;pointer-events:none;}
+.toast{background:var(--smoke);border:1px solid var(--ash);border-left:3px solid var(--green);padding:9px 14px;font-size:.62rem;letter-spacing:.05em;color:var(--cream);min-width:220px;animation:fadeUp .3s ease both;pointer-events:all;}
+.toast.err{border-left-color:var(--red);}
+.toast.warn{border-left-color:var(--gold);}
+
+/* ── EVENTS GRID VIEW ── */
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.ev-card{background:var(--smoke);border:1px solid var(--ash);padding:18px;position:relative;overflow:hidden;transition:border-color .2s;}
+.ev-card:hover{border-color:var(--dimmer);}
+.ev-card-cat{font-size:.5rem;letter-spacing:.18em;color:var(--red);margin-bottom:8px;}
+.ev-card-name{font-family:var(--font-d);font-size:1.4rem;letter-spacing:.06em;color:var(--cream);line-height:1;margin-bottom:10px;}
+.ev-card-stats{display:flex;gap:14px;}
+.ev-stat{display:flex;flex-direction:column;gap:2px;}
+.ev-stat-num{font-family:var(--font-r);font-size:1.4rem;color:var(--gold);line-height:1;}
+.ev-stat-lbl{font-size:.48rem;letter-spacing:.14em;color:var(--aged);}
+.ev-card-bar{margin-top:12px;height:2px;background:var(--ash);}
+.ev-card-fill{height:100%;background:var(--red);transition:width 1s ease;}
+.ev-card-num{position:absolute;bottom:-6px;right:10px;font-family:var(--font-r);font-size:4.5rem;color:rgba(255,255,255,.02);line-height:1;user-select:none;pointer-events:none;}
+
+/* ── VIEWS ── */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes flicker{0%,95%,100%{opacity:1}96%{opacity:.4}97%{opacity:1}98%{opacity:.15}}
+@keyframes pg{0%,100%{box-shadow:0 0 4px var(--green)}50%{box-shadow:0 0 10px var(--green)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1120px){.lower{grid-template-columns:1fr 1fr}.qac{grid-column:1/-1}.qac-body{display:flex;flex-wrap:wrap;gap:7px;padding:10px}.qa{width:calc(50% - 4px);margin-bottom:0}}
+@media(max-width:900px){.charts-row{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:none}.main{margin-left:0}.mob-toggle{display:flex}.pb{padding:14px}.stats{grid-template-columns:1fr 1fr}.lower{grid-template-columns:1fr}}
+@media(max-width:480px){.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <a href="#" class="sb-logo"><em>INC</em>OGNITO <span style="font-family:var(--font-r);font-size:1.1rem;color:var(--gold)">2026</span></a>
+    <span class="sb-tagline">SESHADRIPURAM COLLEGE · ADMIN OPS</span>
+    <div class="sb-badge">SHARED ADMIN ACCESS</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">
+      <span class="sb-section-lbl">// COMMAND</span>
+      <a href="#" class="nav-item active" onclick="switchView('dashboard',this)"><span class="ni">▣</span>Dashboard</a>
+      <a href="#" class="nav-item" onclick="switchView('events',this)"><span class="ni">◆</span>Events<span class="nb-gold">8</span></a>
+      <a href="#" class="nav-item" onclick="switchView('registrations',this)"><span class="ni">◇</span>Registrations<span class="nb" id="sb-reg-cnt">0</span></a>
+    </div>
+    <div class="sb-section">
+      <span class="sb-section-lbl">// OPERATIONS</span>
+      <a href="#" class="nav-item" onclick="switchView('payments',this)"><span class="ni">₹</span>Manual Payments<span class="nb" id="sb-pay-cnt">0</span></a>
+      <a href="#" class="nav-item" onclick="switchView('checkin',this)"><span class="ni">▲</span>QR Check-In</a>
+    </div>
+    <div class="sb-section">
+      <span class="sb-section-lbl">// RECORDS</span>
+      <a href="#" class="nav-item" onclick="switchView('ledger',this)"><span class="ni">◎</span>Audit Ledger</a>
+    </div>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="sb-admin">
+      <div class="sb-avatar">AD</div>
+      <div>
+        <div class="sb-admin-name">Admin Team</div>
+        <div class="sb-admin-role">// SHARED CREDENTIALS</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <header class="topbar">
+    <button class="mob-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-title"><em>ADMIN</em> COMMAND CENTER</div>
+    <div class="topbar-date" id="t-date">MAR 24 2026</div>
+    <div class="topbar-clock" id="t-clock">00:00:00</div>
+    <button class="t-btn" onclick="openModal('newReg')">+ REGISTER</button>
+    <button class="t-btn red" onclick="window.location.href='admin_login.html'">LOGOUT</button>
+  </header>
+  <div class="tape-div"></div>
+
+  <!-- ══ DASHBOARD VIEW ══ -->
+  <div class="view active pb" id="view-dashboard">
+
+    <div class="alert" id="top-alert">
+      <span class="alert-icon">!</span>
+      <span class="alert-txt"><strong>FEST DAY:</strong> Incognito 2026 is <strong id="days-left">—</strong>. All payments are <strong>cash-only</strong> — mark confirmed after collecting in person.</span>
+      <button class="alert-x" onclick="this.parentElement.style.display='none'">✕</button>
+    </div>
+
+    <div class="slbl">INTEL OVERVIEW</div>
+
+    <div class="stats">
+      <div class="sc c-red">
+        <div class="sc-lbl">TOTAL REGISTRATIONS</div>
+        <div class="sc-val" id="s-reg">0</div>
+        <div class="sc-delta up" id="s-reg-d">↑ loading...</div>
+        <div class="sc-bg">R</div>
+      </div>
+      <div class="sc c-gold">
+        <div class="sc-lbl">CASH COLLECTED (₹)</div>
+        <div class="sc-val" id="s-rev">0</div>
+        <div class="sc-delta up">↑ manual payments</div>
+        <div class="sc-bg">₹</div>
+      </div>
+      <div class="sc c-green">
+        <div class="sc-lbl">PAYMENT PENDING</div>
+        <div class="sc-val" id="s-pend">0</div>
+        <div class="sc-delta" style="color:var(--gold)">⚠ collect in person</div>
+        <div class="sc-bg">P</div>
+      </div>
+      <div class="sc c-paper">
+        <div class="sc-lbl">CHECKED IN</div>
+        <div class="sc-val" id="s-att">0</div>
+        <div class="sc-delta">— on fest day</div>
+        <div class="sc-bg">A</div>
+      </div>
+    </div>
+
+    <div class="slbl">SURVEILLANCE ANALYTICS</div>
+
+    <div class="charts-row">
+      <!-- Registrations over days chart -->
+      <div class="cc">
+        <div class="cc-hdr">
+          <div><div class="cc-title">REGISTRATIONS TIMELINE</div><div class="cc-sub">// DAILY SIGN-UP TRACE</div></div>
+          <span class="cc-tag">LIVE</span>
+        </div>
+        <div class="chart-wrap"><canvas id="regChart"></canvas></div>
+      </div>
+
+      <!-- Event capacity -->
+      <div class="cc">
+        <div class="cc-hdr"><div><div class="cc-title">EVENT FILL RATE</div><div class="cc-sub">// CAPACITY PER OPERATION</div></div></div>
+        <div class="cap-list" id="cap-list">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-row" style="grid-template-columns:1fr 1fr;">
+      <div class="cc">
+        <div class="cc-hdr"><div><div class="cc-title">REGISTRATIONS BY EVENT</div><div class="cc-sub">// OPERATION BREAKDOWN</div></div></div>
+        <div class="chart-wrap"><canvas id="catChart"></canvas></div>
+      </div>
+      <div class="cc">
+        <div class="cc-hdr"><div><div class="cc-title">PAYMENT STATUS SPLIT</div><div class="cc-sub">// CASH COLLECTION PROGRESS</div></div></div>
+        <div class="chart-wrap" style="height:200px;display:flex;align-items:center;justify-content:center;">
+          <canvas id="payChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="slbl">FIELD OPERATIONS</div>
+
+    <div class="lower">
+      <!-- Ledger -->
+      <div class="ledger">
+        <div class="ledger-hdr">
+          <div class="ledger-title">AUDIT LEDGER</div>
+          <div class="ledger-cnt" id="led-cnt">0 ENTRIES</div>
+        </div>
+        <div class="ledger-list" id="led-list"></div>
+      </div>
+
+      <!-- Recent Regs -->
+      <div class="tcard">
+        <div class="tcard-hdr">
+          <div class="tcard-title">RECENT AGENTS</div>
+          <input class="search-inp" placeholder="Search name / event…" oninput="filterRegs(this.value)"/>
+        </div>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>#</th><th>AGENT</th><th>EVENT</th><th>FEE</th><th>PAYMENT</th><th>ACTION</th></tr></thead>
+          <tbody id="reg-tbody"></tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="qac">
+        <div class="qac-hdr"><div class="qac-title">QUICK ACTIONS</div></div>
+        <div class="qac-body">
+          <button class="qa primary" onclick="openModal('newReg')"><span class="qa-icon">+</span><span class="qa-txt">NEW REGISTRATION</span></button>
+          <button class="qa" onclick="openModal('markPay')"><span class="qa-icon">₹</span><span class="qa-txt">MARK PAYMENT PAID</span><span class="qa-arr">→</span></button>
+          <button class="qa" onclick="switchView('checkin',null)"><span class="qa-icon">▲</span><span class="qa-txt">QR CHECK-IN SCANNER</span><span class="qa-arr">→</span></button>
+          <div class="qa-div"></div>
+          <button class="qa" onclick="exportCSV()"><span class="qa-icon">↓</span><span class="qa-txt">EXPORT REGISTRATIONS</span><span class="qa-arr">→</span></button>
+          <button class="qa" onclick="toast('Chain verified — all 8 events intact.','ok')"><span class="qa-icon">◎</span><span class="qa-txt">VERIFY HASH CHAIN</span><span class="qa-arr">→</span></button>
+        </div>
+        <div class="sys">
+          <div class="sys-lbl">// SYSTEM STATUS</div>
+          <div class="sys-row"><span class="sys-name"><span class="sdot sdot-ok"></span>DATABASE</span><span class="sys-val ok">ONLINE</span></div>
+          <div class="sys-row"><span class="sys-name"><span class="sdot sdot-ok"></span>SESSION</span><span class="sys-val ok">ACTIVE</span></div>
+          <div class="sys-row"><span class="sys-name"><span class="sdot sdot-warn"></span>PAYMENTS</span><span class="sys-val warn">CASH ONLY</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EVENTS VIEW ══ -->
+  <div class="view pb" id="view-events">
+    <div class="slbl">ALL OPERATIONS — 8 EVENTS</div>
+    <div class="ev-grid" id="ev-grid"></div>
+  </div>
+
+  <!-- ══ REGISTRATIONS VIEW ══ -->
+  <div class="view pb" id="view-registrations">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+      <div class="slbl" style="flex:1;">ALL REGISTRATIONS</div>
+      <input class="search-inp" placeholder="Search…" oninput="filterRegs(this.value)" style="width:200px;"/>
+      <button class="t-btn" onclick="openModal('newReg')">+ ADD</button>
+    </div>
+    <div class="tcard" style="animation:none;">
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>#</th><th>AGENT NAME</th><th>COLLEGE</th><th>EVENT</th><th>TEAM</th><th>FEE (₹)</th><th>PAYMENT</th><th>ACTION</th></tr></thead>
+        <tbody id="all-reg-tbody"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PAYMENTS VIEW ══ -->
+  <div class="view pb" id="view-payments">
+    <div class="slbl">MANUAL CASH PAYMENT TRACKER</div>
+    <div class="alert" style="margin-bottom:16px;">
+      <span class="alert-icon">₹</span>
+      <span class="alert-txt">All payments are collected <strong>in person on fest day</strong>. Students pay at the registration desk. Mark as PAID after receiving cash.</span>
+    </div>
+    <div class="tcard" style="animation:none;">
+      <div class="tcard-hdr">
+        <div class="tcard-title">PENDING CASH COLLECTION</div>
+        <div style="font-family:var(--font-r);font-size:1rem;color:var(--gold)" id="pay-pending-amt">₹0 pending</div>
+      </div>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>#</th><th>AGENT</th><th>EVENT</th><th>FEE (₹)</th><th>STATUS</th><th>COLLECTED BY</th><th>ACTION</th></tr></thead>
+        <tbody id="pay-tbody"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CHECK-IN VIEW ══ -->
+  <div class="view pb" id="view-checkin">
+    <div class="slbl">QR CHECK-IN SCANNER</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:760px;">
+      <div class="cc">
+        <div class="cc-hdr"><div><div class="cc-title">SCAN QR CODE</div><div class="cc-sub">// ENTER REG ID MANUALLY OR SCAN</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+          <div class="fg">
+            <div class="fl">REGISTRATION ID</div>
+            <input class="fi" type="text" id="qr-input" placeholder="e.g. INC-042" style="font-size:1.1rem;letter-spacing:.1em;" onkeydown="if(event.key==='Enter')doCheckin()"/>
+          </div>
+          <button class="btn-ok green" onclick="doCheckin()" style="width:100%;padding:10px;font-family:var(--font-m);font-size:.72rem;letter-spacing:.14em;">✓ MARK CHECKED IN</button>
+        </div>
+      </div>
+      <div class="cc">
+        <div class="cc-hdr"><div><div class="cc-title">CHECK-IN FEED</div><div class="cc-sub">// RECENT SCANS</div></div></div>
+        <div id="checkin-feed" style="display:flex;flex-direction:column;gap:7px;max-height:220px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LEDGER VIEW ══ -->
+  <div class="view pb" id="view-ledger">
+    <div class="slbl">FULL AUDIT LEDGER</div>
+    <div class="ledger" style="animation:none;">
+      <div class="ledger-hdr">
+        <div class="ledger-title">ALL ENTRIES</div>
+        <div class="ledger-cnt" id="full-led-cnt">0</div>
+      </div>
+      <div id="full-led-list" style="max-height:600px;overflow-y:auto;"></div>
+    </div>
+  </div>
+
+</div><!-- /.main -->
+</div><!-- /.layout -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- NEW REGISTRATION -->
+<div class="modal-ov" id="modal-newReg" onclick="if(event.target===this)closeModal('newReg')">
+  <div class="modal">
+    <div class="mhdr"><div class="mtitle">// NEW REGISTRATION</div><button class="mclose" onclick="closeModal('newReg')">✕</button></div>
+    <div class="mbody">
+      <div class="mwarn">Cash payment collected at desk. Mark as PAID after receiving.</div>
+      <div class="fg2">
+        <div class="fg"><div class="fl">FULL NAME</div><input class="fi" id="nr-name" placeholder="Agent Name"/></div>
+        <div class="fg"><div class="fl">COLLEGE</div><input class="fi" id="nr-college" placeholder="College Name"/></div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><div class="fl">PHONE</div><input class="fi" id="nr-phone" placeholder="9876543210" type="tel"/></div>
+        <div class="fg"><div class="fl">EVENT</div>
+          <select class="fi" id="nr-event">
+            <option value="">— Select Event —</option>
+            <option value="Coding &amp; Debugging">Coding &amp; Debugging</option>
+            <option value="BGMI">BGMI (Gaming)</option>
+            <option value="Free Fire">Free Fire (Gaming)</option>
+            <option value="Data Treasure Hunt">Data Treasure Hunt</option>
+            <option value="IT Dumbcharades">IT Dumbcharades</option>
+            <option value="Crime Scene">Crime Scene</option>
+            <option value="Cultural Event">Cultural Event</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg2">
+        <div class="fg"><div class="fl">TEAM NAME (if any)</div><input class="fi" id="nr-team" placeholder="Solo if blank"/></div>
+        <div class="fg"><div class="fl">PAYMENT STATUS</div>
+          <select class="fi" id="nr-pay">
+            <option value="pending">Pending (pay at desk)</option>
+            <option value="paid">Paid (cash received)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn-cancel" onclick="closeModal('newReg')">CANCEL</button>
+      <button class="btn-ok" onclick="submitReg()">REGISTER AGENT</button>
+    </div>
+  </div>
+</div>
+
+<!-- MARK PAYMENT -->
+<div class="modal-ov" id="modal-markPay" onclick="if(event.target===this)closeModal('markPay')">
+  <div class="modal">
+    <div class="mhdr"><div class="mtitle">// MARK CASH PAYMENT</div><button class="mclose" onclick="closeModal('markPay')">✕</button></div>
+    <div class="mbody">
+      <div class="mwarn">Confirm you have physically received the cash before marking as paid.</div>
+      <div class="fg"><div class="fl">REGISTRATION ID</div>
+        <input class="fi" id="mp-id" placeholder="e.g. INC-042" oninput="lookupReg(this.value)"/>
+      </div>
+      <div class="pay-confirm-box" id="pay-confirm-box" style="display:none;">
+        <div class="pay-row"><span class="pay-key">AGENT</span><span class="pay-val" id="pc-name">—</span></div>
+        <div class="pay-row"><span class="pay-key">EVENT</span><span class="pay-val" id="pc-event">—</span></div>
+        <div class="pay-row"><span class="pay-key">TEAM</span><span class="pay-val" id="pc-team">—</span></div>
+        <div class="pay-row"><span class="pay-key">AMOUNT DUE</span><span class="pay-amount" id="pc-amt">₹0</span></div>
+      </div>
+      <div class="fg"><div class="fl">COLLECTED BY (YOUR NAME)</div><input class="fi" id="mp-by" placeholder="Your name"/></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn-cancel" onclick="closeModal('markPay')">CANCEL</button>
+      <button class="btn-ok green" onclick="confirmPayment()">✓ CONFIRM CASH RECEIVED</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+'use strict';
+
+// ══ DATA ══
+const EVENTS = [
+  {id:'ev1', name:'Coding & Debugging', cat:'TECHNICAL',  fee:100, max:60,  icon:'⌨'},
+  {id:'ev2', name:'BGMI',               cat:'GAMING',     fee:50,  max:40,  icon:'🎮'},
+  {id:'ev3', name:'Free Fire',          cat:'GAMING',     fee:50,  max:40,  icon:'🔥'},
+  {id:'ev4', name:'Data Treasure Hunt', cat:'TECHNICAL',  fee:100, max:50,  icon:'🔍'},
+  {id:'ev5', name:'IT Dumbcharades',    cat:'FUN',        fee:80,  max:80,  icon:'🎭'},
+  {id:'ev6', name:'Crime Scene',        cat:'MYSTERY',    fee:100, max:50,  icon:'🔎'},
+  {id:'ev7', name:'Cultural Event',     cat:'CULTURAL',   fee:80,  max:100, icon:'🎨'},
+];
+
+// Sample registrations - this would come from backend in production
+let REGS = [
+  {id:'INC-001',name:'Arjun Mehta',    college:'Seshadripuram',phone:'9876543210',event:'Coding & Debugging',team:'Solo',fee:100,pay:'paid',  by:'Riya',at:'10:24',att:false},
+  {id:'INC-002',name:'Priya Rao',      college:'Christ',       phone:'9876543211',event:'Crime Scene',        team:'Team Alpha',fee:100,pay:'paid',  by:'Dev',at:'10:31',att:false},
+  {id:'INC-003',name:'Vikram Nair',    college:'JAIN',         phone:'9876543212',event:'BGMI',               team:'GunnerZ',fee:50,pay:'pending',by:'',at:'',att:false},
+  {id:'INC-004',name:'Divya S.',       college:'PES',          phone:'9876543213',event:'Free Fire',          team:'FF Squad',fee:50,pay:'paid',  by:'Riya',at:'10:44',att:false},
+  {id:'INC-005',name:'Karthik B.',     college:'Seshadripuram',phone:'9876543214',event:'IT Dumbcharades',    team:'Mimics',fee:80,pay:'pending',by:'',at:'',att:false},
+  {id:'INC-006',name:'Sneha T.',       college:'REVA',         phone:'9876543215',event:'Data Treasure Hunt', team:'Data Dogs',fee:100,pay:'paid',by:'Dev',at:'11:02',att:false},
+  {id:'INC-007',name:'Aditya Kumar',   college:'JAIN',         phone:'9876543216',event:'Cultural Event',     team:'Art Crew',fee:80,pay:'pending',by:'',at:'',att:false},
+  {id:'INC-008',name:'Meghana S.',     college:'Christ',       phone:'9876543217',event:'Crime Scene',        team:'Team Beta',fee:100,pay:'paid',by:'Riya',at:'11:15',att:false},
+  {id:'INC-009',name:'Rohan P.',       college:'PES',          phone:'9876543218',event:'Coding & Debugging', team:'Solo',fee:100,pay:'paid',  by:'Dev',at:'11:22',att:false},
+  {id:'INC-010',name:'Lakshmi V.',     college:'Seshadripuram',phone:'9876543219',event:'IT Dumbcharades',    team:'Clowns',fee:80,pay:'pending',by:'',at:'',att:false},
+];
+
+let LEDGER = [
+  {type:'pay',act:'Cash confirmed — <strong>Arjun Mehta</strong>',meta:'Coding & Debugging · ₹100 · by Riya',time:'10:24'},
+  {type:'reg',act:'Registered — <strong>Priya Rao</strong>',meta:'Crime Scene · Christ College',time:'10:31'},
+  {type:'pay',act:'Cash confirmed — <strong>Divya S.</strong>',meta:'Free Fire · ₹50 · by Riya',time:'10:44'},
+  {type:'reg',act:'Registered — <strong>Vikram Nair</strong>',meta:'BGMI · JAIN · pending payment',time:'10:38'},
+  {type:'pay',act:'Cash confirmed — <strong>Sneha T.</strong>',meta:'Data Treasure Hunt · ₹100 · by Dev',time:'11:02'},
+  {type:'reg',act:'Registered — <strong>Karthik B.</strong>',meta:'IT Dumbcharades · Seshadripuram',time:'10:52'},
+  {type:'pay',act:'Cash confirmed — <strong>Meghana S.</strong>',meta:'Crime Scene · ₹100 · by Riya',time:'11:15'},
+  {type:'pay',act:'Cash confirmed — <strong>Rohan P.</strong>',meta:'Coding & Debug · ₹100 · by Dev',time:'11:22'},
+];
+
+// ══ CLOCK ══
+function tick(){
+  const n=new Date();
+  document.getElementById('t-clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+  const mo=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('t-date').textContent=mo[n.getMonth()]+' '+String(n.getDate()).padStart(2,'0')+' '+n.getFullYear();
+}
+setInterval(tick,1000); tick();
+
+// ══ DAYS LEFT ══
+const festDay=new Date('2026-03-24');
+const dLeft=Math.max(0,Math.ceil((festDay-new Date())/86400000));
+document.getElementById('days-left').textContent=dLeft>0?`in ${dLeft} days`:'TODAY — FEST IS LIVE!';
+
+// ══ STATS ══
+function computeStats(){
+  const paid=REGS.filter(r=>r.pay==='paid');
+  const pend=REGS.filter(r=>r.pay==='pending');
+  const rev=paid.reduce((s,r)=>s+r.fee,0);
+  const att=REGS.filter(r=>r.att).length;
+  return{total:REGS.length,paid:paid.length,pend:pend.length,rev,att};
+}
+
+function animCount(el,target,pre='',suf=''){
+  let c=0;const step=target/60;
+  const t=setInterval(()=>{c=Math.min(c+step,target);el.textContent=pre+Math.floor(c).toLocaleString()+suf;if(c>=target)clearInterval(t);},16);
+}
+
+function refreshStats(){
+  const s=computeStats();
+  animCount(document.getElementById('s-reg'),s.total);
+  animCount(document.getElementById('s-rev'),s.rev,'₹');
+  animCount(document.getElementById('s-pend'),s.pend);
+  animCount(document.getElementById('s-att'),s.att);
+  const d=document.getElementById('s-reg-d');
+  d.textContent=`${s.paid} paid · ${s.pend} pending`;
+  document.getElementById('sb-reg-cnt').textContent=REGS.length;
+  document.getElementById('sb-pay-cnt').textContent=s.pend;
+  // pay pending amount
+  const pa=document.getElementById('pay-pending-amt');
+  if(pa){
+    const pendAmt=REGS.filter(r=>r.pay==='pending').reduce((s,r)=>s+r.fee,0);
+    pa.textContent='₹'+pendAmt+' pending';
+  }
+}
+
+// ══ CAPACITY BARS ══
+function renderCapBars(){
+  const list=document.getElementById('cap-list');
+  if(!list)return;
+  list.innerHTML='';
+  EVENTS.forEach(ev=>{
+    const count=REGS.filter(r=>r.event===ev.name).length;
+    const pct=Math.min(100,Math.round(count/ev.max*100));
+    const col=pct>80?'var(--red)':pct>50?'var(--gold)':'var(--green)';
+    list.innerHTML+=`
+    <div class="cap-item">
+      <div class="cap-meta">
+        <span class="cap-name">${ev.name}<span class="cap-cat">${ev.cat}</span></span>
+        <span class="cap-nums">${count}/${ev.max}</span>
+      </div>
+      <div class="cap-track"><div class="cap-fill" style="width:0%;background:${col}" data-pct="${pct}"></div></div>
+    </div>`;
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.cap-fill').forEach(b=>b.style.width=b.dataset.pct+'%');
+  },200);
+}
+
+// ══ CHARTS ══
+let regChart,catChart,payChart;
+
+function initCharts(){
+  // Registrations timeline
+  const rCtx=document.getElementById('regChart');
+  if(!rCtx)return;
+  const labels=['MAR 1','MAR 3','MAR 5','MAR 7','MAR 9','MAR 11','MAR 13','MAR 15','MAR 17','MAR 19','MAR 21','MAR 23'];
+  const data=[0,2,5,9,14,18,24,31,38,44,48,REGS.length];
+  if(regChart)regChart.destroy();
+  regChart=new Chart(rCtx,{type:'line',data:{labels,datasets:[{label:'Registrations',data,borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,.07)',borderWidth:1.5,pointBackgroundColor:'#c0392b',pointRadius:3,tension:.35,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#141210',borderColor:'#2e2c28',borderWidth:1,bodyColor:'#f0e6cc',bodyFont:{family:"'Courier Prime'",size:11}}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#7a7060',font:{family:"'Courier Prime'",size:9},maxRotation:0},border:{color:'#1e1c19'}},y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#7a7060',font:{family:"'Courier Prime'",size:9}},border:{color:'#1e1c19'}}}}});
+
+  // Category bar
+  const cCtx=document.getElementById('catChart');
+  if(!cCtx)return;
+  const evNames=EVENTS.map(e=>e.name.length>14?e.name.slice(0,12)+'…':e.name);
+  const evCounts=EVENTS.map(e=>REGS.filter(r=>r.event===e.name).length);
+  const colors=['rgba(192,57,43,.8)','rgba(212,175,55,.7)','rgba(212,175,55,.6)','rgba(0,255,65,.5)','rgba(201,185,154,.5)','rgba(192,57,43,.6)','rgba(212,175,55,.5)'];
+  if(catChart)catChart.destroy();
+  catChart=new Chart(cCtx,{type:'bar',data:{labels:evNames,datasets:[{data:evCounts,backgroundColor:colors,borderColor:colors.map(c=>c.replace(/[\d.]+\)$/,'1)')),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#141210',borderColor:'#2e2c28',borderWidth:1,bodyColor:'#f0e6cc',bodyFont:{family:"'Courier Prime'",size:11}}},scales:{x:{grid:{display:false},ticks:{color:'#7a7060',font:{family:"'Courier Prime'",size:8},maxRotation:30},border:{color:'#1e1c19'}},y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#7a7060',font:{family:"'Courier Prime'",size:9},stepSize:1},border:{color:'#1e1c19'}}}}});
+
+  // Payment donut
+  const pCtx=document.getElementById('payChart');
+  if(!pCtx)return;
+  const s=computeStats();
+  if(payChart)payChart.destroy();
+  payChart=new Chart(pCtx,{type:'doughnut',data:{labels:['Paid','Pending'],datasets:[{data:[s.paid,s.pend],backgroundColor:['#00ff41','#d4af37'],borderColor:'#0a0a08',borderWidth:3,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#c9b99a',font:{family:"'Courier Prime'",size:10},boxWidth:10,padding:10}},tooltip:{backgroundColor:'#141210',borderColor:'#2e2c28',borderWidth:1,bodyColor:'#f0e6cc',bodyFont:{family:"'Courier Prime'",size:11}}}}});
+}
+
+// ══ EVENTS GRID ══
+function renderEventGrid(){
+  const g=document.getElementById('ev-grid');
+  if(!g)return;
+  g.innerHTML='';
+  EVENTS.forEach((ev,i)=>{
+    const cnt=REGS.filter(r=>r.event===ev.name).length;
+    const paidCnt=REGS.filter(r=>r.event===ev.name&&r.pay==='paid').length;
+    const pct=Math.min(100,Math.round(cnt/ev.max*100));
+    const col=pct>80?'var(--red)':pct>50?'var(--gold)':'var(--green)';
+    g.innerHTML+=`
+    <div class="ev-card">
+      <div class="ev-card-cat">${ev.cat}</div>
+      <div class="ev-card-name">${ev.name}</div>
+      <div class="ev-card-stats">
+        <div class="ev-stat"><div class="ev-stat-num">${cnt}</div><div class="ev-stat-lbl">REGISTERED</div></div>
+        <div class="ev-stat"><div class="ev-stat-num">${paidCnt}</div><div class="ev-stat-lbl">PAID</div></div>
+        <div class="ev-stat"><div class="ev-stat-num">₹${cnt*ev.fee}</div><div class="ev-stat-lbl">COLLECTED</div></div>
+        <div class="ev-stat"><div class="ev-stat-num" style="color:var(--aged)">${ev.max-cnt}</div><div class="ev-stat-lbl">SPOTS LEFT</div></div>
+      </div>
+      <div class="ev-card-bar"><div class="ev-card-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="ev-card-num">${String(i+1).padStart(2,'0')}</div>
+    </div>`;
+  });
+}
+
+// ══ REGISTRATION TABLE ══
+function regRow(r,full=false){
+  const pill=r.pay==='paid'?`<span class="pill pill-paid">PAID</span>`:`<span class="pill pill-pend">PENDING</span>`;
+  const payBtn=r.pay==='pending'?`<button class="pay-btn" onclick="quickPay('${r.id}')">✓ MARK PAID</button>`:`<span style="font-size:.52rem;color:var(--aged)">—</span>`;
+  if(full){
+    return`<tr id="row-${r.id}">
+      <td style="color:var(--aged);font-family:var(--font-r)">${r.id}</td>
+      <td>${r.name}</td>
+      <td style="color:var(--aged)">${r.college}</td>
+      <td>${r.event}</td>
+      <td style="color:var(--aged)">${r.team||'Solo'}</td>
+      <td style="font-family:var(--font-r);font-size:1rem;color:var(--gold)">₹${r.fee}</td>
+      <td>${pill}</td>
+      <td>${payBtn}</td>
+    </tr>`;
+  }
+  return`<tr id="row-${r.id}">
+    <td style="color:var(--aged);font-family:var(--font-r)">${r.id}</td>
+    <td>${r.name}</td>
+    <td>${r.event}</td>
+    <td style="font-family:var(--font-r);font-size:1rem;color:var(--gold)">₹${r.fee}</td>
+    <td>${pill}</td>
+    <td>${payBtn}</td>
+  </tr>`;
+}
+
+function renderRegTable(data,full=false){
+  const tb=document.getElementById(full?'all-reg-tbody':'reg-tbody');
+  if(!tb)return;
+  tb.innerHTML=data.slice(0,full?999:8).map(r=>regRow(r,full)).join('');
+}
+
+function filterRegs(q){
+  const f=REGS.filter(r=>
+    r.name.toLowerCase().includes(q.toLowerCase())||
+    r.event.toLowerCase().includes(q.toLowerCase())||
+    r.id.toLowerCase().includes(q.toLowerCase())
+  );
+  renderRegTable(f,false);
+  renderRegTable(f,true);
+}
+
+// ══ PAYMENT TABLE ══
+function renderPayTable(){
+  const tb=document.getElementById('pay-tbody');
+  if(!tb)return;
+  tb.innerHTML=REGS.map(r=>{
+    const pill=r.pay==='paid'?`<span class="pill pill-paid">PAID</span>`:`<span class="pill pill-pend">PENDING</span>`;
+    const byCol=r.pay==='paid'?`<td style="color:var(--aged)">${r.by} · ${r.at}</td>`:`<td style="color:var(--dimmer)">—</td>`;
+    const btn=r.pay==='pending'?`<button class="pay-btn" onclick="quickPay('${r.id}')">✓ COLLECT</button>`:`<span style="font-size:.52rem;color:var(--aged)">✓ DONE</span>`;
+    return`<tr><td style="color:var(--aged);font-family:var(--font-r)">${r.id}</td><td>${r.name}</td><td>${r.event}</td><td style="font-family:var(--font-r);font-size:1rem;color:var(--gold)">₹${r.fee}</td><td>${pill}</td>${byCol}<td>${btn}</td></tr>`;
+  }).join('');
+}
+
+// ══ LEDGER RENDER ══
+const dotMap={pay:'d-pay',reg:'d-reg',ev:'d-ev',att:'d-att'};
+function ledgerRow(e){
+  return`<div class="le">
+    <div class="le-dot ${dotMap[e.type]||'d-reg'}"></div>
+    <div class="le-body"><div class="le-act">${e.act}</div><div class="le-meta">${e.meta}</div></div>
+    <div class="le-time">${e.time}</div>
+  </div>`;
+}
+function renderLedger(){
+  const el=document.getElementById('led-list');
+  const fl=document.getElementById('full-led-list');
+  const rows=[...LEDGER].reverse().map(ledgerRow).join('');
+  if(el)el.innerHTML=rows;
+  if(fl)fl.innerHTML=rows;
+  const c=LEDGER.length+' ENTRIES';
+  const lc=document.getElementById('led-cnt');
+  const flc=document.getElementById('full-led-cnt');
+  if(lc)lc.textContent=c;
+  if(flc)flc.textContent=c;
+}
+
+function addLedger(type,act,meta){
+  const n=new Date();
+  const time=[n.getHours(),n.getMinutes()].map(x=>String(x).padStart(2,'0')).join(':');
+  LEDGER.push({type,act,meta,time});
+  renderLedger();
+}
+
+// ══ MODAL ══
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+
+// ══ NEW REGISTRATION ══
+let nextId=REGS.length+1;
+function submitReg(){
+  const name=document.getElementById('nr-name').value.trim();
+  const college=document.getElementById('nr-college').value.trim();
+  const phone=document.getElementById('nr-phone').value.trim();
+  const event=document.getElementById('nr-event').value;
+  const team=document.getElementById('nr-team').value.trim();
+  const pay=document.getElementById('nr-pay').value;
+  if(!name||!event){toast('Name and event are required.','err');return;}
+  const ev=EVENTS.find(e=>e.name===event);
+  const id='INC-'+String(nextId).padStart(3,'0'); nextId++;
+  const n=new Date();
+  const time=[n.getHours(),n.getMinutes()].map(x=>String(x).padStart(2,'0')).join(':');
+  const reg={id,name,college:college||'—',phone,event,team:team||'',fee:ev?ev.fee:100,pay,by:'',at:'',att:false};
+  REGS.push(reg);
+  addLedger('reg',`Registered — <strong>${name}</strong>`,`${event} · ${college||'Unknown'} · ${pay==='paid'?'cash paid':'payment pending'}`);
+  if(pay==='paid') addLedger('pay',`Cash received — <strong>${name}</strong>`,`${event} · ₹${reg.fee}`);
+  closeModal('newReg');
+  refreshAll();
+  toast(`${name} registered for ${event}!`,'ok');
+  // reset
+  ['nr-name','nr-college','nr-phone','nr-team'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nr-event').value='';
+  document.getElementById('nr-pay').value='pending';
+}
+
+// ══ MARK PAYMENT ══
+function lookupReg(val){
+  const r=REGS.find(x=>x.id.toLowerCase()===val.trim().toLowerCase());
+  const box=document.getElementById('pay-confirm-box');
+  if(r){
+    box.style.display='flex';
+    document.getElementById('pc-name').textContent=r.name;
+    document.getElementById('pc-event').textContent=r.event;
+    document.getElementById('pc-team').textContent=r.team||'Solo';
+    document.getElementById('pc-amt').textContent='₹'+r.fee;
+  } else {
+    box.style.display='none';
+  }
+}
+
+function confirmPayment(){
+  const id=document.getElementById('mp-id').value.trim();
+  const by=document.getElementById('mp-by').value.trim()||'Admin';
+  const r=REGS.find(x=>x.id.toLowerCase()===id.toLowerCase());
+  if(!r){toast('Registration ID not found.','err');return;}
+  if(r.pay==='paid'){toast(`${r.id} already marked as paid.`,'warn');return;}
+  const n=new Date();
+  r.pay='paid';r.by=by;r.at=[n.getHours(),n.getMinutes()].map(x=>String(x).padStart(2,'0')).join(':');
+  addLedger('pay',`Cash confirmed — <strong>${r.name}</strong>`,`${r.event} · ₹${r.fee} · by ${by}`);
+  closeModal('markPay');
+  refreshAll();
+  toast(`Payment confirmed for ${r.name} — ₹${r.fee}`, 'ok');
+  document.getElementById('mp-id').value='';
+  document.getElementById('mp-by').value='';
+  document.getElementById('pay-confirm-box').style.display='none';
+}
+
+// ══ QUICK PAY (from table row) ══
+function quickPay(id){
+  const r=REGS.find(x=>x.id===id);
+  if(!r||r.pay==='paid')return;
+  const by=prompt('Your name (collected by):','Admin');
+  if(!by)return;
+  const n=new Date();
+  r.pay='paid';r.by=by;r.at=[n.getHours(),n.getMinutes()].map(x=>String(x).padStart(2,'0')).join(':');
+  addLedger('pay',`Cash confirmed — <strong>${r.name}</strong>`,`${r.event} · ₹${r.fee} · by ${by}`);
+  refreshAll();
+  toast(`₹${r.fee} confirmed for ${r.name}`, 'ok');
+}
+
+// ══ CHECKIN ══
+function doCheckin(){
+  const val=document.getElementById('qr-input').value.trim();
+  const r=REGS.find(x=>x.id.toLowerCase()===val.toLowerCase());
+  const feed=document.getElementById('checkin-feed');
+  const n=new Date();
+  const time=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+
+  if(!r){
+    const d=document.createElement('div');
+    d.style.cssText='padding:8px 10px;background:rgba(192,57,43,.12);border-left:2px solid var(--red);font-size:.62rem;color:var(--red);animation:fadeUp .3s ease both;';
+    d.innerHTML=`✕ ${time} — ID "${val}" not found`;
+    feed.insertBefore(d,feed.firstChild);
+    toast('Registration not found.','err');
+    return;
+  }
+  if(r.att){
+    toast(`${r.name} already checked in.`,'warn');return;
+  }
+  if(r.pay==='pending'){
+    toast(`⚠ ${r.name} has pending payment. Collect ₹${r.fee} first!`,'warn');return;
+  }
+  r.att=true;
+  addLedger('att',`Checked in — <strong>${r.name}</strong>`,`${r.event} · ${r.id}`);
+  const d=document.createElement('div');
+  d.style.cssText='padding:8px 10px;background:rgba(0,255,65,.07);border-left:2px solid var(--green);font-size:.62rem;color:var(--green);animation:fadeUp .3s ease both;';
+  d.innerHTML=`✓ ${time} — ${r.name} · ${r.event}`;
+  feed.insertBefore(d,feed.firstChild);
+  document.getElementById('qr-input').value='';
+  refreshAll();
+  toast(`✓ ${r.name} checked in!`,'ok');
+}
+
+// ══ EXPORT CSV ══
+function exportCSV(){
+  const hdr='ID,Name,College,Phone,Event,Team,Fee,Payment,Collected By,Attended\n';
+  const rows=REGS.map(r=>[r.id,r.name,r.college,r.phone,r.event,r.team||'Solo',r.fee,r.pay,r.by,r.att?'Yes':'No'].join(',')).join('\n');
+  const blob=new Blob([hdr+rows],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='incognito2026_registrations.csv';a.click();
+  toast('CSV exported successfully.','ok');
+}
+
+// ══ TOAST ══
+function toast(msg,type='ok'){
+  const w=document.getElementById('toast-wrap');
+  const d=document.createElement('div');
+  d.className='toast'+(type==='err'?' err':type==='warn'?' warn':'');
+  const icon=type==='ok'?'✓ ':type==='err'?'✕ ':'⚠ ';
+  d.textContent=icon+msg;
+  w.appendChild(d);
+  setTimeout(()=>{d.style.transition='opacity .4s';d.style.opacity='0';},2800);
+  setTimeout(()=>d.remove(),3300);
+}
+
+// ══ VIEW SWITCHER ══
+function switchView(name,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const v=document.getElementById('view-'+name);
+  if(v)v.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  // lazy-init view-specific content
+  if(name==='events')renderEventGrid();
+  if(name==='registrations'){renderRegTable(REGS,true);}
+  if(name==='payments')renderPayTable();
+  if(name==='ledger')renderLedger();
+  refreshStats();
+}
+
+// ══ FULL REFRESH ══
+function refreshAll(){
+  refreshStats();
+  renderCapBars();
+  renderRegTable(REGS,false);
+  renderRegTable(REGS,true);
+  renderPayTable();
+  renderLedger();
+  // update charts if visible
+  if(payChart){
+    const s=computeStats();
+    payChart.data.datasets[0].data=[s.paid,s.pend];
+    payChart.update();
+  }
+  if(catChart){
+    const evCounts=EVENTS.map(e=>REGS.filter(r=>r.event===e.name).length);
+    catChart.data.datasets[0].data=evCounts;
+    catChart.update();
+  }
+}
+
+// ══ INIT ══
+document.addEventListener('DOMContentLoaded',()=>{
+  refreshStats();
+  renderCapBars();
+  renderRegTable(REGS,false);
+  renderLedger();
+  setTimeout(initCharts,150);
+});
+</script>
+</body>
+</html>

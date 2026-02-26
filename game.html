@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>INCOGNITO 2026 — Operation Blackout</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --noir:#070706; --smoke:#0e0d0b; --ash:#181612; --dim:#252320;
+  --dimmer:#333028; --aged:#6a6055; --paper:#c9b99a; --cream:#f0e6cc;
+  --red:#c0392b; --blood:#8b0000; --gold:#d4af37; --green:#00ff41;
+  --green-d:#003b0f; --tape:#ffd700;
+  --font-d:'Bebas Neue',sans-serif; --font-r:'VT323',monospace;
+  --font-m:'Courier Prime',monospace; --font-t:'Special Elite',cursive;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--noir);color:var(--cream);font-family:var(--font-m);cursor:crosshair;}
+
+/* grain + scanlines */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.06;pointer-events:none;z-index:9000;mix-blend-mode:overlay;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);pointer-events:none;z-index:8999;}
+::-webkit-scrollbar{width:3px;background:var(--noir);}
+::-webkit-scrollbar-thumb{background:var(--red);}
+
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;transition:opacity .4s;}
+.screen.hidden{opacity:0;pointer-events:none;}
+
+/* ══ INTRO SCREEN ══ */
+#intro{flex-direction:column;align-items:center;justify-content:center;gap:0;background:var(--noir);}
+
+.intro-tape{position:absolute;white-space:nowrap;overflow:hidden;width:140%;left:-20%;pointer-events:none;}
+.intro-tape--1{top:14%;transform:rotate(-3deg);opacity:.55;}
+.intro-tape--2{top:80%;transform:rotate(2deg);opacity:.4;}
+.tape-inner{display:inline-block;width:200%;padding:5px 0;background:repeating-linear-gradient(-45deg,var(--tape),var(--tape) 8px,#181612 8px,#181612 16px);color:var(--noir);font-family:var(--font-t);font-weight:700;font-size:.65rem;letter-spacing:.15em;animation:marquee 22s linear infinite;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.intro-card{text-align:center;max-width:580px;padding:0 20px;animation:crtOn 1s ease-out both;}
+@keyframes crtOn{0%{transform:scaleY(.005);filter:brightness(20)}40%{transform:scaleY(.005);filter:brightness(20)}65%{transform:scaleY(1);filter:brightness(4)}100%{transform:scaleY(1);filter:brightness(1)}}
+
+.intro-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.3);padding:3px 14px;font-size:.58rem;letter-spacing:.2em;color:var(--red);margin-bottom:20px;}
+.intro-badge::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1s step-end infinite;}
+.intro-title{font-family:var(--font-d);font-size:clamp(3rem,10vw,6rem);letter-spacing:.04em;color:var(--cream);line-height:.95;animation:flicker 9s infinite;}
+.intro-title em{color:var(--red);font-style:normal;}
+.intro-sub{font-family:var(--font-r);font-size:clamp(1.2rem,4vw,2rem);color:var(--gold);letter-spacing:.25em;margin-top:4px;}
+.intro-desc{font-size:.78rem;line-height:1.7;color:var(--paper);opacity:.8;margin:22px 0;max-width:440px;margin-left:auto;margin-right:auto;}
+.intro-desc strong{color:var(--red);}
+
+.file-box{background:var(--smoke);border:1px solid var(--dim);border-left:3px solid var(--red);padding:14px 18px;text-align:left;margin-bottom:22px;}
+.file-row{display:flex;gap:10px;margin-bottom:6px;font-size:.7rem;}
+.file-key{color:var(--aged);letter-spacing:.1em;min-width:80px;flex-shrink:0;}
+.file-val{color:var(--cream);}
+.file-row:last-child{margin-bottom:0;}
+
+.start-btn{background:var(--red);border:none;color:var(--noir);font-family:var(--font-m);font-weight:700;font-size:.9rem;letter-spacing:.2em;padding:14px 44px;cursor:crosshair;position:relative;overflow:hidden;transition:background .2s,transform .1s;animation:pulse-r 2.5s infinite;}
+.start-btn:hover{background:var(--blood);transform:translateY(-2px);}
+@keyframes pulse-r{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.4)}50%{box-shadow:0 0 0 12px rgba(192,57,43,0)}}
+
+/* ══ GAME SCREEN ══ */
+#game{flex-direction:column;background:var(--noir);align-items:stretch;justify-content:stretch;padding:0;}
+
+.game-layout{display:flex;height:100vh;width:100%;}
+
+/* LEFT: scene panel */
+.scene-panel{width:42%;border-right:1px solid var(--dim);display:flex;flex-direction:column;background:var(--smoke);}
+.scene-header{padding:14px 18px;border-bottom:1px solid var(--dim);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.scene-title{font-family:var(--font-d);font-size:1.1rem;letter-spacing:.08em;color:var(--cream);}
+.scene-loc{font-size:.55rem;letter-spacing:.18em;color:var(--red);}
+
+/* SVG crime scene */
+.scene-svg-wrap{flex:1;position:relative;overflow:hidden;}
+.scene-svg{width:100%;height:100%;display:block;}
+
+/* clue hotspots */
+.hotspot{cursor:crosshair;transition:opacity .2s;}
+.hotspot-ring{fill:none;stroke:var(--gold);stroke-width:1.5;stroke-dasharray:4 3;opacity:.6;animation:spin-ring 8s linear infinite;}
+@keyframes spin-ring{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}
+.hotspot:hover .hotspot-ring{opacity:1;stroke:var(--red);}
+.hotspot.found .hotspot-ring{stroke:var(--green);opacity:1;animation:none;}
+.hotspot-dot{fill:var(--gold);opacity:.7;}
+.hotspot:hover .hotspot-dot{fill:var(--red);opacity:1;}
+.hotspot.found .hotspot-dot{fill:var(--green);}
+
+.scene-footer{padding:10px 18px;border-top:1px solid var(--dim);font-size:.58rem;letter-spacing:.08em;color:var(--aged);flex-shrink:0;}
+
+/* RIGHT: terminal */
+.terminal-panel{flex:1;display:flex;flex-direction:column;}
+.term-header{padding:10px 18px;border-bottom:1px solid var(--dim);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--smoke);}
+.term-title{font-family:var(--font-r);font-size:1.2rem;color:var(--green);letter-spacing:.1em;}
+.hud{display:flex;gap:16px;align-items:center;}
+.hud-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.hud-val{font-family:var(--font-r);font-size:1.2rem;line-height:1;}
+.hud-val.red{color:var(--red);}
+.hud-val.gold{color:var(--gold);}
+.hud-val.green{color:var(--green);}
+.hud-lbl{font-size:.45rem;letter-spacing:.18em;color:var(--aged);}
+.hud-sep{width:1px;height:28px;background:var(--dim);}
+
+/* terminal output */
+.term-output{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:6px;font-size:.72rem;line-height:1.55;letter-spacing:.03em;}
+.t-line{animation:fadeIn .2s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+.t-system{color:var(--aged);}
+.t-clue{color:var(--gold);}
+.t-clue strong{color:var(--red);}
+.t-success{color:var(--green);}
+.t-error{color:var(--red);}
+.t-narrative{color:var(--paper);font-family:var(--font-t);}
+.t-warn{color:var(--gold);}
+.t-sep{color:var(--dimmer);user-select:none;}
+
+/* clue cards */
+.clue-card{background:var(--ash);border:1px solid var(--dim);border-left:3px solid var(--gold);padding:8px 12px;margin:4px 0;}
+.clue-card-num{font-size:.5rem;letter-spacing:.2em;color:var(--gold);margin-bottom:3px;}
+.clue-card-text{color:var(--paper);font-size:.7rem;line-height:1.5;}
+
+/* deduction panel */
+.deduction-panel{border-top:1px solid var(--dim);padding:12px 18px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;background:var(--smoke);}
+.ded-label{font-size:.52rem;letter-spacing:.18em;color:var(--aged);}
+.ded-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.ded-pill{background:var(--ash);border:1px solid var(--dimmer);color:var(--aged);font-family:var(--font-m);font-size:.6rem;letter-spacing:.06em;padding:4px 10px;cursor:crosshair;transition:all .18s;}
+.ded-pill:hover{border-color:var(--red);color:var(--cream);}
+.ded-pill.selected{background:rgba(192,57,43,.15);border-color:var(--red);color:var(--red);}
+
+/* input row */
+.term-input-row{display:flex;border-top:1px solid var(--dim);flex-shrink:0;}
+.term-prompt{padding:0 12px;background:var(--smoke);display:flex;align-items:center;font-family:var(--font-r);font-size:1.1rem;color:var(--green);border-right:1px solid var(--dim);flex-shrink:0;}
+.term-input{flex:1;background:var(--smoke);border:none;color:var(--green);font-family:var(--font-m);font-size:.78rem;letter-spacing:.05em;padding:12px 14px;outline:none;}
+.term-input::placeholder{color:var(--dimmer);}
+.term-send{background:var(--dim);border:none;border-left:1px solid var(--dimmer);color:var(--aged);padding:0 16px;cursor:crosshair;font-family:var(--font-r);font-size:1.1rem;transition:all .18s;flex-shrink:0;}
+.term-send:hover{background:var(--red);color:var(--noir);}
+
+/* ══ WIN SCREEN ══ */
+#win{flex-direction:column;align-items:center;justify-content:center;background:rgba(7,7,6,.95);gap:20px;}
+.win-stamp{font-family:var(--font-t);font-size:clamp(1.2rem,5vw,2.2rem);color:var(--green);border:3px solid var(--green);padding:6px 20px;letter-spacing:.15em;margin-bottom:8px;animation:stamp-in .5s ease both;}
+@keyframes stamp-in{from{transform:scale(2);opacity:0}to{transform:scale(1);opacity:1}}
+.win-title{font-family:var(--font-d);font-size:clamp(2.5rem,8vw,5rem);color:var(--cream);letter-spacing:.06em;text-align:center;line-height:1;}
+.win-title em{color:var(--green);font-style:normal;}
+.win-sub{font-size:.78rem;letter-spacing:.1em;color:var(--paper);text-align:center;}
+.win-score-box{background:var(--smoke);border:1px solid var(--dim);border-top:3px solid var(--gold);padding:20px 36px;text-align:center;}
+.win-score-num{font-family:var(--font-r);font-size:4rem;color:var(--gold);line-height:1;}
+.win-score-lbl{font-size:.55rem;letter-spacing:.2em;color:var(--aged);}
+.win-score-breakdown{display:flex;gap:20px;justify-content:center;margin-top:12px;}
+.wsb-item{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.wsb-num{font-family:var(--font-r);font-size:1.5rem;color:var(--cream);}
+.wsb-lbl{font-size:.48rem;letter-spacing:.15em;color:var(--aged);}
+.win-name-form{display:flex;gap:8px;}
+.win-inp{background:var(--ash);border:1px solid var(--dimmer);color:var(--cream);font-family:var(--font-m);font-size:.8rem;padding:9px 14px;outline:none;width:200px;transition:border-color .2s;letter-spacing:.04em;}
+.win-inp:focus{border-color:var(--green);}
+.win-inp::placeholder{color:var(--dimmer);}
+.win-submit{background:var(--green);border:none;color:var(--noir);font-family:var(--font-m);font-weight:700;font-size:.72rem;letter-spacing:.15em;padding:9px 18px;cursor:crosshair;transition:background .2s;}
+.win-submit:hover{background:#00c832;}
+
+/* leaderboard */
+.lb-list{max-height:180px;overflow-y:auto;width:100%;max-width:420px;}
+.lb-row{display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:1px solid var(--ash);}
+.lb-rank{font-family:var(--font-r);font-size:1.2rem;width:28px;flex-shrink:0;}
+.lb-rank.gold{color:var(--gold);}
+.lb-rank.silver{color:var(--paper);}
+.lb-rank.bronze{color:#cd7f32;}
+.lb-name{flex:1;font-size:.7rem;letter-spacing:.05em;color:var(--paper);}
+.lb-score{font-family:var(--font-r);font-size:1.1rem;color:var(--gold);}
+
+.replay-btn{background:none;border:1px solid var(--dimmer);color:var(--aged);font-family:var(--font-m);font-size:.68rem;letter-spacing:.14em;padding:8px 20px;cursor:crosshair;transition:all .2s;}
+.replay-btn:hover{border-color:var(--red);color:var(--cream);}
+
+/* ── ANIMATIONS ── */
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes flicker{0%,95%,100%{opacity:1}96%{opacity:.4}97%{opacity:1}98%{opacity:.1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* responsive */
+@media(max-width:700px){
+  .game-layout{flex-direction:column;}
+  .scene-panel{width:100%;height:45vh;border-right:none;border-bottom:1px solid var(--dim);}
+  .terminal-panel{height:55vh;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ INTRO SCREEN ══════════════ -->
+<div class="screen" id="intro">
+  <div class="intro-tape intro-tape--1"><div class="tape-inner">DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT ENTER &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT ENTER &nbsp;·&nbsp;</div></div>
+  <div class="intro-tape intro-tape--2"><div class="tape-inner">INCOGNITO 2026 &nbsp;·&nbsp; OPERATION BLACKOUT &nbsp;·&nbsp; SESHADRIPURAM &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; OPERATION BLACKOUT &nbsp;·&nbsp;</div></div>
+
+  <div class="intro-card">
+    <div class="intro-badge">CLASSIFIED OPERATION</div>
+    <div class="intro-title"><em>OPERATION</em><br>BLACKOUT</div>
+    <div class="intro-sub">A CRIME SCENE MYSTERY</div>
+    <p class="intro-desc">
+      The server room at Seshadripuram Tech Hub was breached at <strong>02:17 AM</strong>.<br>
+      Critical data is missing. Three suspects. One culprit.<br>
+      <strong>You have 5 minutes to crack the case.</strong>
+    </p>
+    <div class="file-box">
+      <div class="file-row"><span class="file-key">MISSION</span><span class="file-val">Identify the perpetrator, the motive, and the method</span></div>
+      <div class="file-row"><span class="file-key">CLUES</span><span class="file-val">8 hidden in the crime scene — click to investigate</span></div>
+      <div class="file-row"><span class="file-key">SCORING</span><span class="file-val">Time bonus + clues found × accuracy</span></div>
+      <div class="file-row"><span class="file-key">CLEARANCE</span><span class="file-val">LEVEL 1 — All agents eligible</span></div>
+    </div>
+    <button class="start-btn" onclick="startGame()">BEGIN INVESTIGATION →</button>
+  </div>
+</div>
+
+<!-- ══════════════ GAME SCREEN ══════════════ -->
+<div class="screen hidden" id="game">
+  <div class="game-layout">
+
+    <!-- SCENE PANEL -->
+    <div class="scene-panel">
+      <div class="scene-header">
+        <div>
+          <div class="scene-title">CRIME SCENE</div>
+          <div class="scene-loc" id="scene-loc">// SERVER ROOM B-7 · TECH HUB</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-r);font-size:1.4rem;color:var(--red)" id="timer-display">05:00</div>
+          <div style="font-size:.48rem;letter-spacing:.15em;color:var(--aged)">TIME REMAINING</div>
+        </div>
+      </div>
+
+      <!-- SVG CRIME SCENE -->
+      <div class="scene-svg-wrap">
+        <svg class="scene-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Room background -->
+          <rect width="500" height="400" fill="#0d0d0a"/>
+          <!-- Floor grid -->
+          <g opacity="0.08" stroke="#d4af37" stroke-width="0.5">
+            <line x1="0" y1="320" x2="500" y2="320"/>
+            <line x1="0" y1="280" x2="500" y2="280"/>
+            <line x1="100" y1="280" x2="100" y2="400"/>
+            <line x1="200" y1="280" x2="200" y2="400"/>
+            <line x1="300" y1="280" x2="300" y2="400"/>
+            <line x1="400" y1="280" x2="400" y2="400"/>
+          </g>
+          <!-- Ceiling line -->
+          <line x1="0" y1="60" x2="500" y2="60" stroke="#1e1c19" stroke-width="2"/>
+          <!-- Back wall -->
+          <rect x="0" y="60" width="500" height="220" fill="#111009"/>
+
+          <!-- Overhead lamp -->
+          <line x1="250" y1="0" x2="250" y2="60" stroke="#2a2820" stroke-width="2"/>
+          <ellipse cx="250" cy="65" rx="30" ry="8" fill="#1e1c19" stroke="#3a3830" stroke-width="1"/>
+          <!-- lamp glow -->
+          <radialGradient id="lampGlow" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="#d4af37" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+          </radialGradient>
+          <ellipse cx="250" cy="65" rx="180" ry="250" fill="url(#lampGlow)"/>
+
+          <!-- Server racks (back wall) -->
+          <rect x="30" y="80" width="80" height="160" fill="#141210" stroke="#2a2820" stroke-width="1"/>
+          <rect x="35" y="85" width="70" height="8" fill="#0a0a08" stroke="#1e1c19" stroke-width="0.5"/>
+          <rect x="35" y="97" width="70" height="8" fill="#0a0a08" stroke="#1e1c19" stroke-width="0.5"/>
+          <rect x="35" y="109" width="70" height="8" fill="#0a0a08" stroke="#1e1c19" stroke-width="0.5"/>
+          <circle cx="50" cy="89" r="2" fill="#00ff41" opacity="0.7"/>
+          <circle cx="50" cy="101" r="2" fill="#c0392b" opacity="0.9"/>
+          <circle cx="50" cy="113" r="2" fill="#00ff41" opacity="0.5"/>
+
+          <!-- Server rack 2 -->
+          <rect x="390" y="80" width="80" height="160" fill="#141210" stroke="#2a2820" stroke-width="1"/>
+          <rect x="395" y="85" width="70" height="8" fill="#0a0a08" stroke="#1e1c19" stroke-width="0.5"/>
+          <rect x="395" y="97" width="70" height="8" fill="#0a0a08" stroke="#1e1c19" stroke-width="0.5"/>
+          <circle cx="410" cy="89" r="2" fill="#c0392b" opacity="0.9" class="blink-dot"/>
+          <circle cx="410" cy="101" r="2" fill="#c0392b" opacity="0.9"/>
+
+          <!-- Central workstation -->
+          <rect x="160" y="200" width="180" height="90" fill="#141210" stroke="#2a2820" stroke-width="1"/>
+          <rect x="170" y="210" width="160" height="65" fill="#0a0a08" stroke="#1e1c19" stroke-width="0.5"/>
+          <!-- Monitor on desk -->
+          <rect x="195" y="140" width="110" height="75" rx="2" fill="#0e0d0b" stroke="#2a2820" stroke-width="1.5"/>
+          <rect x="200" y="145" width="100" height="60" fill="#070706"/>
+          <!-- glitchy screen content -->
+          <rect x="203" y="148" width="60" height="3" fill="#c0392b" opacity="0.7"/>
+          <rect x="203" y="154" width="40" height="2" fill="#3a3830"/>
+          <rect x="203" y="159" width="80" height="2" fill="#3a3830"/>
+          <rect x="203" y="164" width="55" height="2" fill="#c0392b" opacity="0.4"/>
+          <rect x="203" y="169" width="70" height="2" fill="#3a3830"/>
+          <rect x="203" y="174" width="30" height="2" fill="#d4af37" opacity="0.6"/>
+          <rect x="203" y="179" width="65" height="2" fill="#3a3830"/>
+          <rect x="203" y="184" width="45" height="2" fill="#3a3830"/>
+          <!-- cursor blink -->
+          <rect x="203" y="148" width="5" height="10" fill="#00ff41" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0;0.8" dur="1s" repeatCount="indefinite"/>
+          </rect>
+          <!-- monitor stand -->
+          <rect x="245" y="215" width="10" height="10" fill="#1e1c19"/>
+          <!-- keyboard -->
+          <rect x="185" y="220" width="130" height="30" rx="2" fill="#141210" stroke="#1e1c19" stroke-width="0.5"/>
+          <!-- Cables on floor -->
+          <path d="M 110 240 Q 150 260 160 250" stroke="#1e1c19" stroke-width="2" fill="none"/>
+          <path d="M 390 230 Q 360 255 340 248" stroke="#1e1c19" stroke-width="2" fill="none"/>
+
+          <!-- Evidence markers (yellow triangles) -->
+          <polygon points="78,238 86,250 70,250" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.6"/>
+          <text x="79" y="248" font-family="monospace" font-size="6" fill="#ffd700" opacity="0.7">1</text>
+          <polygon points="315,268 323,280 307,280" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.6"/>
+          <text x="316" y="278" font-family="monospace" font-size="6" fill="#ffd700" opacity="0.7">2</text>
+          <polygon points="418,238 426,250 410,250" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.6"/>
+          <text x="419" y="248" font-family="monospace" font-size="6" fill="#ffd700" opacity="0.7">3</text>
+
+          <!-- Chalk outline on floor (body shape) -->
+          <ellipse cx="360" cy="355" rx="35" ry="18" fill="none" stroke="#f0e6cc" stroke-width="1" stroke-dasharray="3 2" opacity="0.25"/>
+          <text x="340" y="350" font-family="monospace" font-size="6" fill="#f0e6cc" opacity="0.2">BODY OUTLINE</text>
+
+          <!-- Coffee cup -->
+          <rect x="320" y="210" width="18" height="20" rx="2" fill="#1e1c19" stroke="#2a2820" stroke-width="1"/>
+          <path d="M 338 215 Q 345 220 338 225" stroke="#2a2820" stroke-width="1.5" fill="none"/>
+
+          <!-- USB drive on floor -->
+          <rect x="140" y="262" width="20" height="8" rx="1" fill="#d4af37" opacity="0.5"/>
+          <rect x="140" y="264" width="5" height="4" fill="#c9b99a" opacity="0.5"/>
+
+          <!-- Sticky note on server -->
+          <rect x="55" y="130" width="35" height="28" fill="#d4af37" opacity="0.7" transform="rotate(-5 55 130)"/>
+          <text x="59" y="143" font-family="monospace" font-size="5" fill="#0a0a08" transform="rotate(-5 59 143)">ACCESS</text>
+          <text x="59" y="151" font-family="monospace" font-size="5" fill="#0a0a08" transform="rotate(-5 59 151)">LOG: ??</text>
+
+          <!-- Overturned chair -->
+          <g transform="translate(440,280) rotate(35)">
+            <rect x="-15" y="-25" width="30" height="5" fill="#141210" stroke="#2a2820" stroke-width="1"/>
+            <rect x="-13" y="-20" width="4" height="20" fill="#141210" stroke="#2a2820" stroke-width="1"/>
+            <rect x="9" y="-20" width="4" height="20" fill="#141210" stroke="#2a2820" stroke-width="1"/>
+          </g>
+
+          <!-- ── HOTSPOTS ── -->
+          <!-- 1: Smashed server light -->
+          <g class="hotspot" id="hs-1" onclick="investigateClue(1)" data-found="false">
+            <circle cx="410" cy="89" r="18" fill="rgba(192,57,43,.04)"/>
+            <circle class="hotspot-dot" cx="410" cy="89" r="5"/>
+            <circle class="hotspot-ring" cx="410" cy="89" r="14"/>
+          </g>
+
+          <!-- 2: Glitchy monitor -->
+          <g class="hotspot" id="hs-2" onclick="investigateClue(2)" data-found="false">
+            <rect x="192" y="138" width="116" height="79" fill="rgba(192,57,43,.03)"/>
+            <circle class="hotspot-dot" cx="250" cy="178" r="5"/>
+            <circle class="hotspot-ring" cx="250" cy="178" r="14"/>
+          </g>
+
+          <!-- 3: USB drive on floor -->
+          <g class="hotspot" id="hs-3" onclick="investigateClue(3)" data-found="false">
+            <rect x="132" y="255" width="36" height="22" fill="rgba(212,175,55,.04)"/>
+            <circle class="hotspot-dot" cx="150" cy="266" r="5"/>
+            <circle class="hotspot-ring" cx="150" cy="266" r="14"/>
+          </g>
+
+          <!-- 4: Sticky note -->
+          <g class="hotspot" id="hs-4" onclick="investigateClue(4)" data-found="false">
+            <rect x="48" y="125" width="50" height="40" fill="rgba(212,175,55,.04)"/>
+            <circle class="hotspot-dot" cx="73" cy="145" r="5"/>
+            <circle class="hotspot-ring" cx="73" cy="145" r="14"/>
+          </g>
+
+          <!-- 5: Coffee cup -->
+          <g class="hotspot" id="hs-5" onclick="investigateClue(5)" data-found="false">
+            <rect x="312" y="202" width="34" height="36" fill="rgba(212,175,55,.04)"/>
+            <circle class="hotspot-dot" cx="329" cy="220" r="5"/>
+            <circle class="hotspot-ring" cx="329" cy="220" r="14"/>
+          </g>
+
+          <!-- 6: Keyboard -->
+          <g class="hotspot" id="hs-6" onclick="investigateClue(6)" data-found="false">
+            <rect x="178" y="215" width="144" height="42" fill="rgba(0,255,65,.03)"/>
+            <circle class="hotspot-dot" cx="250" cy="236" r="5"/>
+            <circle class="hotspot-ring" cx="250" cy="236" r="14"/>
+          </g>
+
+          <!-- 7: Evidence marker 1 (near left rack) -->
+          <g class="hotspot" id="hs-7" onclick="investigateClue(7)" data-found="false">
+            <circle cx="78" cy="246" r="18" fill="rgba(212,175,55,.04)"/>
+            <circle class="hotspot-dot" cx="78" cy="246" r="5"/>
+            <circle class="hotspot-ring" cx="78" cy="246" r="14"/>
+          </g>
+
+          <!-- 8: Overturned chair -->
+          <g class="hotspot" id="hs-8" onclick="investigateClue(8)" data-found="false">
+            <circle cx="440" cy="280" r="22" fill="rgba(192,57,43,.04)"/>
+            <circle class="hotspot-dot" cx="440" cy="280" r="5"/>
+            <circle class="hotspot-ring" cx="440" cy="280" r="14"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="scene-footer" id="scene-hint">▸ Click glowing markers to investigate. Find all 8 clues.</div>
+    </div>
+
+    <!-- TERMINAL PANEL -->
+    <div class="terminal-panel">
+      <div class="term-header">
+        <div class="term-title">AGENT TERMINAL v2.6</div>
+        <div class="hud">
+          <div class="hud-item"><div class="hud-val red" id="h-clues">0/8</div><div class="hud-lbl">CLUES</div></div>
+          <div class="hud-sep"></div>
+          <div class="hud-item"><div class="hud-val gold" id="h-score">0</div><div class="hud-lbl">SCORE</div></div>
+          <div class="hud-sep"></div>
+          <div class="hud-item"><div class="hud-val green" id="h-suspect">—</div><div class="hud-lbl">SUSPECT</div></div>
+        </div>
+      </div>
+
+      <div class="term-output" id="term-output">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- DEDUCTION PANEL -->
+      <div class="deduction-panel" id="deduction-panel" style="display:none;">
+        <div class="ded-label">// MAKE YOUR DEDUCTION — select one from each:</div>
+        <div>
+          <div class="ded-label" style="margin-bottom:4px;">SUSPECT</div>
+          <div class="ded-pills" id="dp-suspect">
+            <div class="ded-pill" onclick="selectDed('suspect','Dr. Mehta',this)">Dr. Mehta</div>
+            <div class="ded-pill" onclick="selectDed('suspect','Riya Sharma',this)">Riya Sharma</div>
+            <div class="ded-pill" onclick="selectDed('suspect','Kiran T.',this)">Kiran T.</div>
+          </div>
+        </div>
+        <div>
+          <div class="ded-label" style="margin-bottom:4px;">METHOD</div>
+          <div class="ded-pills" id="dp-method">
+            <div class="ded-pill" onclick="selectDed('method','USB Exfiltration',this)">USB Exfiltration</div>
+            <div class="ded-pill" onclick="selectDed('method','Remote Access',this)">Remote Access</div>
+            <div class="ded-pill" onclick="selectDed('method','Insider Leak',this)">Insider Leak</div>
+          </div>
+        </div>
+        <div>
+          <div class="ded-label" style="margin-bottom:4px;">MOTIVE</div>
+          <div class="ded-pills" id="dp-motive">
+            <div class="ded-pill" onclick="selectDed('motive','Corporate Espionage',this)">Corporate Espionage</div>
+            <div class="ded-pill" onclick="selectDed('motive','Personal Grudge',this)">Personal Grudge</div>
+            <div class="ded-pill" onclick="selectDed('motive','Financial Gain',this)">Financial Gain</div>
+          </div>
+        </div>
+        <button class="start-btn" style="padding:9px 24px;font-size:.72rem;letter-spacing:.15em;animation:none;width:100%;" onclick="submitDeduction()">▸ SUBMIT DEDUCTION</button>
+      </div>
+
+      <div class="term-input-row">
+        <div class="term-prompt">▸</div>
+        <input class="term-input" id="cmd-input" placeholder="Type a command or 'help'…" onkeydown="if(event.key==='Enter')processCmd()"/>
+        <button class="term-send" onclick="processCmd()">⏎</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ WIN SCREEN ══════════════ -->
+<div class="screen hidden" id="win">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;max-width:500px;padding:20px;width:100%;">
+    <div class="win-stamp" id="win-stamp">CASE CLOSED</div>
+    <div class="win-title"><em>CASE</em><br>SOLVED</div>
+    <div class="win-sub" id="win-verdict">—</div>
+    <div class="win-score-box">
+      <div class="win-score-num" id="win-score">0</div>
+      <div class="win-score-lbl">FINAL SCORE</div>
+      <div class="win-score-breakdown">
+        <div class="wsb-item"><div class="wsb-num" id="wb-clues">0</div><div class="wsb-lbl">CLUES FOUND</div></div>
+        <div class="wsb-item"><div class="wsb-num" id="wb-time">0</div><div class="wsb-lbl">TIME BONUS</div></div>
+        <div class="wsb-item"><div class="wsb-num" id="wb-acc">0</div><div class="wsb-lbl">ACCURACY</div></div>
+      </div>
+    </div>
+    <div class="win-name-form">
+      <input class="win-inp" id="win-name-inp" placeholder="Your name for leaderboard…" maxlength="24"/>
+      <button class="win-submit" onclick="saveScore()">SUBMIT</button>
+    </div>
+    <div class="lb-list" id="lb-list"></div>
+    <button class="replay-btn" onclick="replayGame()">↺ INVESTIGATE AGAIN</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ══ GAME STATE ══
+const ANSWER = { suspect:'Riya Sharma', method:'USB Exfiltration', motive:'Financial Gain' };
+
+const CLUES = {
+  1:{ title:'SMASHED SERVER INDICATOR', found:false,
+      text:`Server rack #2's status light has been <strong>manually damaged</strong> — the casing shows fresh scratch marks. Someone wanted to disable the activity logging LED before the breach.` },
+  2:{ title:'GLITCHING MONITOR', found:false,
+      text:`The monitor displays a corrupted file transfer log. Last entry: <strong>XFER_START 02:14 — DEST: /dev/sdb1</strong>. A USB device was connected minutes before the alarm.` },
+  3:{ title:'UNMARKED USB DRIVE', found:false,
+      text:`A <strong>32GB USB drive</strong> found near the left workstation. No label. Forensics shows it was recently formatted and contains traces of large encrypted archives. <em>This is the exfiltration device.</em>` },
+  4:{ title:'STICKY NOTE — ACCESS LOG', found:false,
+      text:`A sticky note reads: <strong>"CHECK ACCESS LOG — RM B7 — RKS"</strong>. The initials <strong>RKS</strong> appear in the building's visitor ledger for the 02:00 AM slot. Cross-reference: Riya K. Sharma.` },
+  5:{ title:'COFFEE CUP — SINGLE USER', found:false,
+      text:`One coffee cup, still warm at <strong>02:45 AM</strong> when security arrived. Lip print matches a single individual. Lab confirms it. The breach was a <strong>solo operation</strong>, not a team.` },
+  6:{ title:'KEYBOARD — LAST KEYSTROKES', found:false,
+      text:`Keystroke logger recovered last session: commands for <strong>tar -czf archive.enc /data/confidential</strong> then <strong>cp archive.enc /mnt/usb</strong>. Data was packed and copied to an external device.` },
+  7:{ title:'EVIDENCE MARKER #1 — FOOTPRINT', found:false,
+      text:`A partial shoe print in the dust. <strong>Size 6 — women's sole pattern</strong>. Dr. Mehta (M, size 11) is ruled out. Kiran T. (M, size 9) is ruled out. Only one suspect matches: <strong>Riya Sharma</strong>.` },
+  8:{ title:'OVERTURNED CHAIR — STRUGGLE?', found:false,
+      text:`The chair was not knocked over in a struggle — CCTV footage gap confirms it. The chair was <strong>repositioned to block the security camera blind spot</strong>. Deliberate, calculated. Professional.` },
+};
+
+const NARRATIVE = [
+  { type:'t-system', text:'// INCOGNITO 2026 — OPERATION BLACKOUT' },
+  { type:'t-sep',    text:'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' },
+  { type:'t-narrative', text:'The call came in at 02:47 AM. Server Room B-7, Seshadripuram Tech Hub. Data is missing. The suspect is still in the building.' },
+  { type:'t-system', text:'// TYPE "help" FOR COMMANDS · CLICK GLOWING MARKERS TO INVESTIGATE' },
+  { type:'t-sep',    text:'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' },
+];
+
+const SUSPECTS = [
+  { name:'Dr. Mehta', role:'Senior Network Engineer', alibi:'Claims to have been in his office — no CCTV confirmation.' },
+  { name:'Riya Sharma', role:'Data Analyst, Intern', alibi:'Badge scanned into building at 01:58 AM. No exit scan.' },
+  { name:'Kiran T.', role:'System Administrator', alibi:'On-call shift ended at 01:30 AM. Alibi: home — unverified.' },
+];
+
+const COMMANDS = {
+  help:    ()=>helpText(),
+  suspects:()=>listSuspects(),
+  clues:   ()=>showFoundClues(),
+  deduce:  ()=>openDeduction(),
+  hint:    ()=>giveHint(),
+  clear:   ()=>clearTerminal(),
+  time:    ()=>showTime(),
+};
+
+let gameActive=false, timerInterval, timeLeft=300;
+let cluesFound=0, score=0, deduction={suspect:null,method:null,motive:null};
+let leaderboard=JSON.parse(localStorage.getItem('op_blackout_lb')||'[]');
+
+// ══ START ══
+function startGame(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  gameActive=true;
+  timeLeft=300; score=0; cluesFound=0;
+  deduction={suspect:null,method:null,motive:null};
+  Object.keys(CLUES).forEach(k=>CLUES[k].found=false);
+  // reset hotspots
+  document.querySelectorAll('.hotspot').forEach(h=>{h.classList.remove('found');h.setAttribute('data-found','false');});
+
+  // print narrative
+  const out=document.getElementById('term-output');
+  out.innerHTML='';
+  NARRATIVE.forEach((l,i)=>{
+    setTimeout(()=>printLine(l.type,l.text),i*200);
+  });
+
+  startTimer();
+  document.getElementById('cmd-input').focus();
+}
+
+// ══ TIMER ══
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60), s=timeLeft%60;
+    const disp=document.getElementById('timer-display');
+    disp.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(timeLeft<=30) disp.style.color='var(--red)';
+    if(timeLeft<=0){ clearInterval(timerInterval); timeUp(); }
+  },1000);
+}
+
+function timeUp(){
+  gameActive=false;
+  printLine('t-error','⚠ TIME EXPIRED — CASE UNSOLVED. The perpetrator has escaped.');
+  printLine('t-system','// Type "deduce" to submit your best guess for partial score.');
+}
+
+// ══ INVESTIGATE CLUE ══
+function investigateClue(id){
+  if(!gameActive && timeLeft>0) return;
+  const clue=CLUES[id];
+  if(!clue)return;
+  const hs=document.getElementById('hs-'+id);
+
+  if(clue.found){
+    printLine('t-warn',`// Clue #${id} already logged.`);
+    return;
+  }
+  clue.found=true;
+  hs.classList.add('found');
+  cluesFound++;
+  score+=200;
+  updateHUD();
+
+  printLine('t-sep','── ── ── ── ── ── ── ── ── ── ── ──');
+
+  // print as clue card
+  const out=document.getElementById('term-output');
+  const div=document.createElement('div');
+  div.className='clue-card t-line';
+  div.innerHTML=`<div class="clue-card-num">CLUE #${id} — ${clue.title}</div><div class="clue-card-text">${clue.text}</div>`;
+  out.appendChild(div);
+  out.scrollTop=out.scrollHeight;
+
+  document.getElementById('scene-hint').textContent=`▸ Clue #${id} logged. ${8-cluesFound} remaining.`;
+  document.getElementById('h-clues').textContent=`${cluesFound}/8`;
+
+  if(cluesFound>=6){
+    printLine('t-sep','━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    printLine('t-success','// SUFFICIENT EVIDENCE COLLECTED. Type "deduce" to make your accusation.');
+  }
+  if(cluesFound===8){
+    printLine('t-success','// ALL CLUES FOUND. Maximum evidence secured. Make your deduction now.');
+    score+=300; updateHUD();
+  }
+}
+
+// ══ COMMAND PROCESSING ══
+function processCmd(){
+  const inp=document.getElementById('cmd-input');
+  const raw=inp.value.trim().toLowerCase();
+  inp.value='';
+  if(!raw)return;
+
+  printLine('t-system','▸ '+raw.toUpperCase());
+  if(COMMANDS[raw]){ COMMANDS[raw](); }
+  else { printLine('t-error',`Unknown command: "${raw}". Type "help" for commands.`); }
+}
+
+function helpText(){
+  printLine('t-system','// AVAILABLE COMMANDS:');
+  printLine('t-clue','  suspects — list all suspects and alibis');
+  printLine('t-clue','  clues    — review evidence collected so far');
+  printLine('t-clue','  deduce   — submit your deduction (opens panel)');
+  printLine('t-clue','  hint     — request a hint (costs 50 points)');
+  printLine('t-clue','  time     — check time remaining');
+  printLine('t-clue','  clear    — clear terminal output');
+}
+
+function listSuspects(){
+  printLine('t-sep','── SUSPECTS ──────────────────────────────────────');
+  SUSPECTS.forEach(s=>{
+    printLine('t-clue',`<strong>${s.name}</strong> · ${s.role}`);
+    printLine('t-narrative',`  Alibi: ${s.alibi}`);
+  });
+}
+
+function showFoundClues(){
+  const found=Object.entries(CLUES).filter(([,c])=>c.found);
+  if(!found.length){ printLine('t-warn','No clues collected yet. Investigate the scene.'); return; }
+  printLine('t-sep','── EVIDENCE LOG ──────────────────────────────────');
+  found.forEach(([id,c])=>printLine('t-clue',`#${id} — ${c.title}`));
+}
+
+function openDeduction(){
+  if(cluesFound<3){ printLine('t-warn','⚠ Collect at least 3 clues before making a deduction.'); return; }
+  document.getElementById('deduction-panel').style.display='flex';
+  printLine('t-system','// Deduction panel activated. Select suspect, method, and motive.');
+  document.getElementById('deduction-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function giveHint(){
+  score=Math.max(0,score-50);
+  updateHUD();
+  const hints=[
+    'The exfiltration happened via a portable storage device — look for it on the scene.',
+    'The sticky note has initials. Cross-reference with the visitor log.',
+    'Check the keyboard — last session commands reveal the method.',
+    'The shoe print eliminates two suspects immediately.',
+    'One coffee cup means one person — this was a solo operation.',
+  ];
+  const h=hints[Math.floor(Math.random()*hints.length)];
+  printLine('t-warn',`HINT (-50pts): ${h}`);
+}
+
+function clearTerminal(){ document.getElementById('term-output').innerHTML=''; }
+
+function showTime(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  printLine('t-clue',`Time remaining: ${m}m ${s}s`);
+}
+
+// ══ DEDUCTION ══
+function selectDed(cat,val,el){
+  document.querySelectorAll(`#dp-${cat} .ded-pill`).forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  deduction[cat]=val;
+  document.getElementById('h-suspect').textContent=deduction.suspect||'—';
+}
+
+function submitDeduction(){
+  if(!deduction.suspect||!deduction.method||!deduction.motive){
+    printLine('t-error','Select suspect, method, AND motive before submitting.'); return;
+  }
+  clearInterval(timerInterval);
+  gameActive=false;
+
+  const correctSuspect = deduction.suspect===ANSWER.suspect;
+  const correctMethod  = deduction.method===ANSWER.method;
+  const correctMotive  = deduction.motive===ANSWER.motive;
+  const allCorrect = correctSuspect&&correctMethod&&correctMotive;
+
+  // score
+  if(correctSuspect) score+=500;
+  if(correctMethod)  score+=300;
+  if(correctMotive)  score+=200;
+  const timeBonus=Math.floor(timeLeft*2);
+  score+=timeBonus;
+
+  setTimeout(()=>showWin(allCorrect,timeBonus,correctSuspect,correctMethod,correctMotive),600);
+}
+
+// ══ WIN SCREEN ══
+function showWin(allCorrect,timeBonus,cS,cM,cMo){
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('win').classList.remove('hidden');
+  const stamp=document.getElementById('win-stamp');
+  stamp.textContent=allCorrect?'CASE CLOSED':'PARTIAL SOLVE';
+  stamp.style.borderColor=allCorrect?'var(--green)':'var(--gold)';
+  stamp.style.color=allCorrect?'var(--green)':'var(--gold)';
+
+  const verdict=allCorrect
+    ? `<strong style="color:var(--green)">PERFECT SOLVE.</strong> ${ANSWER.suspect} used ${ANSWER.method} for ${ANSWER.motive}. Justice served.`
+    : `Partially correct. ${cS?'✓':'✕'} Suspect · ${cM?'✓':'✕'} Method · ${cMo?'✓':'✕'} Motive`;
+  document.getElementById('win-verdict').innerHTML=verdict;
+  document.getElementById('win-score').textContent=score;
+  document.getElementById('wb-clues').textContent=cluesFound+'/8';
+  document.getElementById('wb-time').textContent='+'+timeBonus;
+  document.getElementById('wb-acc').textContent=(cS?'S':'')+' '+(cM?'M':'')+' '+(cMo?'Mo':'');
+  renderLB();
+}
+
+// ══ LEADERBOARD ══
+function saveScore(){
+  const name=document.getElementById('win-name-inp').value.trim();
+  if(!name)return;
+  leaderboard.push({name,score,clues:cluesFound,time:300-timeLeft});
+  leaderboard.sort((a,b)=>b.score-a.score);
+  leaderboard=leaderboard.slice(0,10);
+  localStorage.setItem('op_blackout_lb',JSON.stringify(leaderboard));
+  renderLB();
+  document.getElementById('win-name-inp').value='';
+  document.getElementById('win-name-inp').placeholder='Score saved!';
+}
+
+function renderLB(){
+  const el=document.getElementById('lb-list');
+  if(!leaderboard.length){el.innerHTML='<div style="font-size:.6rem;color:var(--aged);padding:8px;text-align:center;">No scores yet.</div>';return;}
+  const cols=['gold','silver','bronze'];
+  el.innerHTML=leaderboard.map((e,i)=>`
+  <div class="lb-row">
+    <div class="lb-rank ${cols[i]||''}">${i===0?'▲':i===1?'▲':i+1}</div>
+    <div class="lb-name">${e.name}</div>
+    <div class="lb-score">${e.score}</div>
+  </div>`).join('');
+}
+
+function replayGame(){
+  document.getElementById('win').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+}
+
+// ══ UTILS ══
+function printLine(cls,html){
+  const out=document.getElementById('term-output');
+  const d=document.createElement('div');
+  d.className=`t-line ${cls}`;
+  d.innerHTML=html;
+  out.appendChild(d);
+  out.scrollTop=out.scrollHeight;
+}
+
+function updateHUD(){
+  document.getElementById('h-score').textContent=score;
+  document.getElementById('h-clues').textContent=cluesFound+'/8';
+}
+</script>
+</body>
+</html>

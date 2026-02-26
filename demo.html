@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Scene Widget</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@300&display=swap');
+
+        :root {
+            --yellow: #f6c301;
+            --red: #d32f2f;
+            --grid: rgba(45, 15, 15, 0.4);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* CHANGED: Smaller, contained width */
+        .widget-container {
+            position: relative;
+            width: 90%;
+            max-width: 600px; /* Adjust this value to change the size */
+            height: 300px;    /* Fixed height for the widget */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #080808;
+            background-image: 
+                linear-gradient(var(--grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 30px 30px;
+            overflow: hidden;
+            border: 1px solid #1a0a0a;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .widget-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, transparent 10%, rgba(20, 0, 0, 0.4) 70%, rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+        }
+
+        /* SLIMMER TAPE */
+        .tape-belt {
+            width: 100%;
+            height: 60px; /* Reduced height */
+            background-color: var(--yellow);
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            background-image: repeating-linear-gradient(
+                -45deg,
+                #000,
+                #000 30px,
+                transparent 30px,
+                transparent 60px
+            );
+        }
+
+        .scroller {
+            display: flex;
+            white-space: nowrap;
+            animation: scroll-tape 15s linear infinite;
+        }
+
+        .tape-text {
+            color: #000;
+            font-size: 32px; /* Smaller font */
+            font-weight: 800;
+            padding: 0 30px;
+            letter-spacing: -1px;
+            background: var(--yellow);
+            text-transform: uppercase;
+        }
+
+        @keyframes scroll-tape {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .content-box {
+            margin-top: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .title-red {
+            color: var(--red);
+            font-size: 24px; /* Scaled down */
+            letter-spacing: 1.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .attribution {
+            display: block;
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+            color: #665555;
+            font-size: 11px;
+            text-decoration: none;
+        }
+
+        .scanline {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.03);
+            z-index: 6;
+            top: 0;
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget-container">
+        <div class="scanline"></div>
+
+        <div class="tape-belt">
+            <div class="scroller">
+                <span class="tape-text">CRIME SCENE OPERATIONS CLASSIFIED</span>
+                <span class="tape-text">CRIME SCENE OPERATIONS CLASSIFIED</span>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h1 class="title-red">MORE OPERATIONS CLASSIFIED</h1>
+            <a href="https://www.vecteezy.com/free-png/crime-tape" class="attribution">
+                Crime Tape PNGs by Vecteezy
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
