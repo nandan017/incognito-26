@@ -422,3 +422,41 @@
   .countdown-unit { min-width: 48px; }
   .hero__tape--2 { display: none; }
 }
+
+
+#restricted{
+  height: 250px;
+  position: absolute;
+  left: -6rem;
+  top:14rem;
+  transform: rotate(15deg);
+}
+
+#blood{
+  position: absolute;
+  right: -1rem;
+}
+
+#fingerprint{
+  position: absolute;
+  height: 18rem;
+  transform: rotate(35deg);
+  top: 4rem;
+}
+
+#deadbody{
+  position: absolute;
+  left: 2rem;
+  width: 25rem;
+  transform: rotate(20deg);
+}
+
+.body-tape{
+  position: absolute;
+  top: 165rem;
+  
+}
+
+#game-icon{
+  width: 1.25rem;
+}

@@ -35,6 +35,8 @@
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+  position: absolute;
+  left:1rem;
 }
 
 .nav-logo__bracket {
