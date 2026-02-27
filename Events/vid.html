@@ -15,6 +15,27 @@
             --gold: #bfa100;
             --bg: #050000;
         }
+    .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    max-height: 95vh; /* Fit inside screen */
+    border: 2px solid var(--red);
+    box-shadow: 0 0 60px rgba(255, 0, 0, 0.4);
+    animation: posterPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brochure-img {
+    width: 100%;
+    height: 100%;
+    max-height: 95vh; /* Prevent overflow */
+    object-fit: contain; /* Show full image */
+    display: block;
+}
 
    body, html {
     margin: 0; padding: 0;
@@ -282,7 +303,7 @@
     <div id="brochureModal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
-            <img src="YOUR_BROCHURE_IMAGE.jpg" alt="Brochure Poster" class="brochure-img">
+            <img src="video.jpg" alt="Brochure Poster" class="brochure-img">
         </div>
     </div>
 
