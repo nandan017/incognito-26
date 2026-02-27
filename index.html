@@ -34,8 +34,197 @@
   <link rel="stylesheet" href="css/coordinators.css"/>
 
     <link rel="stylesheet" href="css/map.css"/>
+    <style>
+/* ═══════════════════════════════
+   RESPONSIVE MEDIA QUERIES
+═══════════════════════════════ */
+
+/* Tablet: ≤900px */
+@media (max-width: 900px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+
+  .hero__title-main { font-size: clamp(3.5rem, 14vw, 6rem); }
+  .hero__meta { flex-wrap: wrap; gap: 12px; }
+  .hero__meta-divider { display: none; }
+  .hero__countdown { padding: 14px 18px; gap: 8px; }
+  .countdown-value { font-size: clamp(2rem, 8vw, 3.5rem); }
+  .hero__actions { flex-wrap: wrap; justify-content: center; }
+
+  #restricted { height: 140px; left: 0.5rem; top: 8rem; }
+  #blood { width: 200px; }
+  #fingerprint { height: 11rem; }
+
+  .about__grid { grid-template-columns: 1fr; gap: 32px; }
+
+  .events-grid { grid-template-columns: repeat(2, 1fr); }
+
+  #deadbody { display: none; }
+  #venue-magnifier { display: none; }
+  #venue-camera { display: none; }
+  .collegevenue { min-height: auto; padding: 80px 16px; }
+  .card { width: 100%; max-width: 420px; }
+
+  .hz-grid { grid-template-columns: 1fr !important; }
+  .horizon-card { width: 100% !important; padding: 24px !important; }
+
+  .footer__grid { grid-template-columns: 1fr 1fr !important; }
+  .footer__brand { grid-column: 1 / -1; }
+}
+
+/* Mobile: ≤640px */
+@media (max-width: 640px) {
+  section { padding: 56px 0; }
+  .container { padding: 0 16px; }
+
+  .hero__title-main { font-size: clamp(3rem, 18vw, 5rem); }
+  .hero__title-year { font-size: clamp(1.6rem, 8vw, 2.5rem); }
+  .hero__meta { flex-direction: column; gap: 8px; }
+  .hero__countdown { flex-wrap: wrap; justify-content: center; padding: 12px 14px; gap: 4px; }
+  .countdown-unit { min-width: 52px; }
+  .countdown-value { font-size: clamp(1.8rem, 10vw, 2.8rem); }
+  .hero__actions { flex-direction: column; }
+  .hero__btn-primary, .hero__btn-secondary { justify-content: center; width: 100%; }
+  .hero__orgs { flex-direction: column; gap: 6px; }
+  .hero__org-sep { display: none; }
+  #restricted { display: none; }
+  #blood { width: 160px; bottom: 0; right: 0; }
+  #fingerprint { height: 8rem; opacity: 0.4; }
+
+  .about__stats { gap: 16px; padding: 16px; }
+  .about__stat-num { font-size: 2rem; }
+
+  .events-grid { grid-template-columns: 1fr; }
+  .filter-pill { font-size: 0.58rem; padding: 6px 10px; }
+  .section-title { font-size: clamp(2rem, 10vw, 3.5rem); }
+
+  .card { width: 100%; max-width: 100%; }
+  .countdown-timer { font-size: 32px !important; }
+
+  .hz-title h1 { font-size: 1.3rem !important; letter-spacing: 3px !important; }
+  .hz-btn { font-size: 0.9rem !important; padding: 14px !important; }
+  .p-name { font-size: 1.1rem !important; }
+
+  .footer__grid { grid-template-columns: 1fr !important; padding: 32px 16px !important; }
+  .footer__logo { font-size: 2rem; }
+  .footer__bottom-inner { flex-direction: column; text-align: center; gap: 8px; }
+
+  #music-toggle { display: none; }
+}
+
+/* Very small: ≤380px */
+@media (max-width: 380px) {
+  .hero__title-main { font-size: 2.8rem; }
+  .countdown-value { font-size: 1.8rem; }
+  .countdown-unit { min-width: 44px; }
+  .countdown-timer { font-size: 26px !important; }
+}
+
+/* Touch devices */
+@media (hover: none) {
+  body, button, a { cursor: pointer; }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero { min-height: 100svh; }
+  #restricted { display: none; }
+  .hero__countdown { padding: 8px 12px; }
+  .countdown-value { font-size: 1.8rem; }
+}
+</style>
 </head>
 <body>
+  <!-- LOADING SCREEN -->
+<div id="loader" style="
+  position:fixed;inset:0;z-index:99999;
+  background:#07070600;background-color:#070706;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'VT323',monospace;
+  transition:opacity .8s ease, transform .8s ease;
+">
+  <!-- scanlines -->
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);pointer-events:none;"></div>
+
+  <!-- tape strip across middle -->
+  <div style="position:absolute;top:42%;width:120%;left:-10%;overflow:hidden;transform:rotate(-2deg);opacity:.5;">
+    <div style="padding:5px 0;background:repeating-linear-gradient(-45deg,#ffd700,#ffd700 9px,#181410 9px,#181410 18px);font-family:'Special Elite',cursive;font-size:.6rem;letter-spacing:.18em;color:#070706;white-space:nowrap;">
+      DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp;
+    </div>
+  </div>
+
+  <!-- title -->
+  <div id="loader-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,15vw,9rem);letter-spacing:.04em;color:#f0e6cc;line-height:1;text-align:center;opacity:0;transform:scaleY(.01);filter:brightness(20);transition:all 1s ease;">
+    <span style="color:#c0392b">INC</span>OGNITO
+  </div>
+  <div style="font-family:'VT323',monospace;font-size:clamp(1.2rem,4vw,2rem);color:#d4af37;letter-spacing:.35em;margin-top:4px;opacity:0;transition:opacity .5s ease .8s;" id="loader-yr">2026</div>
+
+  <!-- progress bar -->
+  <div style="margin-top:32px;width:240px;height:2px;background:#1a1814;overflow:hidden;opacity:0;transition:opacity .4s ease .6s;" id="loader-bar-wrap">
+    <div id="loader-bar" style="height:100%;width:0%;background:#c0392b;transition:width .1s linear;"></div>
+  </div>
+
+  <!-- status text -->
+  <div id="loader-status" style="margin-top:12px;font-size:1rem;color:#6b6050;letter-spacing:.18em;opacity:0;transition:opacity .4s ease .7s;">INITIALISING...</div>
+</div>
+
+<script>
+(function(){
+  const loader   = document.getElementById('loader');
+  const title    = document.getElementById('loader-title');
+  const yr       = document.getElementById('loader-yr');
+  const barWrap  = document.getElementById('loader-bar-wrap');
+  const bar      = document.getElementById('loader-bar');
+  const status   = document.getElementById('loader-status');
+
+  const steps = [
+    [0,   'BOOTING TERMINAL...'],
+    [20,  'LOADING CASE FILES...'],
+    [45,  'DECRYPTING DOSSIER...'],
+    [65,  'ESTABLISHING LINK...'],
+    [82,  'AUTHENTICATION OK...'],
+    [95,  'CLEARANCE GRANTED...'],
+    [100, 'WELCOME, AGENT.'],
+  ];
+
+  // CRT turn-on effect for title
+  setTimeout(() => {
+    title.style.opacity = '1';
+    title.style.transform = 'scaleY(1)';
+    title.style.filter = 'brightness(1)';
+  }, 200);
+
+  setTimeout(() => { yr.style.opacity = '1'; }, 900);
+  setTimeout(() => { barWrap.style.opacity = '1'; status.style.opacity = '1'; }, 700);
+
+  // Drive the progress bar
+  let pct = 0, stepIdx = 0, done = false;
+
+  const interval = setInterval(() => {
+    pct = Math.min(pct + (Math.random() * 2.2 + 0.4), 100);
+    bar.style.width = pct + '%';
+
+    // Update status text
+    for (let i = steps.length - 1; i >= 0; i--) {
+      if (pct >= steps[i][0]) {
+        status.textContent = steps[i][1];
+        break;
+      }
+    }
+
+    if (pct >= 100 && !done) {
+      done = true;
+      clearInterval(interval);
+      bar.style.background = '#00ff41';
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        loader.style.transform = 'scale(1.03)';
+        setTimeout(() => loader.remove(), 850);
+      }, 600);
+    }
+  }, 40);
+})();
+</script>
 
   <!-- ══════════════════════════════════════════
        NAVBAR
@@ -64,6 +253,10 @@
         <!--- <li><a href="#faq"      class="nav-link">FAQ</a></li>-->
       </ul>
       <div class="nav-cta">
+        <button id="music-toggle" aria-label="Toggle background music" style="background:none;border:1px solid var(--ash);color:var(--aged-paper);font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.12em;padding:8px 14px;cursor:crosshair;transition:border-color 0.2s,color 0.2s;display:flex;align-items:center;gap:6px;">
+  <span id="music-icon">♪</span>
+  <span id="music-label">MUSIC</span>
+</button>
         <!---<a href="/login"    class="btn-ghost">LOGIN</a>-->
         <a href="Reg.html" class="btn-primary">
           <span class="btn-primary__text">REGISTER</span>
@@ -522,6 +715,7 @@
   align-items: center;
   justify-content: center;
   font-family: 'Share Tech Mono', monospace;
+  position: relative;
   background-image:
     repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,0,0,0.012) 40px, rgba(255,0,0,0.012) 41px),
     repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,0,0,0.012) 40px, rgba(255,0,0,0.012) 41px);
@@ -869,13 +1063,49 @@
 
  
 <div class="collegevenue" id="college">
+  <div style="position:absolute;top:0;left:0;right:0;overflow:hidden;white-space:nowrap;z-index:2;transform:rotate(-1.5deg);transform-origin:left;">
+  <span class="evidence-tape" style="font-size:0.65rem;display:inline-block;width:200%;animation:marquee 20s linear infinite;">
+    DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp;
+  </span>
+</div>
+<div style="position:absolute;bottom:0;left:0;right:0;overflow:hidden;white-space:nowrap;z-index:2;transform:rotate(1.5deg);transform-origin:right;">
+  <span class="evidence-tape" style="font-size:0.65rem;display:inline-block;width:200%;animation:marquee 24s linear infinite reverse;">
+    EVIDENCE SEALED &nbsp;·&nbsp; RESTRICTED AREA &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; RESTRICTED AREA &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; RESTRICTED AREA &nbsp;·&nbsp;
+  </span>
+</div>
   
    <img src="assets/dead body.png" alt="dead body outline" id="deadbody">
+   <svg id="venue-magnifier" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none"
+  style="position:absolute;left:calc(50% - 310px);top:calc(50% + 80px);width:90px;height:90px;opacity:0.6;pointer-events:none;z-index:1;animation:float 5s ease-in-out infinite;">
+  <circle cx="38" cy="38" rx="28" ry="28" stroke="#d4af37" stroke-width="3" opacity="0.8"/>
+  <circle cx="38" cy="38" rx="20" ry="20" stroke="#9a7e1e" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="16" y1="38" x2="60" y2="38" stroke="#d4af37" stroke-width="1" opacity="0.35"/>
+  <line x1="38" y1="16" x2="38" y2="60" stroke="#d4af37" stroke-width="1" opacity="0.35"/>
+  <circle cx="28" cy="28" rx="5" ry="5" fill="#d4af37" opacity="0.07"/>
+  <line x1="60" y1="60" x2="90" y2="90" stroke="#d4af37" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+  <line x1="60" y1="60" x2="90" y2="90" stroke="#9a7e1e" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+</svg>
+
+<svg id="venue-camera" viewBox="0 0 120 85" xmlns="http://www.w3.org/2000/svg" fill="none"
+  style="position:absolute;right:calc(50% - 520px);bottom:15%;width:110px;height:82px;opacity:0.55;pointer-events:none;z-index:1;animation:float 7s ease-in-out infinite 1s;">
+  <rect x="8" y="20" width="90" height="56" rx="4" fill="#0d0d0d" stroke="#c0392b" stroke-width="1.5"/>
+  <rect x="26" y="12" width="34" height="12" rx="2" fill="#0d0d0d" stroke="#c0392b" stroke-width="1.2"/>
+  <rect x="70" y="14" width="18" height="7" rx="1" fill="#0d0d0d" stroke="#d4af37" stroke-width="1" opacity="0.7"/>
+  <circle cx="53" cy="48" r="20" fill="#080808" stroke="#c0392b" stroke-width="1.5"/>
+  <circle cx="53" cy="48" r="14" fill="#060606" stroke="#2a2820" stroke-width="1"/>
+  <circle cx="53" cy="48" r="8"  fill="#040404" stroke="#1a1814" stroke-width="0.8"/>
+  <circle cx="47" cy="42" r="2.5" fill="#d4af37" opacity="0.1"/>
+  <circle cx="93" cy="28" r="4" fill="#1a1814" stroke="#c0392b" stroke-width="1"/>
+  <text x="14" y="68" font-family="monospace" font-size="5.5" fill="#c9b99a" opacity="0.5" letter-spacing="1">EVIDENCE CAM</text>
+  <text x="14" y="76" font-family="monospace" font-size="5" fill="#c0392b" opacity="0.5" letter-spacing="1">PHOTO #047</text>
+</svg>
+
   <div class="card">
     <div class="corner tl"></div>
     <div class="corner tr"></div>
     <div class="corner bl"></div>
     <div class="corner br"></div>
+    
 
     <div class="card-inner">
 
@@ -1569,6 +1799,150 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.event-card, .about__dossier, .about__text, .about__stat').forEach(el => {
   observer.observe(el);
 });
+/* MUSIC TOGGLE — Web Audio Noir Jazz (no external files) */
+(function() {
+  const btn   = document.getElementById('music-toggle');
+  const icon  = document.getElementById('music-icon');
+  const label = document.getElementById('music-label');
+  if (!btn) return;
+
+  let playing = false;
+  let musicCtx = null;
+  let nodes = [];
+
+  function stopMusic() {
+    nodes.forEach(n => { try { n.stop(); } catch(_){} });
+    nodes = [];
+  }
+
+  function playNoirJazz(ctx) {
+    // Minor jazz chord notes (Hz) — Cm7 / Fm7 / G7 feel
+    const chords = [
+      [130.81, 155.56, 185.00, 220.00], // Cm7
+      [174.61, 207.65, 246.94, 293.66], // Fm7
+      [146.83, 185.00, 220.00, 261.63], // Gm
+      [164.81, 196.00, 233.08, 277.18], // Am7b5
+    ];
+
+    // Slow walking bass line
+    const bassNotes = [65.41, 73.42, 87.31, 82.41, 69.30, 77.78, 92.50, 87.31];
+    const bpm = 60;
+    const beat = 60 / bpm;
+
+    // ── Pad chords (slow sustained) ──
+    chords.forEach((chord, ci) => {
+      chord.forEach(freq => {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 800;
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        const chordDur = beat * 8;
+        const startT = ctx.currentTime + ci * chordDur;
+        gain.gain.setValueAtTime(0, startT);
+        gain.gain.linearRampToValueAtTime(0.04, startT + 0.4);
+        gain.gain.setValueAtTime(0.04, startT + chordDur - 0.5);
+        gain.gain.linearRampToValueAtTime(0, startT + chordDur);
+        osc.start(startT);
+        osc.stop(startT + chordDur);
+        nodes.push(osc);
+      });
+    });
+
+    // ── Walking bass ──
+    bassNotes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 300;
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      const t = ctx.currentTime + i * beat * 2;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.07, t + 0.05);
+      gain.gain.linearRampToValueAtTime(0, t + beat * 1.8);
+      osc.start(t);
+      osc.stop(t + beat * 2);
+      nodes.push(osc);
+    });
+
+    // ── Hi-hat rhythm (every beat) ──
+    for (let i = 0; i < 16; i++) {
+      const bufSize = ctx.sampleRate * 0.05;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let j = 0; j < bufSize; j++) data[j] = (Math.random() * 2 - 1) * (1 - j / bufSize);
+      const src  = ctx.createBufferSource();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 8000;
+      src.buffer = buf;
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      const t = ctx.currentTime + i * beat;
+      gain.gain.setValueAtTime(i % 2 === 0 ? 0.15 : 0.07, t);
+      src.start(t);
+      nodes.push(src);
+    }
+
+    // ── Soft snare on beats 2 & 4 ──
+    [1, 3, 5, 7, 9, 11, 13, 15].forEach(i => {
+      const bufSize = ctx.sampleRate * 0.15;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let j = 0; j < bufSize; j++) data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (bufSize * 0.3));
+      const src  = ctx.createBufferSource();
+      const gain = ctx.createGain();
+      src.buffer = buf;
+      src.connect(gain);
+      gain.connect(ctx.destination);
+      const t = ctx.currentTime + i * beat;
+      gain.gain.setValueAtTime(0.06, t);
+      src.start(t);
+      nodes.push(src);
+    });
+
+    // Loop after the phrase ends (16 beats)
+    const loopDur = (beat * 16 + 0.1) * 1000;
+    const loopTimer = setTimeout(() => {
+      if (playing) playNoirJazz(ctx);
+    }, loopDur);
+    nodes.push({ stop: () => clearTimeout(loopTimer) });
+  }
+
+  btn.addEventListener('click', function() {
+    if (!playing) {
+      if (!musicCtx) musicCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (musicCtx.state === 'suspended') musicCtx.resume();
+      playing = true;
+      playNoirJazz(musicCtx);
+      icon.textContent  = '♬';
+      label.textContent = 'ON';
+      btn.style.borderColor = 'var(--crime-red)';
+      btn.style.color       = 'var(--crime-red)';
+    } else {
+      stopMusic();
+      playing = false;
+      icon.textContent  = '♪';
+      label.textContent = 'MUSIC';
+      btn.style.borderColor = 'var(--ash)';
+      btn.style.color       = 'var(--aged-paper)';
+    }
+  });
+})();
 </script>
 <script src="database.js"></script>
 </body>
