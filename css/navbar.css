@@ -233,3 +233,76 @@
   .nav-hamburger { display: flex; }
   .nav-inner { height: 56px; }
 }
+
+/* ═══════════════════════════════
+   NAVBAR DEVICE SPECIFIC QUERIES
+═══════════════════════════════ */
+
+/* iPhone SE (Very Small Screens: ≤375px) */
+@media (max-width: 375px) {
+    .nav-inner {
+        padding: 0 12px; /* Tighten side padding */
+    }
+    
+    .nav-logo__text {
+        font-size: 1.1rem; /* Shrink title so it doesn't hit the hamburger */
+    }
+
+    .nav-logo__icon {
+        height: 18px !important; /* Scale down the logo icon */
+    }
+
+    .nav-hamburger span {
+        width: 20px; /* Smaller menu icon for compact screens */
+    }
+}
+
+/* Samsung Galaxy Tab & iPad (Tablet Range: 768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .nav-inner {
+        gap: 15px; /* Reduce gaps between links to keep menu on one line */
+    }
+
+    .nav-links {
+        gap: 0px; 
+    }
+
+    .nav-link {
+        font-size: 0.65rem; /* Slightly smaller text for tablet landscape */
+        padding: 8px 10px;
+    }
+
+    .btn-primary {
+        padding: 8px 14px;
+        font-size: 0.65rem;
+    }
+}
+
+/* Mac & Large Retinas (Large Desktops: ≥1440px) */
+@media (min-width: 1440px) {
+    .nav-inner {
+        max-width: 1400px; /* Allow navbar to stretch further on wide screens */
+        height: 80px;      /* Taller, more premium feel for Mac displays */
+    }
+
+    .nav-logo__text {
+        font-size: 1.8rem;
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        letter-spacing: 0.2em;
+    }
+
+    .btn-primary {
+        padding: 12px 28px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Fix for Safari on Mac (Blurs and Transparency) */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .navbar.scrolled {
+        -webkit-backdrop-filter: blur(10px); /* Specific prefix for Safari */
+    }
+}

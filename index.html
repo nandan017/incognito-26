@@ -132,6 +132,80 @@
   .hero__countdown { padding: 8px 12px; }
   .countdown-value { font-size: 1.8rem; }
 }
+
+@media (max-width: 375px) {
+    /* iPhone SE Loader Fix */
+    #loader-title { font-size: 3.5rem !important; }
+    #loader-status { font-size: 0.8rem; letter-spacing: 0.1em; }
+}
+/* iPhone SE & Small Android */
+@media (max-width: 375px) {
+    .hero__title-main { font-size: 2.8rem; }
+    .hero__tagline { font-size: 0.8rem; }
+    .hero__meta { font-size: 0.75rem; }
+    .countdown-value { font-size: 1.4rem; }
+    .countdown-unit { min-width: 40px; }
+}
+
+/* Samsung Galaxy Tab (Portrait) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .hero__content { padding-top: 100px; }
+    .hero__title-main { font-size: 5.5rem; }
+}
+
+/* Mac / Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+    .hero__content { max-width: 1200px; padding-top: 160px; }
+    .hero__title-main { font-size: 8rem; }
+}
+
+/* Small Mobile */
+@media (max-width: 400px) {
+    .about__dossier { padding: 15px; transform: scale(0.9); margin-left: -5%; width: 110%; }
+    .about__stat-num { font-size: 1.5rem; }
+}
+
+/* Tablets (Android/iPad) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .about__grid { grid-template-columns: 1fr; text-align: center; }
+    .about__dossier { max-width: 500px; margin: 0 auto; }
+    .about__stats { justify-content: center; }
+}
+/* Samsung Galaxy Tab & iPad */
+@media (min-width: 768px) and (max-width: 1200px) {
+    .events-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
+        gap: 20px;
+    }
+}
+
+/* Mac & Large Screens */
+@media (min-width: 1440px) {
+    .events-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns for Mac */
+        gap: 35px;
+    }
+    .event-card { min-height: 400px; }
+}
+
+/* Mobile (iPhone SE/Android) */
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        max-width: none;
+    }
+    .brochure-img {
+        width: 100%;
+        max-height: 80vh; /* Keeps it within view on short phones */
+    }
+}
+
+/* Tablet & Mac */
+@media (min-width: 768px) {
+    .modal-content {
+        max-width: 600px; /* Controlled size as requested */
+    }
+}
 </style>
 </head>
 <body>
@@ -1546,8 +1620,8 @@ document.querySelectorAll('[data-edit]').forEach(el => {
         <p class="footer__tagline font-mono">One day. One mission.<br/>Decode everything.</p>
         <div class="footer__socials">
           <a href="#" class="footer__social-link" aria-label="Instagram">IG</a>
-          <a href="#" class="footer__social-link" aria-label="LinkedIn">LI</a>
-          <a href="#" class="footer__social-link" aria-label="WhatsApp">WA</a>
+          <a href="https://www.linkedin.com/in/pragnya-science-forum-2360ab3b4?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="footer__social-link" aria-label="LinkedIn">LI</a>
+          <a href="https://chat.whatsapp.com/KqnNWaAMyno7aaFsiw0GQ2" class="footer__social-link" aria-label="WhatsApp">WA</a>
           <a href="#" class="footer__social-link" aria-label="Email">EM</a>
         </div>
       </div>
