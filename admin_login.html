@@ -263,10 +263,31 @@ body::after{
     </div>
 
     <button class="submit-btn" id="login-btn" onclick="doLogin()">
-      <span class="btn-glow"></span>
-      <div class="spinner" id="spinner"></div>
-      <span id="btn-text">AUTHENTICATE</span>
-    </button>
+  <span class="btn-glow"></span>
+  
+  <div class="spinner" id="spinner" style="display: none;"></div>
+  
+  <span id="btn-text">AUTHENTICATE</span>
+</button>
+
+<script>
+function doLogin() {
+  const btn = document.getElementById('login-btn');
+  const spinner = document.getElementById('spinner');
+  const text = document.getElementById('btn-text');
+
+  // 1. Show loading state
+  btn.disabled = true;
+  spinner.style.display = 'inline-block';
+  text.style.visibility = 'hidden';
+
+  // 2. Simulate API Call
+  setTimeout(() => {
+    // 3. Redirect on success
+    window.location.href = 'admin_panel.html';
+  }, 2000);
+}
+</script>
 
     <div class="sys-mini">
       <span><span class="sys-dot sys-dot--ok"></span>DB ONLINE</span>
@@ -329,7 +350,7 @@ function doLogin(){
       document.getElementById('btn-text').textContent='✓ ACCESS GRANTED';
       document.getElementById('attempt-fill').style.width='0%';
       playChime();
-      setTimeout(()=>{ window.location.href='admin.html'; },900);
+      setTimeout(()=>{ window.location.href='admin_panel.html'; },900);
     } else {
       attempts++;
       const left=MAX-attempts;
