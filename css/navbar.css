@@ -189,9 +189,10 @@
 .nav-hamburger.open span:nth-child(2) { opacity: 0; }
 .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* Drawer */
 .nav-drawer {
-  background: rgba(10,10,8,0.98);
+  background: #0a0a08;
+  position: relative;
+  z-index: 200;
   border-top: 1px solid var(--ash);
   max-height: 0;
   overflow: hidden;

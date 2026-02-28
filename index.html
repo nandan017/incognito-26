@@ -36,10 +36,35 @@
     <link rel="stylesheet" href="css/map.css"/>
     <style>
 /* ═══════════════════════════════
-   RESPONSIVE MEDIA QUERIES
+   BASE MOBILE SAFETY
 ═══════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
 
-/* Tablet: ≤900px */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+
+
+/* Fingerprint in events — real image, constrain it */
+#fingerprint-2 {
+  display: none; /* hide the duplicate real image, SVG version is used */
+}
+
+/* Horizon card — prevent overflow at any size */
+.horizon-wrapper {
+  overflow-x: hidden;
+  width: 100%;
+}
+.horizon-card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ═══════════════════════════════
+   Tablet: ≤900px
+═══════════════════════════════ */
 @media (max-width: 900px) {
   .nav-links, .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
@@ -56,6 +81,7 @@
   #fingerprint { height: 11rem; }
 
   .about__grid { grid-template-columns: 1fr; gap: 32px; }
+  .about__dossier { max-width: 500px; margin: 0 auto; }
 
   .events-grid { grid-template-columns: repeat(2, 1fr); }
 
@@ -72,39 +98,74 @@
   .footer__brand { grid-column: 1 / -1; }
 }
 
-/* Mobile: ≤640px */
+/* ═══════════════════════════════
+   Mobile: ≤640px
+═══════════════════════════════ */
 @media (max-width: 640px) {
   section { padding: 56px 0; }
   .container { padding: 0 16px; }
 
-  .hero__title-main { font-size: clamp(3rem, 18vw, 5rem); }
-  .hero__title-year { font-size: clamp(1.6rem, 8vw, 2.5rem); }
+  .hero { overflow: hidden; }
+  .hero__content { padding-left: 16px; padding-right: 16px; width: 100%; }
+
+  .hero__title-main { font-size: clamp(2.8rem, 16vw, 4.5rem); }
+  .hero__title-year { font-size: clamp(1.4rem, 7vw, 2rem); }
+
   .hero__meta { flex-direction: column; gap: 8px; }
-  .hero__countdown { flex-wrap: wrap; justify-content: center; padding: 12px 14px; gap: 4px; }
-  .countdown-unit { min-width: 52px; }
-  .countdown-value { font-size: clamp(1.8rem, 10vw, 2.8rem); }
-  .hero__actions { flex-direction: column; }
-  .hero__btn-primary, .hero__btn-secondary { justify-content: center; width: 100%; }
+
+  /* Countdown — hide separators so units stack cleanly */
+  .hero__countdown {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px 14px;
+    gap: 6px;
+  }
+  .countdown-sep { display: none; }
+  .countdown-unit { min-width: 64px; text-align: center; }
+  .countdown-value { font-size: clamp(1.6rem, 9vw, 2.4rem); }
+
+  .hero__actions { flex-direction: column; align-items: stretch; }
+  .hero__btn-primary, .hero__btn-secondary {
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
   .hero__orgs { flex-direction: column; gap: 6px; }
   .hero__org-sep { display: none; }
+
   #restricted { display: none; }
-  #blood { width: 160px; bottom: 0; right: 0; }
-  #fingerprint { height: 8rem; opacity: 0.4; }
+  #blood { width: 140px; bottom: 0; right: 0; opacity: 0.85; }
+  #fingerprint { height: 7rem; opacity: 0.35; top: 2rem; }
 
-  .about__stats { gap: 16px; padding: 16px; }
-  .about__stat-num { font-size: 2rem; }
+  /* About */
+  .about__dossier {
+    padding: 16px;
+    width: 100%;
+    transform: none; /* remove the scale hack */
+    margin: 0;
+  }
+  .about__stats { gap: 12px; padding: 12px; flex-wrap: wrap; }
+  .about__stat-num { font-size: 1.8rem; }
 
+  /* Events */
   .events-grid { grid-template-columns: 1fr; }
+  .events-camera-wrap { display: none; } /* hide forensic cam on mobile */
   .filter-pill { font-size: 0.58rem; padding: 6px 10px; }
-  .section-title { font-size: clamp(2rem, 10vw, 3.5rem); }
+  .section-title { font-size: clamp(1.8rem, 9vw, 3rem); }
 
+  /* College card */
+  .collegevenue { padding: 60px 12px; min-height: auto; }
   .card { width: 100%; max-width: 100%; }
-  .countdown-timer { font-size: 32px !important; }
+  .countdown-timer { font-size: 28px !important; letter-spacing: 1px !important; }
+  .subject-name { font-size: 16px !important; }
 
-  .hz-title h1 { font-size: 1.3rem !important; letter-spacing: 3px !important; }
-  .hz-btn { font-size: 0.9rem !important; padding: 14px !important; }
-  .p-name { font-size: 1.1rem !important; }
+  /* Coordinators */
+  .hz-title h1 { font-size: 1.2rem !important; letter-spacing: 2px !important; }
+  .hz-btn { font-size: 0.85rem !important; padding: 14px !important; }
+  .p-name { font-size: 1rem !important; }
+  .hz-intel-box { width: 100% !important; height: 130px !important; }
 
+  /* Footer */
   .footer__grid { grid-template-columns: 1fr !important; padding: 32px 16px !important; }
   .footer__logo { font-size: 2rem; }
   .footer__bottom-inner { flex-direction: column; text-align: center; gap: 8px; }
@@ -112,99 +173,66 @@
   #music-toggle { display: none; }
 }
 
-/* Very small: ≤380px */
+/* ═══════════════════════════════
+   Very small: ≤380px
+═══════════════════════════════ */
 @media (max-width: 380px) {
-  .hero__title-main { font-size: 2.8rem; }
-  .countdown-value { font-size: 1.8rem; }
-  .countdown-unit { min-width: 44px; }
-  .countdown-timer { font-size: 26px !important; }
+  #loader-title { font-size: clamp(2.8rem, 18vw, 4rem) !important; }
+  #loader-status { font-size: 0.75rem; letter-spacing: 0.08em; }
+
+  .hero__title-main { font-size: 2.4rem; }
+  .hero__tagline { font-size: 0.75rem; }
+  .countdown-value { font-size: 1.4rem; }
+  .countdown-unit { min-width: 48px; }
+  .countdown-timer { font-size: 22px !important; letter-spacing: 0 !important; }
+
+  .about__stat-num { font-size: 1.5rem; }
 }
 
-/* Touch devices */
+/* ═══════════════════════════════
+   Touch devices
+═══════════════════════════════ */
 @media (hover: none) {
   body, button, a { cursor: pointer; }
 }
 
-/* Landscape mobile */
+/* ═══════════════════════════════
+   Landscape mobile
+═══════════════════════════════ */
 @media (max-height: 500px) and (orientation: landscape) {
   .hero { min-height: 100svh; }
   #restricted { display: none; }
-  .hero__countdown { padding: 8px 12px; }
-  .countdown-value { font-size: 1.8rem; }
+  .hero__countdown { padding: 6px 10px; }
+  .countdown-value { font-size: 1.4rem; }
 }
 
-@media (max-width: 375px) {
-    /* iPhone SE Loader Fix */
-    #loader-title { font-size: 3.5rem !important; }
-    #loader-status { font-size: 0.8rem; letter-spacing: 0.1em; }
-}
-/* iPhone SE & Small Android */
-@media (max-width: 375px) {
-    .hero__title-main { font-size: 2.8rem; }
-    .hero__tagline { font-size: 0.8rem; }
-    .hero__meta { font-size: 0.75rem; }
-    .countdown-value { font-size: 1.4rem; }
-    .countdown-unit { min-width: 40px; }
-}
-
-/* Samsung Galaxy Tab (Portrait) */
+/* ═══════════════════════════════
+   Tablet portrait: 768–1024px
+═══════════════════════════════ */
 @media (min-width: 768px) and (max-width: 1024px) {
-    .hero__content { padding-top: 100px; }
-    .hero__title-main { font-size: 5.5rem; }
+  .hero__content { padding-top: 100px; }
+  .hero__title-main { font-size: 5.5rem; }
+  .about__grid { grid-template-columns: 1fr; text-align: center; }
+  .about__dossier { max-width: 500px; margin: 0 auto; }
+  .about__stats { justify-content: center; }
+  .events-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
 }
 
-/* Mac / Large Desktop (1440px+) */
+/* ═══════════════════════════════
+   Large desktop: 1440px+
+═══════════════════════════════ */
 @media (min-width: 1440px) {
-    .hero__content { max-width: 1200px; padding-top: 160px; }
-    .hero__title-main { font-size: 8rem; }
+  .hero__content { max-width: 1200px; padding-top: 160px; }
+  .hero__title-main { font-size: 8rem; }
+  .events-grid { grid-template-columns: repeat(3, 1fr); gap: 35px; }
+  .event-card { min-height: 400px; }
 }
-
-/* Small Mobile */
-@media (max-width: 400px) {
-    .about__dossier { padding: 15px; transform: scale(0.9); margin-left: -5%; width: 110%; }
-    .about__stat-num { font-size: 1.5rem; }
+/* ── FIX 4: Blood — desktop untouched, only scale down on mobile ── */
+@media (max-width: 900px) {
+  #blood { width: 200px; }
 }
-
-/* Tablets (Android/iPad) */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .about__grid { grid-template-columns: 1fr; text-align: center; }
-    .about__dossier { max-width: 500px; margin: 0 auto; }
-    .about__stats { justify-content: center; }
-}
-/* Samsung Galaxy Tab & iPad */
-@media (min-width: 768px) and (max-width: 1200px) {
-    .events-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
-        gap: 20px;
-    }
-}
-
-/* Mac & Large Screens */
-@media (min-width: 1440px) {
-    .events-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 columns for Mac */
-        gap: 35px;
-    }
-    .event-card { min-height: 400px; }
-}
-
-/* Mobile (iPhone SE/Android) */
-@media (max-width: 480px) {
-    .modal-content {
-        width: 95%;
-        max-width: none;
-    }
-    .brochure-img {
-        width: 100%;
-        max-height: 80vh; /* Keeps it within view on short phones */
-    }
-}
-
-/* Tablet & Mac */
-@media (min-width: 768px) {
-    .modal-content {
-        max-width: 600px; /* Controlled size as requested */
-    }
+@media (max-width: 640px) {
+  #blood { width: 130px; bottom: 0; right: 0; }
 }
 </style>
 </head>
@@ -350,6 +378,18 @@
        <!---<li><a href="#faq"      class="nav-drawer__link">// FAQ</a></li>-->
         <li><a href="Reg.html" class="nav-drawer__link text-red">// REGISTER NOW</a></li>
       </ul>
+      <div class="nav-drawer-mobile-extras">
+  <a href="game.html" style="display:flex;align-items:center;">
+    <img src="assets/gameicon.png" alt="game" style="width:1.25rem;">
+  </a>
+  <button id="music-toggle-mobile" aria-label="Toggle music"
+    style="background:none;border:1px solid var(--ash);color:var(--aged-paper);
+           font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.12em;
+           padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+    <span id="music-icon-mobile">♪</span>
+    <span>MUSIC</span>
+  </button>
+</div>
     </div>
   </nav>
 
@@ -766,7 +806,7 @@
 
 
      
-        <img src="assets/fingerprint-removebg-preview.png" alt="fingerprint" id="fingerprint-2">
+        <img src="assets/fingerprint-removebg-preview.png" alt="fingerprint" id="fingerprint-2" style="display:none;">
       </div>
       
     
@@ -1132,6 +1172,43 @@
   /* Editable hint */
   [data-edit]:hover { outline: 1px dashed rgba(192,57,43,0.3); cursor: text; }
   [data-edit].editing { outline: 1px solid #c0392b; }
+
+  /* ── FIX 1: Drawer solid background, above hero content ── */
+.nav-drawer {
+  background: #0a0a08;
+  position: relative;
+  z-index: 9999;
+}
+/* ── FIX 2: Show music + game in mobile drawer ── */
+@media (max-width: 900px) {
+  #music-toggle { display: flex !important; }
+  
+  /* Show music toggle inside drawer footer */
+  .nav-drawer-mobile-extras {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px 8px;
+    border-top: 1px solid var(--ash);
+  }
+}
+@media (min-width: 901px) {
+  .nav-drawer-mobile-extras { display: none; }
+}
+
+/* ── FIX 3: Authorize button contained on mobile ── */
+@media (max-width: 640px) {
+  .hz-footer {
+    flex-direction: column;
+  }
+  .hz-btn {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.8rem !important;
+    padding: 14px 8px !important;
+    letter-spacing: 2px !important;
+  }
+}
 
 </style>
 
@@ -2016,57 +2093,18 @@ document.querySelectorAll('.event-card, .about__dossier, .about__text, .about__s
       btn.style.color       = 'var(--aged-paper)';
     }
   });
-})();
-</script>
-<script src="database.js"></script>
-<!--supabase-->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const supabaseUrl = "https://lkbsvjwpdrojwfifhiic.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrYnN2andwZHJvandmaWZoaWljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU5MjYsImV4cCI6MjA4NzYwMTkyNn0.9-2pz6bW96CHUABzdOKsXma9OtYrUq9tPzS9LeKZUks"; // from Supabase settings
-
-  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-  async function testConnection() {
-
-    // INSERT USER
-    const { data: insertData, error: insertError } = await supabaseClient
-      .from('Registration')
-      .insert([{ name: 'John', email: 'john@email.com' }]);
-
-    if (insertError) {
-      console.error("Insert Error:", insertError);
-    } else {
-      console.log("Inserted:", insertData);
-    }
-
-    // FETCH USERS
-    const { data: usersData, error: fetchError } = await supabaseClient
-      .from('users')
-      .select('*');
-
-    if (fetchError) {
-      console.error("Fetch Error:", fetchError);
-    } else {
-      console.log("Users:", usersData);
-    }
-
-    // SIGN UP USER
-    const { data: authData, error: authError } = await supabaseClient.auth.signUp({
-      email: 'user@email.com',
-      password: 'password123'
+  // sync mobile music button
+  const btnM  = document.getElementById('music-toggle-mobile');
+  const iconM = document.getElementById('music-icon-mobile');
+  if (btnM) {
+    btnM.addEventListener('click', function() { btn.click(); });
+    // keep icon in sync
+    const origClick = btn.onclick;
+    btn.addEventListener('click', function() {
+      if (iconM) iconM.textContent = playing ? '♪' : '♬';
     });
-
-    if (authError) {
-      console.error("Signup Error:", authError);
-    } else {
-      console.log("Signed Up:", authData);
-    }
   }
-
-  testConnection();
+})();
 </script>
 </body>
 </html>

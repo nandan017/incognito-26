@@ -45,17 +45,14 @@
       transform: translate(-50%, -50%);
       font-family: 'Bebas Neue', sans-serif;
       font-size: 15vw; 
-      
-      /* --- THE RAZOR OUTLINE FIX --- */
-      color: transparent;                      /* Removes the solid "fucking" text fill */
-      -webkit-text-stroke: 0.5px rgba(141, 71, 71, 0.3); /* The thin red wireframe line */
-      letter-spacing: 2.5vw;                   /* Matches the wide spacing on the right */
-      
+      color: transparent;
+      -webkit-text-stroke: 0.5px rgba(141, 71, 71, 0.3);
+      letter-spacing: 2.5vw;
       z-index: 2;
       pointer-events: none;
       white-space: nowrap;
       text-transform: uppercase;
-      text-shadow: none;                       /* Removes the blocky glow */
+      text-shadow: none;
       user-select: none;
     }
 
@@ -66,16 +63,8 @@
       left: -20%;
       z-index: 10; 
     }
-
-    .hero__tape--top {
-      top: 15%;
-      transform: rotate(-5deg);
-    }
-
-    .hero__tape--bottom {
-      bottom: 15%; 
-      transform: rotate(4deg); 
-    }
+    .hero__tape--top    { top: 15%;    transform: rotate(-5deg); }
+    .hero__tape--bottom { bottom: 15%; transform: rotate(4deg);  }
 
     /* Auth Overlay */
     .auth-overlay {
@@ -87,6 +76,7 @@
       align-items: center;
       justify-content: center;
       background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.5) 100%);
+      overflow-y: auto;
     }
 
     /* Glass Auth Card */
@@ -100,7 +90,6 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-top: 4px solid var(--red);
       box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
-    
     }
 
     .input-group label {
@@ -114,12 +103,14 @@
 
     .input-group input {
       width: 100%;
+      box-sizing: border-box;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 0.8rem;
       color: white;
       font-family: 'Courier Prime', monospace;
       outline: none;
+      transition: border-color 0.2s;
     }
 
     .input-group input:focus {
@@ -132,65 +123,77 @@
       text-decoration: underline;
     }
 
+    /* ── Status line under button ── */
+    #status-line {
+      font-family: 'VT323', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      text-align: center;
+      margin-top: 0.6rem;
+      min-height: 1.1rem;
+    }
+    #status-line.err  { color: #ff4444; }
+    #status-line.ok   { color: #00ff41; }
+    #status-line.wait { color: var(--gold); }
+
     /* Success Modal Styles */
-.success-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Aligns to top */
-  padding-top: 5vh; /* Distance from top */
-}
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 5vh;
+    }
 
-.success-card {
-  width: 90%;
-  max-width: 450px;
-  background: var(--glass-bg);
-  border: 1px solid var(--red);
-  border-top: 6px solid var(--red);
-  padding: 2.5rem;
-  text-align: center;
-  box-shadow: 0 0 50px rgba(255, 0, 0, 0.2);
-  animation: slideDown 0.4s ease-out;
-}
+    .success-card {
+      width: 90%;
+      max-width: 450px;
+      background: var(--glass-bg);
+      border: 1px solid var(--red);
+      border-top: 6px solid var(--red);
+      padding: 2.5rem;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(255, 0, 0, 0.2);
+      animation: slideDown 0.4s ease-out;
+    }
 
-@keyframes slideDown {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to   { transform: translateY(0);     opacity: 1; }
+    }
 
-.success-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 1.5rem;
-  border: 2px solid var(--red);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1.5rem;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
 
-.status-text { color: var(--red); font-size: 0.8rem; letter-spacing: 3px; font-weight: bold; margin-bottom: 1rem; }
-.divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 1.5rem 0; }
-.details-text { font-size: 0.9rem; color: white; margin-bottom: 0.5rem; }
-.thanks-text { font-size: 0.8rem; color: var(--gold); opacity: 0.8; }
+    .status-text  { color: var(--red); font-size: 0.8rem; letter-spacing: 3px; font-weight: bold; margin-bottom: 1rem; }
+    .divider      { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 1.5rem 0; }
+    .details-text { font-size: 0.9rem; color: white; margin-bottom: 0.5rem; }
+    .thanks-text  { font-size: 0.8rem; color: var(--gold); opacity: 0.8; }
 
-.close-btn {
-  margin-top: 2rem;
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  padding: 0.8rem 1.5rem;
-  font-family: 'Courier Prime', monospace;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.close-btn:hover { background: var(--gold); color: black; }
+    .close-btn {
+      margin-top: 2rem;
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.8rem 1.5rem;
+      font-family: 'Courier Prime', monospace;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .close-btn:hover { background: var(--gold); color: black; }
   </style>
 </head>
 <body>
@@ -228,117 +231,113 @@
         <p class="font-mono text-red" style="font-size: 0.6rem; letter-spacing: 2px;">AGENT ENROLLMENT TERMINAL</p>
       </div>
 
-<form id="registerForm">
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">AGENT_NAME</label>      
-    <input type="text" id="agent_name" placeholder="John Doe" required autocomplete="off">
-  </div>
+      <form id="registerForm">
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">AGENT_NAME</label>      
+          <input type="text" id="agent_name" placeholder="John Doe" required autocomplete="off">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">COLLEGE_NAME</label>
-    <input type="text" id="college_name" placeholder="College Name" required autocomplete="off">
-  </div>
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">COLLEGE_NAME</label>
+          <input type="text" id="college_name" placeholder="College Name" required autocomplete="off">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">AGENT_EMAIL</label>
-    <input type="email" id="agent_email" placeholder="agent007@gmail.com" required autocomplete="off">
-  </div>
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">AGENT_EMAIL</label>
+          <input type="email" id="agent_email" placeholder="agent007@gmail.com" required autocomplete="off">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">AGENT_NUMBER</label>
-    <input 
-      type="tel" 
-      id="agent_phone" 
-      placeholder="**********" 
-      required 
-      pattern="[0-9]{10}" 
-      maxlength="10" 
-      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
-      title="Agent Number must be exactly 10 digits."
-    >
-  </div>
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">AGENT_NUMBER</label>
+          <input 
+            type="tel" 
+            id="agent_phone" 
+            placeholder="**********" 
+            required 
+            pattern="[0-9]{10}" 
+            maxlength="10" 
+            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+            title="Agent Number must be exactly 10 digits."
+          >
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">EVENTS</label>
-    <select id="agent_event" required onchange="this.style.color='white'" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); color: #757575; border: 1px solid rgba(255, 255, 255, 0.1); font-family: 'Courier Prime', monospace; outline: none; cursor: pointer;">
-      <option value="" disabled selected style="color: #757575; background: #111;">Select an event...</option>
-      <option value="Videography/Photography" style="background: #111; color: #757575;">Videography/Photography</option>
-      <option value="Data Treasure Hunt" style="background: #111; color: #757575;">Data Treasure Hunt</option>
-      <option value="Coding & Debugging" style="background: #111; color: #757575;">Coding & Debugging</option>
-      <option value="IT Dumb Charades" style="background: #111; color: #757575;">IT Dumb Charades</option>
-      <option value="Logo Design" style="background: #111; color: #757575;">Logo Design</option>
-      <option value="Talent Show" style="background: #111; color: #757575;">Talent Show</option>
-      <option value="BGMI" style="background: #111; color: #757575;">BGMI</option>
-      <option value="Freefire" style="background: #111; color: #757575;">Freefire</option>
-      <option value="Crime Scene Set Up" style="background: #111; color: #757575;">Crime Scene Set Up</option>
-    </select>
-  </div>
+        <div class="input-group" style="margin-bottom: 1.5rem;">
+          <label class="font-mono">EVENTS</label>
+          <select id="agent_event" required onchange="this.style.color='white'" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); color: #757575; border: 1px solid rgba(255, 255, 255, 0.1); font-family: 'Courier Prime', monospace; outline: none; cursor: pointer;">
+            <option value="" disabled selected style="color: #757575; background: #111;">Select an event...</option>
+            <option value="Videography/Photography" style="background: #111; color: #757575;">Videography/Photography</option>
+            <option value="Data Treasure Hunt"      style="background: #111; color: #757575;">Data Treasure Hunt</option>
+            <option value="Coding & Debugging"      style="background: #111; color: #757575;">Coding & Debugging</option>
+            <option value="IT Dumb Charades"        style="background: #111; color: #757575;">IT Dumb Charades</option>
+            <option value="Logo Design"             style="background: #111; color: #757575;">Logo Design</option>
+            <option value="Talent Show"             style="background: #111; color: #757575;">Talent Show</option>
+            <option value="BGMI"                    style="background: #111; color: #757575;">BGMI</option>
+            <option value="Freefire"                style="background: #111; color: #757575;">Freefire</option>
+            <option value="Crime Scene Set Up"      style="background: #111; color: #757575;">Crime Scene Set Up</option>
+          </select>
+        </div>
 
+        <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; text-align: center; margin-left: 5%;">
+          <input type="checkbox" id="terms" required style="cursor: pointer; width: 15px; height: 15px; accent-color: #b32626; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+          <label for="terms" style="color: #757575; font-family: 'Courier Prime', monospace; font-size: 0.85rem; cursor: pointer; margin: 0; display: inline;">
+            I agree to the <a href="termsandconditions.html" style="color: rgb(224, 29, 29); text-decoration: underline; text-underline-offset: 3px;">Terms and Conditions</a>
+          </label>
+        </div>
 
-
-<div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; text-align: center;margin-left: 5%;">
-  <input type="checkbox" id="terms" required style="cursor: pointer; width: 15px; height: 15px; accent-color: #b32626; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
-  
-  <label for="terms" style="color: #757575; font-family: 'Courier Prime', monospace; font-size: 0.85rem; cursor: pointer; margin: 0; display: inline;">
-    I agree to the <a href="termsandconditions.html" style="color: rgb(224, 29, 29); text-decoration: underline; text-underline-offset: 3px;">Terms and Conditions</a>
-  </label>
-</div>
-        <button type="submit" class="hero__btn-primary" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
-          <span>INITIALIZE </span>
+        <button type="submit" id="submitBtn" class="hero__btn-primary" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
+          <span id="btn-text">INITIALIZE </span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
+
+        <div id="status-line"></div>
       </form>
 
       <div class="auth-footer font-mono" 
-     style="margin-top: 2rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            font-size: 0.75rem; 
-            opacity: 0.8;">
-
-  <span>Admin Login:</span>
-
-  <a href="admin_login.html" 
-     class="hero__btn-primary"
-     style="display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;">
-                 
-      <span>INITIALIZE</span>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M3 8h10M9 4l4 4-4 4" 
-              stroke="currentColor" 
-              stroke-width="1.5" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"/>
-      </svg>
-  </a>
-
-</div>
+           style="margin-top: 2rem; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.75rem; opacity: 0.8;">
+        <span>Admin Login:</span>
+        <a href="admin_login.html" 
+           class="hero__btn-primary"
+           style="display: flex; align-items: center; gap: 6px; padding: 6px 14px; text-decoration: none; border: none; cursor: pointer;">
+          <span>INITIALIZE</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
     </main>
   </div>
 
- <script>
-    // 1. Mouse-Based Parallax
-    const layers = [
-      { el: document.querySelector('.hero__bg-layer--1'), speed: 0.05 },
-      { el: document.querySelector('.hero__bg-layer--2'), speed: 0.1 },
-      { el: document.querySelector('.hero__bg-layer--3'), speed: 0.15 },
-      { el: document.querySelector('.hero__glitch-overlay'), speed: 0.04 },
-      { el: document.querySelector('.hero__tape--top'), speed: 0.08 },
-      { el: document.querySelector('.hero__tape--bottom'), speed: 0.08 }
-    ];
+  <!-- SUCCESS MODAL — unchanged from original -->
+  <div id="successModal" class="success-overlay" style="display: none;">
+    <div class="success-card">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 class="font-display">INITIALIZED</h1>
+      <p class="status-text">REGISTRATION SUCCESSFUL</p>
+      <div class="divider"></div>
+      <p class="details-text">Agent details dispatched to their email.</p>
+      <p class="thanks-text">Thank you for enlisting.</p>
+      <button onclick="window.location.href='index.html'" class="close-btn">RETURN TO HOME</button>
+    </div>
+  </div>
 
+  <script>
+    /* ── 1. Mouse parallax — unchanged from original ─────── */
+    const layers = [
+      { el: document.querySelector('.hero__bg-layer--1'),    speed: 0.05 },
+      { el: document.querySelector('.hero__bg-layer--2'),    speed: 0.1  },
+      { el: document.querySelector('.hero__bg-layer--3'),    speed: 0.15 },
+      { el: document.querySelector('.hero__glitch-overlay'), speed: 0.04 },
+      { el: document.querySelector('.hero__tape--top'),      speed: 0.08 },
+      { el: document.querySelector('.hero__tape--bottom'),   speed: 0.08 }
+    ];
     document.addEventListener('mousemove', (e) => {
-      const x = (window.innerWidth / 2 - e.pageX) / 30;
+      const x = (window.innerWidth  / 2 - e.pageX) / 30;
       const y = (window.innerHeight / 2 - e.pageY) / 30;
       layers.forEach(layer => {
         if (!layer.el) return;
@@ -353,91 +352,100 @@
       });
     });
 
-    // 2. Typewriter Logic
+    /* ── 2. Typewriter — unchanged from original ─────────── */
     const messages = [
       "Accessing enrollment gateway...",
       "Requesting Agent Dossier...",
       "Please enter your credentials."
     ];
-    let msgIdx = 0; let charIdx = 0; let isDeleting = false;
+    let msgIdx = 0, charIdx = 0, isDeleting = false;
     const taglineEl = document.getElementById('register-tagline');
-
     function type() {
       const current = messages[msgIdx];
       taglineEl.textContent = isDeleting ? current.slice(0, charIdx--) : current.slice(0, charIdx++);
-      if (!isDeleting && charIdx > current.length) { 
-        isDeleting = true; setTimeout(type, 2000); 
-      } else if (isDeleting && charIdx === 0) { 
-        isDeleting = false; msgIdx = (msgIdx + 1) % messages.length; setTimeout(type, 500); 
-      } else { 
-        setTimeout(type, isDeleting ? 40 : 80); 
+      if (!isDeleting && charIdx > current.length) {
+        isDeleting = true; setTimeout(type, 2000);
+      } else if (isDeleting && charIdx === 0) {
+        isDeleting = false; msgIdx = (msgIdx + 1) % messages.length; setTimeout(type, 500);
+      } else {
+        setTimeout(type, isDeleting ? 40 : 80);
       }
     }
     window.onload = () => setTimeout(type, 500);
 
-    // 3. BREVO API DISPATCH
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
+    /* ── 3. Status helper ────────────────────────────────── */
+    function setStatus(msg, type) {
+      const el = document.getElementById('status-line');
+      el.textContent = msg;
+      el.className = type; // 'err' | 'ok' | 'wait' | ''
+    }
 
-  const btn = this.querySelector('button');
-  btn.disabled = true;
-  btn.innerText = "INITIALIZING...";
+    /* ── 4. Form submit → calls /api/register ────────────── */
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      setStatus('', '');
 
-  // 1. Capture Form Data
-  const formData = {
-    name: document.getElementById('agent_name').value,
-    email: document.getElementById('agent_email').value,
-    phone: document.getElementById('agent_phone').value,
-    college: document.getElementById('college_name').value,
-    event: document.getElementById('agent_event').value
-  };
+      const btn     = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btn-text');
 
-  // 2. Send to Netlify Function (The Secure Proxy)
-  try {
-    const response = await fetch('/.netlify/functions/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+      // Client-side guard for terms checkbox (browser won't enforce on some mobile)
+      if (!document.getElementById('terms').checked) {
+        setStatus('⚠ ACCEPT TERMS TO PROCEED', 'err');
+        return;
+      }
+
+      const formData = {
+        name:    document.getElementById('agent_name').value.trim(),
+        college: document.getElementById('college_name').value.trim(),
+        email:   document.getElementById('agent_email').value.trim(),
+        phone:   document.getElementById('agent_phone').value.trim(),
+        event:   document.getElementById('agent_event').value
+      };
+
+      btn.disabled       = true;
+      btnText.textContent = 'INITIALIZING...';
+      setStatus('TRANSMITTING TO HQ...', 'wait');
+
+      try {
+        const response = await fetch('/api/register', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (response.status === 409) {
+          // Duplicate registration
+          setStatus('⚠ ' + result.error, 'err');
+          return;
+        }
+
+        if (!response.ok) {
+          setStatus('⚠ ' + (result.error || 'TERMINAL ERROR — TRY AGAIN'), 'err');
+          return;
+        }
+
+        // Success
+        if (result.warning) {
+          // DB saved but email failed — still show success
+          console.warn(result.warning);
+        }
+
+        document.getElementById('successModal').style.display = 'flex';
+        this.reset();
+        document.getElementById('agent_event').style.color = '#757575';
+        setStatus('', '');
+
+      } catch (err) {
+        console.error(err);
+        setStatus('⚠ CRITICAL ERROR: Connection to HQ lost.', 'err');
+      } finally {
+        btn.disabled        = false;
+        btnText.textContent = 'INITIALIZE ';
+      }
     });
+  </script>
 
-    const result = await response.json();
-
-    if (response.ok) {
-      document.getElementById('successModal').style.display = 'flex';
-      this.reset();
-    } else {
-      alert("TERMINAL ERROR: " + (result.message || "Unauthorized Access"));
-    }
-  } catch (err) {
-    alert("CRITICAL ERROR: Connection to HQ lost.");
-  } finally {
-    btn.disabled = false;
-    btn.innerText = "INITIALIZE";
-  }
-});
-
-    function closeModal() {
-      document.getElementById('successModal').style.display = 'none';
-    }
-</script>
-
-  <div id="successModal" class="success-overlay" style="display: none;">
-  <div class="success-card">
-    <div class="success-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
-    </div>
-    <h1 class="font-display">INITIALIZED</h1>
-    <p class="status-text">REGISTRATION SUCCESSFUL</p>
-    <div class="divider"></div>
-    <p class="details-text">Agent details dispatched to their email.</p>
-    <p class="thanks-text">Thank you for enlisting.</p>
-    
-    <button onclick="window.location.href='index.html'" class="close-btn">
-    RETURN TO HOME
-</button>
-  </div>
-</div>
 </body>
 </html>
