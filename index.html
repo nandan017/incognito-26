@@ -947,7 +947,7 @@
     transform: rotate(-5deg);
     text-shadow: 0 0 12px rgba(192,57,43,0.6);
     position: relative;
-    animation: stampglow 3s ease-in-out infinite;
+    animation: stampglow 3s ease-in-out infinite; 
   }
 
   @keyframes stampglow {
@@ -2019,5 +2019,54 @@ document.querySelectorAll('.event-card, .about__dossier, .about__text, .about__s
 })();
 </script>
 <script src="database.js"></script>
+<!--supabase-->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const supabaseUrl = "https://lkbsvjwpdrojwfifhiic.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrYnN2andwZHJvandmaWZoaWljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU5MjYsImV4cCI6MjA4NzYwMTkyNn0.9-2pz6bW96CHUABzdOKsXma9OtYrUq9tPzS9LeKZUks"; // from Supabase settings
+
+  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function testConnection() {
+
+    // INSERT USER
+    const { data: insertData, error: insertError } = await supabaseClient
+      .from('Registration')
+      .insert([{ name: 'John', email: 'john@email.com' }]);
+
+    if (insertError) {
+      console.error("Insert Error:", insertError);
+    } else {
+      console.log("Inserted:", insertData);
+    }
+
+    // FETCH USERS
+    const { data: usersData, error: fetchError } = await supabaseClient
+      .from('users')
+      .select('*');
+
+    if (fetchError) {
+      console.error("Fetch Error:", fetchError);
+    } else {
+      console.log("Users:", usersData);
+    }
+
+    // SIGN UP USER
+    const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+      email: 'user@email.com',
+      password: 'password123'
+    });
+
+    if (authError) {
+      console.error("Signup Error:", authError);
+    } else {
+      console.log("Signed Up:", authData);
+    }
+  }
+
+  testConnection();
+</script>
 </body>
 </html>
