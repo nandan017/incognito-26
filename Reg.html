@@ -7,437 +7,441 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=VT323&family=Bebas+Neue&display=swap" rel="stylesheet"/>
-
-  <link rel="stylesheet" href="css/theme.css"/>
-  <link rel="stylesheet" href="css/hero.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=VT323&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --glass-bg: rgba(10, 10, 8, 0.9);
+      --glass-bg: rgba(10, 10, 8, 0.95);
       --red: #ff0000;
       --gold: #bfa100;
     }
+    /* --- ADMIN ACCESS BUTTON --- */
+    .admin-access {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      font-family: 'VT323', monospace;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      transition: 0.3s;
+      letter-spacing: 2px;
+    }
 
+    .admin-access:hover {
+      color: var(--red);
+      border-color: var(--red);
+      background: rgba(255, 0, 0, 0.05);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+    }
     body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #0a0a08;
-      overflow: hidden; 
+      margin: 0; padding: 0; height: 100%;
+      background: #0a0a08; overflow: hidden; 
       font-family: 'Courier Prime', monospace;
     }
 
-    /* Background Setup */
-    .hero {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100vh;
-      z-index: 1;
-    }
-
-    /* --- THE GLOWING INTERACTIVE RED TEXT --- */
+    /* --- BACKGROUND VISUALS --- */
+    .hero { position: fixed; inset: 0; width: 100%; height: 100vh; z-index: 1; }
+    
     .hero__glitch-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 15vw; 
-      
-      /* --- THE RAZOR OUTLINE FIX --- */
-      color: transparent;                      /* Removes the solid "fucking" text fill */
-      -webkit-text-stroke: 0.5px rgba(141, 71, 71, 0.3); /* The thin red wireframe line */
-      letter-spacing: 2.5vw;                   /* Matches the wide spacing on the right */
-      
-      z-index: 2;
-      pointer-events: none;
-      white-space: nowrap;
-      text-transform: uppercase;
-      text-shadow: none;                       /* Removes the blocky glow */
-      user-select: none;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif; font-size: 15vw; 
+      color: transparent; -webkit-text-stroke: 0.5px rgba(141, 71, 71, 0.3);
+      letter-spacing: 2.5vw; z-index: 2; pointer-events: none;
+      white-space: nowrap; text-transform: uppercase;
     }
 
-    /* --- TAPE POSITIONING --- */
-    .hero__tape { 
+    /* --- DYNAMIC MOVING TAPES --- */
+    .hero__tape {
       position: absolute;
-      width: 140%;
       left: -20%;
-      z-index: 10; 
+      width: 140%;
+      z-index: 10;
+      background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 20px, #000 20px, #000 40px);
+      color: #000;
+      font-weight: 900;
+      font-size: 1rem;
+      padding: 9px 0;
+      box-shadow: 0 0 30px rgba(0,0,0,0.7);
+      overflow: hidden;
+      display: flex;
+    }
+
+    .tape-track {
+      display: flex;
+      white-space: nowrap;
+      animation: scrollTape 18s linear infinite;
+      will-change: transform;
+    }
+
+    .tape-track--reverse {
+      animation: scrollTapeReverse 22s linear infinite;
+    }
+
+    .tape-segment {
+      display: inline-block;
+      padding-right: 0;
+      flex-shrink: 0;
     }
 
     .hero__tape--top {
       top: 15%;
-      transform: rotate(-5deg);
+      transform: rotate(-5deg) translateZ(0);
     }
 
     .hero__tape--bottom {
-      bottom: 15%; 
-      transform: rotate(4deg); 
+      bottom: 15%;
+      transform: rotate(4deg) translateZ(0);
     }
 
-    /* Auth Overlay */
+    @keyframes scrollTape {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollTapeReverse {
+      0%   { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* --- INTERFACE CARD --- */
     .auth-overlay {
-      position: relative;
-      z-index: 100;
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.5) 100%);
+      position: relative; z-index: 100; width: 100%; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.6) 100%);
+      overflow: hidden;
     }
 
-    /* Glass Auth Card */
     .auth-card {
-      width: 100%;
-      max-width: 400px;
-      padding: 1.8rem;
-      background: var(--glass-bg);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-top: 4px solid var(--red);
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
-    
+      width: 100%; max-width: 340px; padding: 1.6rem 2rem;
+      background: var(--glass-bg); backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid var(--red);
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
     }
 
+    .input-group { margin-bottom: 0.8rem; text-align: left; }
     .input-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.7rem;
-      letter-spacing: 1.5px;
-      color: var(--gold);
-      font-family: 'VT323', monospace;
+      display: block; margin-bottom: 4px; font-size: 0.7rem;
+      letter-spacing: 1.5px; color: var(--gold); font-family: 'VT323', monospace;
     }
 
-    .input-group input {
+    input, select {
+      width: 100%; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.65rem 0.7rem;
+      color: white; font-family: inherit; font-size: 0.85rem; outline: none; box-sizing: border-box;
+    }
+
+    input:focus, select:focus { border-color: var(--red); background: rgba(255, 0, 0, 0.05); }
+
+    .btn-main {
+      width: 100%; background: var(--red); color: #000; border: none;
+      padding: 0.6rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+      letter-spacing: 2px; cursor: pointer; transition: 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-main:hover { background: #ff4444; transform: scale(1.02); }
+    .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* --- ADMIN LOGIN BUTTON (added after initialize) --- */
+    .btn-admin-login {
       width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.8rem;
-      color: white;
-      font-family: 'Courier Prime', monospace;
-      outline: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.6rem;
+      font-family: 'VT323', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 6px;
+      text-transform: uppercase;
     }
-
-    .input-group input:focus {
-      border-color: var(--red);
-      background: rgba(255, 0, 0, 0.05);
-    }
-
-    .auth-footer a {
+    .btn-admin-login:hover {
       color: var(--red);
-      text-decoration: underline;
+      border-color: rgba(255, 0, 0, 0.4);
+      background: rgba(255, 0, 0, 0.04);
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.1);
     }
 
-    /* Success Modal Styles */
-.success-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Aligns to top */
-  padding-top: 5vh; /* Distance from top */
-}
+    /* --- SUCCESS MODAL --- */
+    .success-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
+      display: none; justify-content: center; align-items: center;
+    }
 
-.success-card {
-  width: 90%;
-  max-width: 450px;
-  background: var(--glass-bg);
-  border: 1px solid var(--red);
-  border-top: 6px solid var(--red);
-  padding: 2.5rem;
-  text-align: center;
-  box-shadow: 0 0 50px rgba(255, 0, 0, 0.2);
-  animation: slideDown 0.4s ease-out;
-}
+    .success-card {
+      width: 90%; max-width: 400px; background: #111;
+      border: 1px solid var(--red); border-top: 6px solid var(--red);
+      padding: 2.5rem; text-align: center;
+      animation: slideIn 0.4s ease-out;
+    }
 
-@keyframes slideDown {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+    /* --- ADMIN LOGIN MODAL --- */
+    .admin-modal {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(10px);
+      display: none; justify-content: center; align-items: center;
+    }
+    .admin-modal.active { display: flex; }
 
-.success-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 1.5rem;
-  border: 2px solid var(--red);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
+    .admin-card {
+      width: 90%; max-width: 360px; background: #0d0d0b;
+      border: 1px solid rgba(255,0,0,0.25); border-top: 4px solid var(--red);
+      padding: 2rem; text-align: center;
+      animation: slideIn 0.35s ease-out;
+    }
 
-.status-text { color: var(--red); font-size: 0.8rem; letter-spacing: 3px; font-weight: bold; margin-bottom: 1rem; }
-.divider { height: 1px; background: rgba(255, 255, 255, 0.1); margin: 1.5rem 0; }
-.details-text { font-size: 0.9rem; color: white; margin-bottom: 0.5rem; }
-.thanks-text { font-size: 0.8rem; color: var(--gold); opacity: 0.8; }
+    .admin-card h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: white; margin: 0 0 0.2rem;
+      letter-spacing: 2px;
+    }
+    .admin-card p {
+      color: var(--red); font-size: 0.65rem;
+      letter-spacing: 3px; margin-bottom: 1.5rem;
+    }
+    .admin-card .input-group label { color: var(--gold); }
+    .admin-card input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .admin-card input:focus {
+      border-color: var(--red);
+      background: rgba(255,0,0,0.04);
+    }
+    .btn-admin-submit {
+      width: 100%; background: transparent; color: var(--red);
+      border: 1px solid var(--red); padding: 0.85rem;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+      letter-spacing: 2px; cursor: pointer; transition: 0.3s; margin-top: 0.5rem;
+    }
+    .btn-admin-submit:hover {
+      background: rgba(255,0,0,0.1);
+      box-shadow: 0 0 20px rgba(255,0,0,0.2);
+    }
+    .btn-admin-close {
+      background: none; border: none; color: rgba(255,255,255,0.2);
+      font-family: 'VT323', monospace; font-size: 0.8rem;
+      letter-spacing: 2px; cursor: pointer; margin-top: 12px;
+      transition: color 0.2s;
+    }
+    .btn-admin-close:hover { color: rgba(255,255,255,0.5); }
 
-.close-btn {
-  margin-top: 2rem;
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  padding: 0.8rem 1.5rem;
-  font-family: 'Courier Prime', monospace;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.close-btn:hover { background: var(--gold); color: black; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes blink { 50% { opacity: 0; } }
   </style>
 </head>
 <body>
 
-  <section class="hero" id="hero">
-    <div class="hero__bg">
-      <div class="hero__bg-layer hero__bg-layer--1"></div>
-      <div class="hero__bg-layer hero__bg-layer--2"></div>
-      <div class="hero__bg-layer hero__bg-layer--3"></div>
-      
-      <div class="hero__glitch-overlay">INCOGNITO</div>
-      
-      <div class="hero__tape hero__tape--top">
-        <span class="evidence-tape">CLASSIFIED ACCESS &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp;</span>
+  <section class="hero">
+    <div class="hero__glitch-overlay">INCOGNITO</div>
+    
+    <div class="hero__tape hero__tape--top">
+      <div class="tape-track">
+        <span class="tape-segment">CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp;</span>
+        <span class="tape-segment">CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp;</span>
       </div>
-      
-      <div class="hero__tape hero__tape--bottom">
-        <span class="evidence-tape">CLASSIFIED ACCESS &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; CLASSIFIED ACCESS</span>
-      </div>
+    </div>
 
-      <div class="hero__spotlight"></div>
+    <div class="hero__tape hero__tape--bottom">
+      <div class="tape-track tape-track--reverse">
+        <span class="tape-segment">RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp;</span>
+        <span class="tape-segment">RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp; RESTRICTED ACCESS &nbsp;·&nbsp; SUBJECT UNKNOWN &nbsp;·&nbsp; INCOGNITO 2026 &nbsp;·&nbsp;</span>
+      </div>
     </div>
   </section>
 
   <div class="auth-overlay">
     <main class="auth-card">
-      <div class="hero__tagline-wrap" style="margin-bottom: 1.5rem; min-height: 1.2rem;">
-        <span class="text-gold font-mono">» </span>
-        <span class="hero__tagline font-mono" id="register-tagline"></span>
-        <span class="hero__cursor font-mono text-red">█</span>
+      <div style="min-height: 1.2rem; margin-bottom: 0.4rem;">
+        <span style="color:var(--gold)">» </span>
+        <span id="tagline" style="font-size: 0.75rem; color: #fff;"></span>
+        <span style="color:var(--red); animation: blink 1s infinite;">█</span>
       </div>
 
-      <div class="auth-header" style="text-align:center; margin-bottom: 2rem;">
-        <h1 class="font-display" style="font-size: 3rem; margin:0; color:white;">REGISTER</h1>
-        <p class="font-mono text-red" style="font-size: 0.6rem; letter-spacing: 2px;">AGENT ENROLLMENT TERMINAL</p>
+      <div style="text-align:center; margin-bottom: 0.9rem;">
+        <h1 style="font-family:'Bebas Neue'; font-size: 2.8rem; margin:0; color:white; letter-spacing: 2px;">REGISTER</h1>
+        <p style="color:var(--red); font-size: 0.65rem; letter-spacing: 3px; font-weight: bold; margin:0;">AGENT ENROLLMENT TERMINAL</p>
       </div>
 
-<form id="registerForm">
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">AGENT_NAME</label>      
-    <input type="text" id="agent_name" placeholder="John Doe" required autocomplete="off">
-  </div>
+      <form id="registerForm">
+        <div class="input-group">
+          <label>AGENT_NAME</label>      
+          <input type="text" id="agent_name" placeholder="John Doe" required autocomplete="off">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">COLLEGE_NAME</label>
-    <input type="text" id="college_name" placeholder="College Name" required autocomplete="off">
-  </div>
+        <div class="input-group">
+          <label>COLLEGE_NAME</label>
+          <input type="text" id="college_name" placeholder="College Name" required autocomplete="off">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">AGENT_EMAIL</label>
-    <input type="email" id="agent_email" placeholder="agent007@gmail.com" required autocomplete="off">
-  </div>
+        <div class="input-group">
+          <label>AGENT_EMAIL</label>
+          <input type="email" id="agent_email" placeholder="agent007@gmail.com" required autocomplete="off">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">AGENT_NUMBER</label>
-    <input 
-      type="tel" 
-      id="agent_phone" 
-      placeholder="**********" 
-      required 
-      pattern="[0-9]{10}" 
-      maxlength="10" 
-      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
-      title="Agent Number must be exactly 10 digits."
-    >
-  </div>
+        <div class="input-group">
+          <label>AGENT_NUMBER</label>
+          <input type="tel" id="agent_phone" placeholder="**********" pattern="[0-9]{10}" maxlength="10" required 
+                 oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        </div>
 
-  <div class="input-group" style="margin-bottom: 1.5rem;">
-    <label class="font-mono">EVENTS</label>
-    <select id="agent_event" required onchange="this.style.color='white'" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); color: #757575; border: 1px solid rgba(255, 255, 255, 0.1); font-family: 'Courier Prime', monospace; outline: none; cursor: pointer;">
-      <option value="" disabled selected style="color: #757575; background: #111;">Select an event...</option>
-      <option value="Videography/Photography" style="background: #111; color: #757575;">Videography/Photography</option>
-      <option value="Data Treasure Hunt" style="background: #111; color: #757575;">Data Treasure Hunt</option>
-      <option value="Coding & Debugging" style="background: #111; color: #757575;">Coding & Debugging</option>
-      <option value="IT Dumb Charades" style="background: #111; color: #757575;">IT Dumb Charades</option>
-      <option value="Logo Design" style="background: #111; color: #757575;">Logo Design</option>
-      <option value="Talent Show" style="background: #111; color: #757575;">Talent Show</option>
-      <option value="BGMI" style="background: #111; color: #757575;">BGMI</option>
-      <option value="Freefire" style="background: #111; color: #757575;">Freefire</option>
-      <option value="Crime Scene Set Up" style="background: #111; color: #757575;">Crime Scene Set Up</option>
-    </select>
-  </div>
+        <div class="input-group">
+          <label>EVENTS</label>
+          <select id="agent_event" required style="cursor: pointer;">
+            <option value="" disabled selected>Select an event...</option>
+            <option>Videography/Photography</option>
+            <option>Data Treasure Hunt</option>
+            <option>Coding & Debugging</option>
+            <option>IT Dumb Charades</option>
+            <option>Logo Design</option>
+            <option>Talent Show</option>
+            <option>BGMI</option>
+            <option>Freefire</option>
+            <option>Crime Scene Set Up</option>
+          </select>
+        </div>
 
+        <div style="margin-bottom: 0.7rem; font-size: 0.75rem; color: #757575; display: flex; gap: 8px; align-items: center;">
+          <input type="checkbox" id="terms" required style="width: 15px; height: 15px; accent-color: var(--red);"> 
+          <label for="terms" style="color: #757575;">I agree to the <a href="termsandconditions.html" style="color:var(--red); text-decoration:underline;">Terms and Conditions</a></label>
+        </div>
 
+        <button type="submit" class="btn-main">INITIALIZE &nbsp; →</button>
 
-<div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; text-align: center;margin-left: 5%;">
-  <input type="checkbox" id="terms" required style="cursor: pointer; width: 15px; height: 15px; accent-color: #b32626; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
-  
-  <label for="terms" style="color: #757575; font-family: 'Courier Prime', monospace; font-size: 0.85rem; cursor: pointer; margin: 0; display: inline;">
-    I agree to the <a href="termsandconditions.html" style="color: rgb(224, 29, 29); text-decoration: underline; text-underline-offset: 3px;">Terms and Conditions</a>
-  </label>
-</div>
-        <button type="submit" class="hero__btn-primary" style="width: 100%; justify-content: center; border:none; cursor:pointer;">
-          <span>INITIALIZE </span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+        <!-- ADMIN LOGIN BUTTON -->
+        <button type="button" class="btn-admin-login" onclick="window.location.href='admin_login.html'">
+          ⬡ &nbsp; ADMIN ACCESS
         </button>
+
       </form>
-
-      <div class="auth-footer font-mono" 
-     style="margin-top: 2rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            font-size: 0.75rem; 
-            opacity: 0.8;">
-
-  <span>Admin Login:</span>
-
-  <a href="admin_login.html" 
-     class="hero__btn-primary"
-     style="display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;">
-                 
-      <span>INITIALIZE</span>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M3 8h10M9 4l4 4-4 4" 
-              stroke="currentColor" 
-              stroke-width="1.5" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"/>
-      </svg>
-  </a>
-
-</div>
     </main>
   </div>
 
- <script>
-    // 1. Mouse-Based Parallax
-    const layers = [
-      { el: document.querySelector('.hero__bg-layer--1'), speed: 0.05 },
-      { el: document.querySelector('.hero__bg-layer--2'), speed: 0.1 },
-      { el: document.querySelector('.hero__bg-layer--3'), speed: 0.15 },
-      { el: document.querySelector('.hero__glitch-overlay'), speed: 0.04 },
-      { el: document.querySelector('.hero__tape--top'), speed: 0.08 },
-      { el: document.querySelector('.hero__tape--bottom'), speed: 0.08 }
-    ];
+  <!-- SUCCESS MODAL -->
+  <div id="successModal" class="success-overlay">
+    <div class="success-card">
+      <div style="width: 50px; height: 50px; border: 2px solid var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h1 style="color:white; font-family:'Bebas Neue'; font-size: 2.5rem; margin: 0;">INITIALIZED</h1>
+      <p style="color:var(--red); font-weight:bold; letter-spacing: 1px; margin-bottom: 1.5rem;">ENROLLMENT SUCCESSFUL</p>
+      <div style="height:1px; background:rgba(255,255,255,0.1); margin: 1.5rem 0;"></div>
+      <p style="color:#fff; font-size:0.9rem;">Dossier sent to your email. Return to HQ for further instructions.</p>
+      <button onclick="window.location.reload()" class="btn-main" style="margin-top:20px; font-size: 1.2rem;">RETURN TO HQ</button>
+    </div>
+  </div>
 
-    document.addEventListener('mousemove', (e) => {
-      const x = (window.innerWidth / 2 - e.pageX) / 30;
-      const y = (window.innerHeight / 2 - e.pageY) / 30;
-      layers.forEach(layer => {
-        if (!layer.el) return;
-        const moveX = x * layer.speed * 10;
-        const moveY = y * layer.speed * 10;
-        if (layer.el.classList.contains('hero__glitch-overlay')) {
-          layer.el.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
-        } else {
-          layer.el.style.setProperty('--moveX', `${moveX}px`);
-          layer.el.style.setProperty('--moveY', `${moveY}px`);
-        }
-      });
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="adminModal" class="admin-modal">
+    <div class="admin-card">
+      <h2>ADMIN</h2>
+      <p>COMMAND ACCESS · AUTHORIZED ONLY</p>
+
+      <div class="input-group" style="text-align:left;">
+        <label>ADMIN_ID</label>
+        <input type="text" id="admin_id" placeholder="Handler ID" autocomplete="off">
+      </div>
+      <div class="input-group" style="text-align:left;">
+        <label>ACCESS_CODE</label>
+        <input type="password" id="admin_pass" placeholder="••••••••">
+      </div>
+
+      <button class="btn-admin-submit" onclick="handleAdminLogin()">AUTHENTICATE &nbsp;⬡</button>
+      <br>
+      <button class="btn-admin-close" onclick="document.getElementById('adminModal').classList.remove('active')">
+        [ ABORT · CLOSE ]
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const supabaseUrl = "https://lkbsvjwpdrojwfifhiic.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrYnN2andwZHJvandmaWZoaWljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU5MjYsImV4cCI6MjA4NzYwMTkyNn0.9-2pz6bW96CHUABzdOKsXma9OtYrUq9tPzS9LeKZUks";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const messages = ["Accessing enrollment gateway...", "Requesting Agent Dossier...", "Please enter credentials."];
+    let mIdx = 0, cIdx = 0, isDeleting = false;
+    function typeEffect() {
+      const el = document.getElementById('tagline');
+      const current = messages[mIdx];
+      el.textContent = isDeleting ? current.slice(0, cIdx--) : current.slice(0, cIdx++);
+      if (!isDeleting && cIdx > current.length) { isDeleting = true; setTimeout(typeEffect, 2000); }
+      else if (isDeleting && cIdx === 0) { isDeleting = false; mIdx = (mIdx + 1) % messages.length; setTimeout(typeEffect, 500); }
+      else { setTimeout(typeEffect, isDeleting ? 40 : 80); }
+    }
+    typeEffect();
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerText = "INITIALIZING...";
+
+      const agentData = {
+        agent_name: document.getElementById('agent_name').value,
+        college_name: document.getElementById('college_name').value,
+        agent_email: document.getElementById('agent_email').value,
+        agent_phone: document.getElementById('agent_phone').value,
+        event: document.getElementById('agent_event').value
+      };
+
+      try {
+        const { error: dbError } = await supabaseClient.from("Registration").insert([agentData]);
+        if (dbError) throw dbError;
+
+        const { error: authError } = await supabaseClient.auth.signUp({
+          email: agentData.agent_email,
+          password: agentData.agent_phone
+        });
+
+        if (authError && !authError.message.includes("User already registered")) throw authError;
+        document.getElementById('successModal').style.display = 'flex';
+      } catch (err) {
+        alert("TERMINAL ERROR: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "INITIALIZE →";
+      }
     });
 
-    // 2. Typewriter Logic
-    const messages = [
-      "Accessing enrollment gateway...",
-      "Requesting Agent Dossier...",
-      "Please enter your credentials."
-    ];
-    let msgIdx = 0; let charIdx = 0; let isDeleting = false;
-    const taglineEl = document.getElementById('register-tagline');
+    async function handleAdminLogin() {
+      const id = document.getElementById('admin_id').value.trim();
+      const pass = document.getElementById('admin_pass').value.trim();
+      if (!id || !pass) { alert("ENTER CREDENTIALS"); return; }
 
-    function type() {
-      const current = messages[msgIdx];
-      taglineEl.textContent = isDeleting ? current.slice(0, charIdx--) : current.slice(0, charIdx++);
-      if (!isDeleting && charIdx > current.length) { 
-        isDeleting = true; setTimeout(type, 2000); 
-      } else if (isDeleting && charIdx === 0) { 
-        isDeleting = false; msgIdx = (msgIdx + 1) % messages.length; setTimeout(type, 500); 
-      } else { 
-        setTimeout(type, isDeleting ? 40 : 80); 
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: id,
+          password: pass
+        });
+        if (error) throw error;
+        // Redirect to admin dashboard — update path as needed
+        window.location.href = "admin.html";
+      } catch (err) {
+        alert("ACCESS DENIED: " + err.message);
       }
     }
-    window.onload = () => setTimeout(type, 500);
 
-    // 3. BREVO API DISPATCH
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const btn = this.querySelector('button');
-  btn.disabled = true;
-  btn.innerText = "INITIALIZING...";
-
-  // 1. Capture Form Data
-  const formData = {
-    name: document.getElementById('agent_name').value,
-    email: document.getElementById('agent_email').value,
-    phone: document.getElementById('agent_phone').value,
-    college: document.getElementById('college_name').value,
-    event: document.getElementById('agent_event').value
-  };
-
-  // 2. Send to Netlify Function (The Secure Proxy)
-  try {
-    const response = await fetch('/.netlify/functions/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+    document.addEventListener('mousemove', (e) => {
+      const x = (window.innerWidth / 2 - e.pageX) / 45;
+      const y = (window.innerHeight / 2 - e.pageY) / 45;
+      const glitch = document.querySelector('.hero__glitch-overlay');
+      if(glitch) glitch.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      
+      const tapes = document.querySelectorAll('.hero__tape');
+      tapes.forEach((tape, index) => {
+        const factor = index === 0 ? 0.05 : -0.05;
+        tape.style.left = `calc(-50% + ${x * factor}px)`;
+      });
     });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      document.getElementById('successModal').style.display = 'flex';
-      this.reset();
-    } else {
-      alert("TERMINAL ERROR: " + (result.message || "Unauthorized Access"));
-    }
-  } catch (err) {
-    alert("CRITICAL ERROR: Connection to HQ lost.");
-  } finally {
-    btn.disabled = false;
-    btn.innerText = "INITIALIZE";
-  }
-});
-
-    function closeModal() {
-      document.getElementById('successModal').style.display = 'none';
-    }
-</script>
-
-  <div id="successModal" class="success-overlay" style="display: none;">
-  <div class="success-card">
-    <div class="success-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
-    </div>
-    <h1 class="font-display">INITIALIZED</h1>
-    <p class="status-text">REGISTRATION SUCCESSFUL</p>
-    <div class="divider"></div>
-    <p class="details-text">Agent details dispatched to their email.</p>
-    <p class="thanks-text">Thank you for enlisting.</p>
-    
-    <button onclick="window.location.href='index.html'" class="close-btn">
-    RETURN TO HOME
-</button>
-  </div>
-</div>
+  </script>
 </body>
 </html>
