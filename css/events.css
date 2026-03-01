@@ -178,7 +178,7 @@
 
 /* Inner */
 .event-card__inner {
-  padding: 28px;
+  padding: 52px 28px 28px;
   display: flex;
   flex-direction: column;
   gap: 12px;

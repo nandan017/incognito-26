@@ -170,7 +170,6 @@ html, body {
   .footer__logo { font-size: 2rem; }
   .footer__bottom-inner { flex-direction: column; text-align: center; gap: 8px; }
 
-  #music-toggle { display: none; }
 }
 
 /* ═══════════════════════════════
@@ -1173,12 +1172,6 @@ html, body {
   [data-edit]:hover { outline: 1px dashed rgba(192,57,43,0.3); cursor: text; }
   [data-edit].editing { outline: 1px solid #c0392b; }
 
-  /* ── FIX 1: Drawer solid background, above hero content ── */
-.nav-drawer {
-  background: #0a0a08;
-  position: relative;
-  z-index: 9999;
-}
 /* ── FIX 2: Show music + game in mobile drawer ── */
 @media (max-width: 900px) {
   #music-toggle { display: flex !important; }
