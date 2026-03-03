@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>INCOGNITO 2026 — Venue Intel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --noir:#0a0a08;--smoke:#141210;--ash:#222018;--dim:#3a3830;
+  --aged:#7a7060;--cream:#f0e6cc;--red:#c0392b;--blood:#8b0000;
+  --gold:#d4af37;--green:#00ff41;--tape:#ffd700;
+  --font-d:'Bebas Neue',sans-serif;--font-r:'VT323',monospace;
+  --font-m:'Courier Prime',monospace;--font-t:'Special Elite',cursive;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--noir);color:var(--cream);font-family:var(--font-m);min-height:100vh;overflow-x:hidden;cursor:crosshair;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:9000;}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(192,57,43,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(192,57,43,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+.bg-vignette{position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.85) 100%);pointer-events:none;z-index:1;}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:500;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(192,57,43,.15);background:rgba(10,10,8,.92);backdrop-filter:blur(12px);}
+.nav-logo{font-family:var(--font-d);font-size:1.4rem;letter-spacing:.06em;color:var(--cream);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.nav-back{font-family:var(--font-m);font-size:.65rem;letter-spacing:.2em;color:var(--aged);text-decoration:none;border:1px solid var(--ash);padding:6px 14px;transition:.2s;}
+.nav-back:hover{border-color:var(--red);color:var(--cream);}
+.tape-strip{position:fixed;white-space:nowrap;overflow:hidden;width:150%;left:-25%;pointer-events:none;z-index:2;top:8%;transform:rotate(-2deg);opacity:.3;}
+.tape-inner{display:inline-block;width:200%;padding:5px 0;background:repeating-linear-gradient(-45deg,var(--tape),var(--tape) 8px,#1a1916 8px,#1a1916 16px);color:var(--noir);font-family:var(--font-t);font-weight:700;font-size:.6rem;letter-spacing:.15em;animation:marquee 28s linear infinite;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.page-hero{position:relative;z-index:10;padding:120px 40px 50px;text-align:center;}
+.hero-badge{display:inline-block;font-size:.6rem;letter-spacing:.25em;color:var(--red);background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);padding:4px 16px;margin-bottom:20px;}
+.hero-title{font-family:var(--font-d);font-size:clamp(3rem,10vw,6rem);letter-spacing:.04em;line-height:1;}
+.hero-title span{color:var(--red);}
+.hero-sub{font-family:var(--font-r);font-size:1.2rem;color:var(--gold);letter-spacing:.3em;margin-top:8px;}
+.hero-desc{font-size:.8rem;color:var(--aged);letter-spacing:.08em;margin-top:16px;max-width:520px;margin-inline:auto;line-height:1.9;}
+.evidence-banner{position:relative;z-index:10;overflow:hidden;border-top:1px solid rgba(192,57,43,.15);border-bottom:1px solid rgba(192,57,43,.15);margin-bottom:60px;}
+.evidence-tape-scroll{display:inline-block;width:200%;padding:7px 0;background:repeating-linear-gradient(-45deg,var(--tape),var(--tape) 8px,#1a1916 8px,#1a1916 16px);color:var(--noir);font-family:var(--font-t);font-weight:700;font-size:.65rem;letter-spacing:.15em;white-space:nowrap;animation:marquee 20s linear infinite;}
+.section{position:relative;z-index:10;padding:0 40px 80px;}
+.container{max-width:1100px;margin:0 auto;}
+.section-eyebrow{font-size:.6rem;letter-spacing:.2em;color:var(--red);margin-bottom:6px;}
+.section-title{font-family:var(--font-d);font-size:clamp(1.8rem,5vw,3rem);letter-spacing:.06em;margin-bottom:6px;}
+.section-title span{color:var(--red);}
+.section-meta{font-family:var(--font-r);font-size:.95rem;color:var(--gold);letter-spacing:.2em;margin-bottom:40px;}
+.venue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px;}
+.venue-card{position:relative;background:var(--smoke);border:1px solid rgba(192,57,43,.18);border-top:3px solid var(--red);padding:26px;overflow:hidden;transition:transform .3s,box-shadow .3s;}
+.venue-card:hover{transform:translateY(-5px);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 30px rgba(192,57,43,.1);}
+.venue-card::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,transparent 1px,transparent 4px);pointer-events:none;z-index:1;}
+.venue-card--featured{border-top:3px solid var(--gold);grid-column:1/-1;}
+.venue-card--featured .file-id{color:var(--gold);}
+.venue-card--featured .event-tag{border-color:rgba(212,175,55,.4);color:var(--gold);background:rgba(212,175,55,.07);}
+.venue-card:nth-child(1){animation:fadeInUp .55s ease .1s both}
+.venue-card:nth-child(2){animation:fadeInUp .55s ease .2s both}
+.venue-card:nth-child(3){animation:fadeInUp .55s ease .3s both}
+.venue-card:nth-child(4){animation:fadeInUp .55s ease .4s both}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.corner{position:absolute;width:14px;height:14px;}
+.corner.tl{top:8px;left:8px;border-top:1.5px solid rgba(192,57,43,.5);border-left:1.5px solid rgba(192,57,43,.5);}
+.corner.tr{top:8px;right:8px;border-top:1.5px solid rgba(192,57,43,.5);border-right:1.5px solid rgba(192,57,43,.5);}
+.corner.bl{bottom:8px;left:8px;border-bottom:1.5px solid rgba(192,57,43,.5);border-left:1.5px solid rgba(192,57,43,.5);}
+.corner.br{bottom:8px;right:8px;border-bottom:1.5px solid rgba(192,57,43,.5);border-right:1.5px solid rgba(192,57,43,.5);}
+.venue-card--featured .corner{border-color:rgba(212,175,55,.5);}
+.card-inner{position:relative;z-index:2;}
+.file-id{font-size:.62rem;color:var(--red);letter-spacing:.15em;margin-bottom:10px;}
+.event-tag{display:inline-block;font-size:.55rem;letter-spacing:.15em;background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);color:var(--red);padding:2px 10px;margin-bottom:14px;}
+.event-name{font-family:var(--font-d);font-size:1.9rem;letter-spacing:.04em;line-height:1.1;margin-bottom:14px;}
+.event-desc{font-size:.72rem;color:var(--aged);line-height:1.75;margin-bottom:16px;}
+.divider{height:1px;background:linear-gradient(90deg,var(--red),rgba(192,57,43,.2),transparent);margin:14px 0;}
+.venue-location{display:flex;align-items:flex-start;gap:14px;}
+.venue-icon{flex-shrink:0;width:40px;height:40px;border:1px solid rgba(192,57,43,.25);display:flex;align-items:center;justify-content:center;}
+.venue-icon svg{width:20px;height:20px;stroke:var(--red);fill:none;stroke-width:1.5;}
+.venue-label{font-size:.55rem;letter-spacing:.2em;color:var(--aged);margin-bottom:4px;}
+.venue-name{font-family:var(--font-d);font-size:1.6rem;letter-spacing:.06em;color:var(--cream);}
+.venue-floor{font-size:.62rem;color:var(--aged);letter-spacing:.1em;margin-top:4px;line-height:1.6;}
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;}
+.stat-box{flex:1;min-width:100px;background:rgba(0,0,0,.3);border:1px solid var(--ash);padding:12px;}
+.stat-box-label{font-size:.5rem;letter-spacing:.15em;color:var(--aged);margin-bottom:4px;}
+.stat-box-val{font-family:var(--font-r);font-size:1.1rem;color:var(--cream);}
+.status-row{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--ash);}
+.status-dot-wrap{display:flex;align-items:center;gap:8px;font-size:.6rem;letter-spacing:.12em;color:var(--green);}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pg 2s infinite;}
+@keyframes pg{0%,100%{opacity:1}50%{opacity:.3}}
+.clearance{font-size:.55rem;letter-spacing:.15em;color:var(--gold);border:1px solid rgba(212,175,55,.2);padding:2px 8px;}
+.floor-map{margin-top:48px;background:var(--smoke);border:1px solid rgba(192,57,43,.2);border-top:3px solid var(--red);padding:32px;}
+.floor-map-title{font-family:var(--font-d);font-size:2rem;letter-spacing:.06em;margin-bottom:6px;}
+.floor-map-title span{color:var(--red);}
+.map-note{font-size:.65rem;color:var(--aged);letter-spacing:.1em;margin-bottom:24px;}
+.map-legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:20px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:.63rem;letter-spacing:.1em;color:var(--aged);}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
+.page-footer{position:relative;z-index:10;text-align:center;padding:40px;border-top:1px solid var(--ash);font-size:.6rem;letter-spacing:.12em;color:var(--aged);}
+@media(max-width:768px){
+  .navbar{padding:0 16px;}
+  .page-hero{padding:90px 16px 40px;}
+  .section{padding:0 16px 60px;}
+  .venue-card--featured{grid-column:auto;}
+  .floor-map{padding:20px;}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-vignette"></div>
+<div class="tape-strip"><div class="tape-inner">DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp; DO NOT CROSS &nbsp;·&nbsp; CRIME SCENE &nbsp;·&nbsp;</div></div>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><span>INC</span>OGNITO <span style="font-family:var(--font-r);font-size:1rem;color:var(--gold);">2026</span></a>
+  <a href="index.html" class="nav-back">&#8592; BACK TO HQ</a>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-badge">// LOCATION INTEL — CLASSIFIED //</div>
+  <h1 class="hero-title"><span>VENUE</span> DOSSIER</h1>
+  <div class="hero-sub">OPERATION: INCOGNITO 2026</div>
+  <p class="hero-desc">All operative assignments have been mapped to their designated sectors. Report to your zone before briefing commences. Failure to comply will result in disqualification.</p>
+</div>
+
+<div class="evidence-banner">
+  <div class="evidence-tape-scroll">EVIDENCE SEALED &nbsp;·&nbsp; RESTRICTED AREA &nbsp;·&nbsp; SESHADRIPURAM COLLEGE &nbsp;·&nbsp; MARCH 25, 2026 &nbsp;·&nbsp; EVIDENCE SEALED &nbsp;·&nbsp; RESTRICTED AREA &nbsp;·&nbsp; SESHADRIPURAM COLLEGE &nbsp;·&nbsp; MARCH 25, 2026 &nbsp;·&nbsp;</div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">// FILE: SECTOR ASSIGNMENTS</div>
+    <div class="section-title"><span>ACTIVE</span> SECTORS</div>
+    <div class="section-meta">MARCH 25, 2026 &nbsp;·&nbsp; SESHADRIPURAM COLLEGE, BENGALURU</div>
+
+    <div class="venue-grid">
+
+      <!-- AUDITORIUM: Talent Show — FEATURED -->
+      <div class="venue-card venue-card--featured">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <div class="card-inner">
+          <div class="file-id">FILE #008 &nbsp;·&nbsp; CULTURAL OPS &nbsp;·&nbsp; FLAGSHIP</div>
+          <div class="event-tag">&#9733; MAIN STAGE EVENT</div>
+          <div class="event-name">Talent Show &mdash; <span style="color:var(--gold);">Music &middot; Dance &middot; Fashion</span></div>
+          <p class="event-desc">A crime-themed showcase where performers command the stage with acts that captivate, mystify, and thrill. The largest stage, the biggest crowd, the highest stakes.</p>
+          <div class="divider"></div>
+          <div class="venue-location">
+            <div class="venue-icon">
+              <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+            </div>
+            <div>
+              <div class="venue-label">DESIGNATED SECTOR</div>
+              <div class="venue-name" style="font-size:2rem;">AUDITORIUM</div>
+              <div class="venue-floor">MAIN STAGE &nbsp;·&nbsp; GROUND FLOOR &nbsp;·&nbsp; SESHADRIPURAM COLLEGE</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box"><div class="stat-box-label">FORMAT</div><div class="stat-box-val">SOLO / GROUP</div></div>
+            <div class="stat-box"><div class="stat-box-label">DURATION</div><div class="stat-box-val">90 MINUTES</div></div>
+            <div class="stat-box"><div class="stat-box-label">CATEGORIES</div><div class="stat-box-val">MUSIC · DANCE · FASHION</div></div>
+            <div class="stat-box"><div class="stat-box-label">CAPACITY</div><div class="stat-box-val">OPEN TO ALL</div></div>
+          </div>
+          <div class="status-row">
+            <div class="status-dot-wrap"><div class="status-dot"></div>SECTOR ACTIVE</div>
+            <div class="clearance">CLEARANCE LVL-3 &nbsp;·&nbsp; CULTURAL</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capture Clash — Lab 2 -->
+      <div class="venue-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <div class="card-inner">
+          <div class="file-id">FILE #005 &nbsp;·&nbsp; TECH OPS</div>
+          <div class="event-tag">PHOTO / VIDEO</div>
+          <div class="event-name">Capture Clash</div>
+          <p class="event-desc">Lens operatives report here. Videography and photography in the field. Every frame tells a story — make yours count before time runs out.</p>
+          <div class="divider"></div>
+          <div class="venue-location">
+            <div class="venue-icon">
+              <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/></svg>
+            </div>
+            <div>
+              <div class="venue-label">DESIGNATED SECTOR</div>
+              <div class="venue-name">LAB 2</div>
+              <div class="venue-floor">COMPUTER LABORATORY &nbsp;·&nbsp; SESHADRIPURAM COLLEGE</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box"><div class="stat-box-label">FORMAT</div><div class="stat-box-val">INDIVIDUAL</div></div>
+            <div class="stat-box"><div class="stat-box-label">DURATION</div><div class="stat-box-val">4 HOURS</div></div>
+          </div>
+          <div class="status-row">
+            <div class="status-dot-wrap"><div class="status-dot"></div>SECTOR ACTIVE</div>
+            <div class="clearance">CLEARANCE LVL-2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Detectives — Conference Hall -->
+      <div class="venue-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <div class="card-inner">
+          <div class="file-id">FILE #002 &nbsp;·&nbsp; MGMT OPS</div>
+          <div class="event-tag">MANAGEMENT</div>
+          <div class="event-name">Data Detectives</div>
+          <p class="event-desc">Build a business case from a mystery brief. Present to the panel before the clock runs out. Every insight counts, every second matters.</p>
+          <div class="divider"></div>
+          <div class="venue-location">
+            <div class="venue-icon">
+              <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
+            </div>
+            <div>
+              <div class="venue-label">DESIGNATED SECTOR</div>
+              <div class="venue-name">CONFERENCE HALL</div>
+              <div class="venue-floor">BRIEFING ROOM &nbsp;·&nbsp; SESHADRIPURAM COLLEGE</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box"><div class="stat-box-label">FORMAT</div><div class="stat-box-val">TEAM OF 2</div></div>
+            <div class="stat-box"><div class="stat-box-label">DURATION</div><div class="stat-box-val">3 HOURS</div></div>
+          </div>
+          <div class="status-row">
+            <div class="status-dot-wrap"><div class="status-dot"></div>SECTOR ACTIVE</div>
+            <div class="clearance">CLEARANCE LVL-2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IT Dumb Charades — AV Room -->
+      <div class="venue-card">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+        <div class="card-inner">
+          <div class="file-id">FILE #004 &nbsp;·&nbsp; TECH OPS</div>
+          <div class="event-tag">TECH / PERFORMANCE</div>
+          <div class="event-name">IT Dumb Charades</div>
+          <p class="event-desc">Decode the mission without uttering a word. Act fast, think faster. The AV screen is your only clue. Only the sharpest minds will crack the code in time.</p>
+          <div class="divider"></div>
+          <div class="venue-location">
+            <div class="venue-icon">
+              <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h1.5C5.496 19.5 6 18.996 6 18.375m-3.75.125v-8.25m17.25 8.25h-1.5c-.621 0-1.125-.504-1.125-1.125m2.625 1.125v-8.25M3.375 11.25c0-.621.504-1.125 1.125-1.125h15c.621 0 1.125.504 1.125 1.125m-17.25 0v-3.375c0-.621.504-1.125 1.125-1.125h15c.621 0 1.125.504 1.125 1.125v3.375"/></svg>
+            </div>
+            <div>
+              <div class="venue-label">DESIGNATED SECTOR</div>
+              <div class="venue-name">AV ROOM</div>
+              <div class="venue-floor">AUDIO-VISUAL SUITE &nbsp;·&nbsp; SESHADRIPURAM COLLEGE</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box"><div class="stat-box-label">FORMAT</div><div class="stat-box-val">TEAM OF 3</div></div>
+            <div class="stat-box"><div class="stat-box-label">DURATION</div><div class="stat-box-val">4 HOURS</div></div>
+          </div>
+          <div class="status-row">
+            <div class="status-dot-wrap"><div class="status-dot"></div>SECTOR ACTIVE</div>
+            <div class="clearance">CLEARANCE LVL-2</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TACTICAL FLOOR MAP -->
+    <div class="floor-map">
+      <div class="floor-map-title"><span>TACTICAL</span> FLOOR MAP</div>
+      <div class="map-note">// SESHADRIPURAM COLLEGE &nbsp;·&nbsp; MARCH 25, 2026 &nbsp;·&nbsp; ALL SECTORS MARKED</div>
+      <svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+        <defs>
+          <pattern id="mapgrid" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(192,57,43,0.06)" stroke-width="0.5"/>
+          </pattern>
+          <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-sm"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect width="900" height="440" fill="#0d0b0b"/>
+        <rect width="900" height="440" fill="url(#mapgrid)"/>
+        <rect x="20" y="20" width="860" height="400" fill="none" stroke="rgba(192,57,43,0.18)" stroke-width="1.5" stroke-dasharray="8 4"/>
+        <!-- AUDITORIUM -->
+        <rect x="40" y="40" width="290" height="240" rx="2" fill="rgba(212,175,55,0.05)" stroke="#d4af37" stroke-width="2" filter="url(#glow)"/>
+        <text x="185" y="148" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="22" fill="#d4af37" letter-spacing="2">AUDITORIUM</text>
+        <text x="185" y="170" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9" fill="rgba(212,175,55,0.7)" letter-spacing="1.5">TALENT SHOW</text>
+        <text x="185" y="186" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="rgba(212,175,55,0.5)" letter-spacing="1">MUSIC · DANCE · FASHION</text>
+        <circle cx="185" cy="210" r="7" fill="#d4af37" opacity="0.8" filter="url(#glow)"/>
+        <text x="185" y="232" text-anchor="middle" font-family="'VT323',monospace" font-size="15" fill="rgba(212,175,55,0.7)">&#9733; FLAGSHIP</text>
+        <!-- corridor vertical -->
+        <rect x="348" y="40" width="22" height="380" fill="rgba(255,255,255,0.012)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <text x="359" y="300" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7" fill="rgba(255,255,255,0.1)" letter-spacing="1" transform="rotate(90,359,300)">MAIN CORRIDOR</text>
+        <!-- corridor horizontal -->
+        <rect x="40" y="298" width="308" height="18" fill="rgba(255,255,255,0.012)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <!-- LAB 2 -->
+        <rect x="388" y="40" width="220" height="165" rx="2" fill="rgba(192,57,43,0.05)" stroke="#c0392b" stroke-width="1.8" filter="url(#glow-sm)"/>
+        <text x="498" y="118" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="20" fill="#c0392b" letter-spacing="2">LAB 2</text>
+        <text x="498" y="140" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9" fill="rgba(192,57,43,0.7)" letter-spacing="1.5">CAPTURE CLASH</text>
+        <circle cx="498" cy="160" r="5" fill="#c0392b" opacity="0.9" filter="url(#glow-sm)"/>
+        <!-- CONFERENCE HALL -->
+        <rect x="628" y="40" width="250" height="165" rx="2" fill="rgba(192,57,43,0.05)" stroke="#c0392b" stroke-width="1.8" filter="url(#glow-sm)"/>
+        <text x="753" y="108" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="18" fill="#c0392b" letter-spacing="1.5">CONFERENCE HALL</text>
+        <text x="753" y="130" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9" fill="rgba(192,57,43,0.7)" letter-spacing="1">DATA DETECTIVES</text>
+        <circle cx="753" cy="150" r="5" fill="#c0392b" opacity="0.9" filter="url(#glow-sm)"/>
+        <!-- AV ROOM -->
+        <rect x="628" y="225" width="250" height="175" rx="2" fill="rgba(192,57,43,0.05)" stroke="#c0392b" stroke-width="1.8" filter="url(#glow-sm)"/>
+        <text x="753" y="310" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="20" fill="#c0392b" letter-spacing="2">AV ROOM</text>
+        <text x="753" y="332" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9" fill="rgba(192,57,43,0.7)" letter-spacing="1">IT DUMB CHARADES</text>
+        <circle cx="753" cy="352" r="5" fill="#c0392b" opacity="0.9" filter="url(#glow-sm)"/>
+        <!-- other rooms -->
+        <rect x="388" y="225" width="220" height="175" rx="2" fill="rgba(255,255,255,0.008)" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="498" y="318" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="rgba(255,255,255,0.1)" letter-spacing="1">OTHER ROOMS</text>
+        <!-- auditorium backstage -->
+        <rect x="40" y="334" width="290" height="80" rx="2" fill="rgba(212,175,55,0.02)" stroke="rgba(212,175,55,0.12)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="185" y="378" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="rgba(212,175,55,0.25)" letter-spacing="1">BACKSTAGE / GREEN ROOM</text>
+        <!-- ENTRANCE -->
+        <rect x="390" y="402" width="120" height="30" rx="2" fill="rgba(0,255,65,0.04)" stroke="#00ff41" stroke-width="1.2" filter="url(#glow-sm)"/>
+        <text x="450" y="422" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9" fill="#00ff41" letter-spacing="2">&#9650; ENTRANCE</text>
+        <!-- compass -->
+        <text x="858" y="420" text-anchor="middle" font-family="'VT323',monospace" font-size="16" fill="rgba(192,57,43,0.35)" letter-spacing="2">N &#9650;</text>
+        <!-- coords -->
+        <text x="28" y="434" font-family="'Courier Prime',monospace" font-size="7" fill="rgba(255,255,255,0.08)" letter-spacing="1">GRID: 12.9887N / 77.5734E · SESHADRIPURAM COLLEGE</text>
+      </svg>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#d4af37;box-shadow:0 0 6px #d4af37;"></div>FLAGSHIP VENUE (AUDITORIUM)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c0392b;box-shadow:0 0 6px #c0392b;"></div>EVENT SECTOR</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00ff41;box-shadow:0 0 6px #00ff41;"></div>ENTRANCE / EXIT POINT</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.15);"></div>CORRIDOR / TRANSIT ZONE</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="page-footer">
+  <div>&copy; 2026 INCOGNITO — SESHADRIPURAM COLLEGE &nbsp;·&nbsp; MARCH 25, 2026 &nbsp;·&nbsp; ALL SECTORS CLASSIFIED</div>
+  <div style="margin-top:8px;color:rgba(255,255,255,0.18);">BUILT BY CHATHURYA STUDENT DEV CLUB</div>
+</footer>
+</body>
+</html>

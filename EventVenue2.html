@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>INCOGNITO 2026 — Venue</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=VT323&family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --noir:#0a0a08;--smoke:#141210;--ash:#222018;
+  --aged:#7a7060;--cream:#f0e6cc;--red:#c0392b;
+  --gold:#d4af37;--green:#00ff41;--tape:#ffd700;
+  --font-d:'Bebas Neue',sans-serif;
+  --font-r:'VT323',monospace;
+  --font-m:'Courier Prime',monospace;
+  --font-t:'Special Elite',cursive;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--noir);color:var(--cream);font-family:var(--font-m);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:9000;}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,8,.95);border-bottom:1px solid rgba(192,57,43,.2);backdrop-filter:blur(10px);}
+.nav-logo{font-family:var(--font-d);font-size:1.3rem;letter-spacing:.06em;color:var(--cream);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.nav-back{font-size:.62rem;letter-spacing:.18em;color:var(--aged);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:5px 14px;transition:.2s;}
+.nav-back:hover{border-color:var(--red);color:var(--cream);}
+
+/* PAGE */
+.page{max-width:860px;margin:0 auto;padding:100px 24px 80px;}
+
+/* HEADER */
+.page-header{text-align:center;margin-bottom:56px;}
+.page-header h1{font-family:var(--font-d);font-size:clamp(2.8rem,8vw,5rem);letter-spacing:.04em;line-height:1;}
+.page-header h1 span{color:var(--red);}
+.page-header p{font-size:.8rem;color:var(--aged);letter-spacing:.1em;margin-top:12px;line-height:1.8;}
+.page-header .date-badge{display:inline-block;font-family:var(--font-r);font-size:1rem;color:var(--gold);letter-spacing:.25em;margin-top:8px;}
+
+/* SECTION LABEL */
+.section-label{font-size:.6rem;letter-spacing:.22em;color:var(--red);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:rgba(192,57,43,.2);}
+
+/* VENUE CARDS */
+.venue-list{display:flex;flex-direction:column;gap:16px;}
+
+.venue-card{background:var(--smoke);border:1px solid rgba(255,255,255,.06);border-left:4px solid var(--red);padding:24px 28px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;transition:background .2s,border-color .2s;}
+.venue-card:hover{background:#1a1614;border-left-color:var(--gold);}
+.venue-card--featured{border-left-color:var(--gold);background:#161410;}
+.venue-card--featured .event-name{color:var(--gold);}
+
+.event-tag{font-size:.55rem;letter-spacing:.18em;color:var(--aged);margin-bottom:6px;}
+.event-name{font-family:var(--font-d);font-size:1.6rem;letter-spacing:.04em;line-height:1.1;margin-bottom:4px;}
+.event-note{font-size:.72rem;color:var(--aged);line-height:1.7;margin-top:6px;}
+
+/* right side: location pill */
+.location-pill{text-align:right;flex-shrink:0;}
+.location-icon{font-size:1.4rem;margin-bottom:4px;}
+.location-name{font-family:var(--font-d);font-size:1.3rem;letter-spacing:.06em;color:var(--cream);white-space:nowrap;}
+.location-sub{font-size:.58rem;letter-spacing:.12em;color:var(--aged);margin-top:2px;}
+
+/* chips */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.chip{font-size:.56rem;letter-spacing:.12em;border:1px solid rgba(255,255,255,.1);padding:3px 10px;color:var(--aged);}
+.chip--red{border-color:rgba(192,57,43,.35);color:var(--red);}
+.chip--gold{border-color:rgba(212,175,55,.35);color:var(--gold);}
+
+/* QUICK REF TABLE */
+.quick-ref{margin-top:48px;}
+.ref-table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.ref-table th{font-size:.56rem;letter-spacing:.18em;color:var(--red);text-align:left;padding:8px 16px;border-bottom:1px solid rgba(192,57,43,.25);font-weight:normal;}
+.ref-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--cream);vertical-align:middle;}
+.ref-table tr:last-child td{border-bottom:none;}
+.ref-table tr:hover td{background:rgba(255,255,255,.02);}
+.ref-table .t-event{font-family:var(--font-d);font-size:.95rem;letter-spacing:.04em;}
+.ref-table .t-venue{color:var(--gold);}
+.ref-table .t-tag{font-size:.55rem;letter-spacing:.1em;color:var(--aged);background:rgba(255,255,255,.04);padding:2px 8px;border-radius:2px;}
+
+/* NOTE */
+.note-box{margin-top:40px;background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-left:4px solid var(--gold);padding:18px 22px;}
+.note-box p{font-size:.75rem;color:var(--aged);line-height:1.8;}
+.note-box strong{color:var(--cream);}
+
+/* FOOTER */
+.page-footer{text-align:center;padding:40px 24px;border-top:1px solid var(--ash);font-size:.6rem;letter-spacing:.12em;color:var(--aged);margin-top:60px;}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .venue-card{grid-template-columns:1fr;gap:14px;}
+  .location-pill{text-align:left;}
+  .navbar{padding:0 16px;}
+  .page{padding:90px 16px 60px;}
+  .ref-table th:nth-child(3),.ref-table td:nth-child(3){display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><span>INC</span>OGNITO 2026</a>
+  <a href="index.html" class="nav-back">&#8592; BACK</a>
+</nav>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1><span>EVENT</span> VENUES</h1>
+    <div class="date-badge">MARCH 25, 2026</div>
+    <p>Seshadripuram College, Bengaluru &nbsp;·&nbsp; All events are held on the same day</p>
+  </div>
+
+  <!-- VENUE CARDS -->
+  <div class="section-label">WHERE TO GO</div>
+
+  <div class="venue-list">
+
+    <!-- Alpha Arena — MCA Lab (FEATURED) -->
+    <div class="venue-card venue-card--featured">
+      <div>
+        <div class="event-tag">TECH &nbsp;·&nbsp; FILE #001 &nbsp;·&nbsp; &#9733; FLAGSHIP</div>
+        <div class="event-name">Alpha Arena</div>
+        <div class="event-note">Hunt the bugs, decode the clues &amp; restore justice to the system</div>
+        <div class="chip-row">
+          <span class="chip chip--gold">TEAM OF 2</span>
+          <span class="chip">3 HRS</span>
+        </div>
+      </div>
+      <div class="location-pill">
+        <div class="location-icon">&#128187;</div>
+        <div class="location-name">MCA LAB</div>
+        <div class="location-sub">COMPUTER LAB BLOCK &nbsp;·&nbsp; FLAGSHIP</div>
+      </div>
+    </div>
+
+    <!-- Talent Show — Auditorium -->
+    <div class="venue-card">
+      <div>
+        <div class="event-tag">CULTURAL &nbsp;·&nbsp; FILE #008</div>
+        <div class="event-name">Talent Show</div>
+        <div class="event-note">Music &nbsp;·&nbsp; Dance &nbsp;·&nbsp; Fashion Show</div>
+        <div class="chip-row">
+          <span class="chip chip--red">SOLO / GROUP</span>
+          <span class="chip">90 MIN</span>
+        </div>
+      </div>
+      <div class="location-pill">
+        <div class="location-icon">&#127963;</div>
+        <div class="location-name">AUDITORIUM</div>
+        <div class="location-sub">GROUND FLOOR &nbsp;·&nbsp; MAIN STAGE</div>
+      </div>
+    </div>
+
+    <!-- Capture Clash — Lab 2 -->
+    <div class="venue-card">
+      <div>
+        <div class="event-tag">TECH &nbsp;·&nbsp; FILE #005</div>
+        <div class="event-name">Capture Clash</div>
+        <div class="event-note">Photography &amp; Videography competition</div>
+        <div class="chip-row">
+          <span class="chip chip--red">INDIVIDUAL</span>
+          <span class="chip">4 HRS</span>
+        </div>
+      </div>
+      <div class="location-pill">
+        <div class="location-icon">&#128247;</div>
+        <div class="location-name">LAB 2</div>
+        <div class="location-sub">COMPUTER LAB BLOCK</div>
+      </div>
+    </div>
+
+    <!-- Data Detectives — Conference Hall -->
+    <div class="venue-card">
+      <div>
+        <div class="event-tag">MANAGEMENT &nbsp;·&nbsp; FILE #002</div>
+        <div class="event-name">Data Detectives</div>
+        <div class="event-note">Build a business case and present to the panel</div>
+        <div class="chip-row">
+          <span class="chip chip--red">TEAM OF 2</span>
+          <span class="chip">3 HRS</span>
+          <span class="chip chip--gold">&#8377;6,000 PRIZE</span>
+        </div>
+      </div>
+      <div class="location-pill">
+        <div class="location-icon">&#128205;</div>
+        <div class="location-name">CONFERENCE HALL</div>
+        <div class="location-sub">BRIEFING ROOM</div>
+      </div>
+    </div>
+
+    <!-- IT Dumb Charades — AV Room -->
+    <div class="venue-card">
+      <div>
+        <div class="event-tag">TECH &nbsp;·&nbsp; FILE #004</div>
+        <div class="event-name">IT Dumb Charades</div>
+        <div class="event-note">Decode tech terms through acting — no words allowed</div>
+        <div class="chip-row">
+          <span class="chip chip--red">TEAM OF 3</span>
+          <span class="chip">4 HRS</span>
+        </div>
+      </div>
+      <div class="location-pill">
+        <div class="location-icon">&#127909;</div>
+        <div class="location-name">AV ROOM</div>
+        <div class="location-sub">AUDIO-VISUAL SUITE</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QUICK REFERENCE TABLE -->
+  <div class="quick-ref">
+    <div class="section-label" style="margin-top:48px;">QUICK REFERENCE</div>
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>EVENT</th>
+          <th>VENUE</th>
+          <th>FORMAT</th>
+          <th>DURATION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="t-event">Alpha Arena</span> <span class="t-tag" style="color:var(--gold);border-color:rgba(212,175,55,.4);">&#9733; FLAGSHIP</span></td>
+          <td><span class="t-venue">MCA Lab</span></td>
+          <td><span class="t-tag">Team of 2</span></td>
+          <td>3 hrs</td>
+        </tr>
+        <tr>
+          <td><span class="t-event">Talent Show</span></td>
+          <td><span class="t-venue">Auditorium</span></td>
+          <td><span class="t-tag">Solo / Group</span></td>
+          <td>90 min</td>
+        </tr>
+        <tr>
+          <td><span class="t-event">Capture Clash</span></td>
+          <td><span class="t-venue">Lab 2</span></td>
+          <td><span class="t-tag">Individual</span></td>
+          <td>4 hrs</td>
+        </tr>
+        <tr>
+          <td><span class="t-event">Data Detectives</span></td>
+          <td><span class="t-venue">Conference Hall</span></td>
+          <td><span class="t-tag">Team of 2</span></td>
+          <td>3 hrs</td>
+        </tr>
+        <tr>
+          <td><span class="t-event">IT Dumb Charades</span></td>
+          <td><span class="t-venue">AV Room</span></td>
+          <td><span class="t-tag">Team of 3</span></td>
+          <td>4 hrs</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NOTE -->
+  <div class="note-box">
+    <p>
+      <strong>&#9888; Agent Notice &nbsp;—</strong> All venues are located within <strong>Seshadripuram College, Bengaluru</strong>.
+      Arrive at least <strong>15 minutes before your event</strong> starts.
+      Registration and check-in happens at the <strong>main entrance</strong>.
+      Look for the event signage at each sector entrance.
+    </p>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  INCOGNITO 2026 &nbsp;·&nbsp; SESHADRIPURAM COLLEGE &nbsp;·&nbsp; MARCH 25, 2026
+</footer>
+
+</body>
+</html>
