@@ -1,3 +1,4 @@
+@ -1,385 +0,0 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
             --bg: #050000;
         }
 
-    .modal-content {
+  .modal-content {
     position: relative;
     width: 90%;
     max-width: 500px;
@@ -37,6 +38,7 @@
     object-fit: contain; /* Show full image */
     display: block;
 }
+
    body, html {
     margin: 0; padding: 0;
     background: var(--bg);
@@ -256,7 +258,7 @@
         <div class="tape t-2">EVIDENCE SEALED</div>
 
         <header>
-            <h2 style="font-family:'Bebas Neue'; font-size:3.5rem; margin:0; letter-spacing: 2px;">OPERATION: IT Dumbcharades</h2>
+            <h2 style="font-family:'Bebas Neue'; font-size:3.5rem; margin:0; letter-spacing: 2px;">OPERATION: Talent Show</h2>
             <p style="font-family:'VT323'; color:var(--red); font-size:1rem;">FILE_STATUS: UNLOCKED </p>
         </header>
 
@@ -278,19 +280,20 @@
                 <ul style="font-size:0.85rem; padding-left:15px; line-height:2.2;">
                     <li>Bypass <span class="redacted">ENCRYPTED FIREWALLS</span>.</li>
                     <li>External storage is <span class="redacted">STRICTLY PROHIBITED</span>.</li>
-                    <li>Registration Fee: <span style="color:var(--gold); font-weight:bold;">250</span>.</li>
+                   <li>Registration Fee[Solo]: <span style="color:var(--gold); font-weight:bold;">₹250</span>.</li>
+                    <li>Registration Fee[Group]: <span style="color:var(--gold); font-weight:bold;">₹400</span>.</li>
                 </ul>
             </div>
 
             <div>
                 <span class="intel-label">COMMAND_COORDINATORS</span>
                 <div style="font-size: 0.8rem; line-height: 1.8;">
-                    AGENT_Keshav<br>
-                    <span style="color:var(--red);">+91 79751183552</span>
+                    AGENT_Rakshittha.G<br>
+                    <span style="color:var(--red);">+91 7337606093</span>
                 </div>
                 <div style="font-size: 0.8rem; line-height: 1.8;">
-                    AGENT_Nayana S Naik<br>
-                    <span style="color:var(--red);">+91 9686630759</span>
+                    AGENT_Rehan<br>
+                    <span style="color:var(--red);">+91 9742793636</span>
                 </div>
             </div>
         </div>
@@ -300,12 +303,14 @@
 </a>
     </div>
 
-    <div id="brochureModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <img src="itdumb1.jpg" alt="Brochure Poster" class="brochure-img">
+  <div id="brochureModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div class="brochure-container">
+            <img src="/Events/talent2.png" alt="Brochure 2" class="brochure-img">
         </div>
     </div>
+</div>
 
     <script>
     document.getElementById('regTrigger').onclick = function() {
