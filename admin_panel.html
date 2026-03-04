@@ -136,6 +136,93 @@ td{padding:11px 14px;vertical-align:middle;}
 </div>
 
 <div class="main">
+  <!-- ══════════════════════════════════
+     VISUALISATIONS
+══════════════════════════════════ -->
+<style>
+.viz-section{max-width:1400px;margin:0 auto;padding:24px 24px 0;}
+.viz-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px;}
+.viz-card{background:var(--smoke);padding:20px;}
+.viz-title{font-size:.52rem;letter-spacing:.2em;color:var(--red);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.viz-title span{color:var(--aged);font-size:.48rem;}
+/* bar chart */
+.bar-list{display:flex;flex-direction:column;gap:8px;}
+.bar-item{}
+.bar-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;}
+.bar-label{font-size:.6rem;letter-spacing:.04em;color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
+.bar-count{font-family:var(--font-r);font-size:.85rem;color:var(--gold);}
+.bar-track{height:3px;background:var(--dim);}
+.bar-fill{height:100%;background:var(--red);transition:width .8s ease;}
+/* donut */
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:24px;}
+.donut-svg{flex-shrink:0;}
+.donut-legend{display:flex;flex-direction:column;gap:10px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:.6rem;letter-spacing:.06em;color:var(--paper);}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.legend-val{font-family:var(--font-r);font-size:.9rem;color:var(--cream);margin-left:auto;padding-left:12px;}
+/* timeline */
+.timeline-bars{display:flex;align-items:flex-end;gap:4px;height:80px;padding-top:8px;}
+.tbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.tbar{width:100%;background:var(--red);opacity:.7;min-height:2px;transition:height .6s ease;border-radius:1px 1px 0 0;}
+.tbar-lbl{font-size:.42rem;color:var(--aged);letter-spacing:.04em;white-space:nowrap;}
+.tbar-zero{font-size:.48rem;color:var(--dim);text-align:center;padding:20px 0;letter-spacing:.1em;}
+/* college table */
+.mini-table{width:100%;}
+.mini-table tr{border-bottom:1px solid var(--dim);}
+.mini-table td{padding:6px 4px;font-size:.62rem;color:var(--paper);}
+.mini-table td:last-child{text-align:right;font-family:var(--font-r);font-size:.85rem;color:var(--gold);}
+@media(max-width:900px){.viz-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.viz-grid{grid-template-columns:1fr;}}
+</style>
+
+<div class="viz-section">
+  <div class="viz-grid">
+
+    <!-- CHART 1: Registrations per event (horizontal bars) -->
+    <div class="viz-card">
+      <div class="viz-title">REGISTRATIONS BY EVENT <span id="viz-total-tag">0 TOTAL</span></div>
+      <div class="bar-list" id="viz-events"></div>
+    </div>
+
+    <!-- CHART 2: Payment status donut -->
+    <div class="viz-card">
+      <div class="viz-title">PAYMENT STATUS <span id="viz-pay-pct">0% CLEARED</span></div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" width="100" height="100" viewBox="0 0 100 100" id="viz-donut">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="var(--dim)" stroke-width="12"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="var(--amber)" stroke-width="12"
+            stroke-dasharray="239" stroke-dashoffset="0"
+            transform="rotate(-90 50 50)" id="donut-pending" style="transition:stroke-dashoffset .8s ease;"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="var(--green)" stroke-width="12"
+            stroke-dasharray="239" stroke-dashoffset="239"
+            transform="rotate(-90 50 50)" id="donut-paid" style="transition:stroke-dashoffset .8s ease;"/>
+          <text x="50" y="46" text-anchor="middle" font-family="'VT323',monospace" font-size="18" fill="var(--cream)" id="donut-center-num">0</text>
+          <text x="50" y="58" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="6" fill="var(--aged)" letter-spacing="1">PAID</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>PAID<span class="legend-val" id="leg-paid">0</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>PENDING<span class="legend-val" id="leg-pending">0</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--dim)"></span>TOTAL<span class="legend-val" id="leg-total">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHART 3: Registrations over time (daily timeline) -->
+    <div class="viz-card">
+      <div class="viz-title">SIGN-UPS OVER TIME <span id="viz-date-range">—</span></div>
+      <div class="timeline-bars" id="viz-timeline"></div>
+    </div>
+
+    <!-- CHART 4: Top colleges -->
+    <div class="viz-card" style="grid-column:1/-1;">
+      <div class="viz-title">TOP COLLEGES <span id="viz-college-count">0 INSTITUTIONS</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--dim);">
+        <div id="viz-colleges" style="display:contents;"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
   <div class="toolbar">
     <div class="toolbar__title">// AGENT REGISTRY</div>
     <div class="search-wrap">
@@ -229,7 +316,7 @@ async function loadData(){
     const {data,error}=await db.from('registrations').select('*').order('registered_at',{ascending:false});
     if(error)throw error;
     allRows=data||[];
-    applyFilters();updateStats();
+    applyFilters(); updateStats(); renderViz();
   }catch(err){
     setTBody(`<tr class="state-row"><td colspan="9" style="color:var(--red)">⚠ DB ERROR: ${esc(err.message)}<br><small style="opacity:.5;display:block;margin-top:8px">Check SUPABASE_URL and SUPABASE_ANON_KEY in admin_panel.html</small></td></tr>`);
     showToast('DB error: '+err.message,'error');
@@ -349,6 +436,157 @@ function showToast(msg,type='ok'){
 }
 
 loadData();
+/* ══════════════════════════════════════════════════════
+   VISUALISATIONS — called after loadData() populates allRows
+══════════════════════════════════════════════════════ */
+function renderViz() {
+  if (!allRows.length) return;
+  renderEventBars();
+  renderDonut();
+  renderTimeline();
+  renderColleges();
+}
+
+/* ── CHART 1: Event bars ── */
+function renderEventBars() {
+  const events = [
+    'Capture Clash','Data Detectives','Alpha Arena','Cluephoria',
+    'Actomania','Talent Show [Fashion Show]','Talent Show [Dance/Music]',
+    'Bloodlust [Freefire]','Criminal Warfare [BGMI]'
+  ];
+  const counts = events.map(e => ({
+    name: e,
+    count: allRows.filter(r => r.event === e).length
+  })).filter(e => e.count > 0).sort((a,b) => b.count - a.count);
+
+  // also include any unexpected event values from DB
+  const known = new Set(events);
+  allRows.forEach(r => {
+    if (r.event && !known.has(r.event)) {
+      const existing = counts.find(c => c.name === r.event);
+      if (existing) existing.count++;
+      else counts.push({ name: r.event, count: 1 });
+    }
+  });
+
+  const max = Math.max(...counts.map(c => c.count), 1);
+  document.getElementById('viz-total-tag').textContent = allRows.length + ' TOTAL';
+
+  const el = document.getElementById('viz-events');
+  if (!counts.length) { el.innerHTML = '<div style="color:var(--aged);font-size:.6rem;padding:12px 0;letter-spacing:.1em;">NO DATA YET</div>'; return; }
+
+  el.innerHTML = counts.map(c => `
+    <div class="bar-item">
+      <div class="bar-meta">
+        <span class="bar-label">${esc(c.name)}</span>
+        <span class="bar-count">${c.count}</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%" data-pct="${Math.round(c.count/max*100)}"></div>
+      </div>
+    </div>`).join('');
+
+  // animate bars after paint
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.bar-fill').forEach(b => {
+      b.style.width = b.dataset.pct + '%';
+    });
+  });
+}
+
+/* ── CHART 2: Payment donut ── */
+function renderDonut() {
+  const total   = allRows.length;
+  const paid    = allRows.filter(r => r.payment_status === 'paid').length;
+  const pending = total - paid;
+  const circ    = 2 * Math.PI * 38; // 238.76
+
+  const paidFrac    = total ? paid / total : 0;
+  const pendingFrac = total ? pending / total : 0;
+
+  // paid arc starts at top (offset = circ - arc)
+  const paidArc    = paidFrac * circ;
+  const pendingArc = pendingFrac * circ;
+
+  // pending goes from top, paid follows after
+  document.getElementById('donut-pending').setAttribute('stroke-dasharray', circ);
+  document.getElementById('donut-pending').setAttribute('stroke-dashoffset', circ - pendingArc);
+
+  // paid arc starts where pending ends — rotate by pendingFrac * 360
+  const paidEl = document.getElementById('donut-paid');
+  paidEl.setAttribute('stroke-dasharray', circ);
+  paidEl.setAttribute('stroke-dashoffset', circ - paidArc);
+  paidEl.setAttribute('transform', `rotate(${-90 + pendingFrac * 360} 50 50)`);
+
+  document.getElementById('donut-center-num').textContent = paid;
+  document.getElementById('leg-paid').textContent    = paid;
+  document.getElementById('leg-pending').textContent = pending;
+  document.getElementById('leg-total').textContent   = total;
+
+  const pct = total ? Math.round(paidFrac * 100) : 0;
+  document.getElementById('viz-pay-pct').textContent = pct + '% CLEARED';
+}
+
+/* ── CHART 3: Daily sign-up timeline ── */
+function renderTimeline() {
+  if (!allRows.length) {
+    document.getElementById('viz-timeline').innerHTML = '<div class="tbar-zero">NO SIGN-UPS YET</div>';
+    return;
+  }
+
+  // bucket by date
+  const buckets = {};
+  allRows.forEach(r => {
+    if (!r.registered_at) return;
+    const d = new Date(r.registered_at);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    buckets[key] = (buckets[key] || 0) + 1;
+  });
+
+  const sorted = Object.entries(buckets).sort((a,b) => a[0].localeCompare(b[0]));
+  // keep last 14 days max
+  const recent = sorted.slice(-14);
+  const maxVal = Math.max(...recent.map(([,v]) => v), 1);
+
+  if (recent.length >= 2) {
+    const fmt = k => { const [,m,d] = k.split('-'); return d+'/'+m; };
+    document.getElementById('viz-date-range').textContent = fmt(recent[0][0]) + ' → ' + fmt(recent[recent.length-1][0]);
+  }
+
+  document.getElementById('viz-timeline').innerHTML = recent.map(([key, val]) => {
+    const pct = Math.round(val / maxVal * 100);
+    const lbl = key.split('-')[2]; // day number
+    return `<div class="tbar-wrap">
+      <div class="tbar" style="height:0px" data-h="${pct}" title="${val} on ${key}"></div>
+      <div class="tbar-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  // animate heights
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.tbar').forEach(b => {
+      b.style.height = b.dataset.h + '%';
+    });
+  });
+}
+
+/* ── CHART 4: College breakdown ── */
+function renderColleges() {
+  const map = {};
+  allRows.forEach(r => {
+    const c = (r.college || 'Unknown').trim();
+    map[c] = (map[c] || 0) + 1;
+  });
+
+  const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
+  document.getElementById('viz-college-count').textContent = sorted.length + ' INSTITUTION' + (sorted.length !== 1 ? 'S' : '');
+
+  document.getElementById('viz-colleges').innerHTML = sorted.map(([name, count]) => `
+    <div style="background:var(--smoke);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <span style="font-size:.62rem;color:var(--paper);letter-spacing:.04em;">${esc(name)}</span>
+      <span style="font-family:var(--font-r);font-size:.9rem;color:var(--gold);flex-shrink:0;">${count}</span>
+    </div>`).join('');
+}
 </script>
 </body>
 </html>
