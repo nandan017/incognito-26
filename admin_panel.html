@@ -132,7 +132,7 @@ td{padding:11px 14px;vertical-align:middle;}
   <div class="stat-card stat-card--red"><div class="stat-label">TOTAL REGISTRATIONS</div><div class="stat-value stat-value--red" id="st-total">—</div><div class="stat-sub">agents enrolled</div></div>
   <div class="stat-card stat-card--green"><div class="stat-label">PAYMENTS APPROVED</div><div class="stat-value stat-value--green" id="st-paid">—</div><div class="stat-sub">checked in at venue</div></div>
   <div class="stat-card stat-card--amber"><div class="stat-label">PENDING PAYMENT</div><div class="stat-value stat-value--amber" id="st-pending">—</div><div class="stat-sub">pay at venue Mar 25</div></div>
-  <div class="stat-card stat-card--gold"><div class="stat-label">EVENTS ACTIVE</div><div class="stat-value stat-value--gold" id="st-events">—</div><div class="stat-sub">unique operations</div></div>
+  <div class="stat-card stat-card--gold"><div class="stat-label">EVENTS ACTIVE</div><div class="stat-value stat-value--gold" id="st-events">—</div><div class="stat-sub">total operations</div></div>
 </div>
 
 <div class="main">
@@ -328,7 +328,7 @@ function updateStats(){
   document.getElementById('st-total').textContent=total;
   document.getElementById('st-paid').textContent=paid;
   document.getElementById('st-pending').textContent=total-paid;
-  document.getElementById('st-events').textContent=new Set(allRows.map(r=>r.event).filter(Boolean)).size;
+  document.getElementById('st-events').textContent = 9;
 }
 
 /* filter */
