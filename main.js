@@ -66,7 +66,7 @@ drawer?.querySelectorAll('.nav-drawer__link').forEach(link => {
 /* ─────────────────────────────────────────────────────
    2. COUNTDOWN TIMER
    ───────────────────────────────────────────────────── */
-const TARGET_DATE = new Date('2026-03-24T09:00:00').getTime();
+const TARGET_DATE = new Date('2026-03-25T09:00:00').getTime();
 
 function padZero(n) { return String(n).padStart(2, '0'); }
 
