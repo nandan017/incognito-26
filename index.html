@@ -782,21 +782,32 @@ efficiently under time pressure.</p>
           <div class="event-card__number font-retro">06</div>
         </article>
 
-        <article class="event-card" data-category="gaming" role="listitem">
-          <div class="event-card__tape">GAMING</div>
-          <div class="event-card__inner">
-            <div class="event-card__id font-mono text-red">FILE #007</div>
-            <h3 class="event-card__title font-display">BloodLust</h3>
-            <p class="event-card__desc font-mono">In Free Fire, a crime scene transforms into a high-stakes battleground—chaos erupts, danger lurks around every corner, and intense combat tests your reflexes. Survival hinges on sharp strategy, quick thinking, and unmatched skill.</p>
-            <div class="event-card__meta">
-              <span class="event-meta-chip">3 HRS</span>
-              <span class="event-meta-chip">Squad</span>
-              <span class="event-meta-chip text-gold">₹2,000 PRIZE</span>
-            </div>
-            <a href="/Events/FF.html" class="event-card__cta">OPEN FILE →</a>
-          </div>
-          <div class="event-card__number font-retro">07</div>
-        </article>
+        <article class="event-card" data-category="gaming" role="listitem" style="position:relative;overflow:hidden;">
+  <!-- CLOSED TAPE OVERLAY -->
+  <div style="position:absolute;inset:0;z-index:20;pointer-events:none;">
+    <!-- X tape — two diagonal strips -->
+    <div style="position:absolute;top:50%;left:50%;width:160%;height:14px;background:repeating-linear-gradient(-45deg,#ffd700,#ffd700 9px,#181410 9px,#181410 18px);transform:translate(-50%,-50%) rotate(-35deg);opacity:.85;box-shadow:0 0 8px rgba(0,0,0,.6);"></div>
+    <div style="position:absolute;top:50%;left:50%;width:160%;height:14px;background:repeating-linear-gradient(-45deg,#ffd700,#ffd700 9px,#181410 9px,#181410 18px);transform:translate(-50%,-50%) rotate(35deg);opacity:.85;box-shadow:0 0 8px rgba(0,0,0,.6);"></div>
+    <!-- CLOSED stamp in center -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:2.5px solid #c0392b;color:#c0392b;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.2em;padding:4px 14px;background:rgba(7,7,6,.85);white-space:nowrap;text-shadow:0 0 10px rgba(192,57,43,.5);box-shadow:0 0 14px rgba(192,57,43,.2);">REGISTRATIONS CLOSED</div>
+  </div>
+  <!-- dim the card content underneath -->
+  <div style="position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.55);pointer-events:none;"></div>
+
+  <div class="event-card__tape">GAMING</div>
+  <div class="event-card__inner">
+    <div class="event-card__id font-mono text-red">FILE #007</div>
+    <h3 class="event-card__title font-display">BloodLust</h3>
+    <p class="event-card__desc font-mono">In Free Fire, a crime scene transforms into a high-stakes battleground—chaos erupts, danger lurks around every corner, and intense combat tests your reflexes. Survival hinges on sharp strategy, quick thinking, and unmatched skill.</p>
+    <div class="event-card__meta">
+      <span class="event-meta-chip">3 HRS</span>
+      <span class="event-meta-chip">Squad</span>
+      <span class="event-meta-chip text-gold">₹2,000 PRIZE</span>
+    </div>
+    <a href="/Events/FF.html" class="event-card__cta">OPEN FILE →</a>
+  </div>
+  <div class="event-card__number font-retro">07</div>
+</article>
 
                <article class="event-card" data-category="cultural" role="listitem">
           <div class="event-card__tape">Cultural</div>
